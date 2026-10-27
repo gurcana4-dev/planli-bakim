@@ -465,6 +465,16 @@ textarea.code{height:220px;font:12px/1.5 var(--mono)}
 .fc-n{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 12px var(--mono)}
 .lvls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 
+/* ---- Bildirim bandı ve tanı penceresi ---- */
+.notice{position:fixed;top:72px;right:16px;z-index:70;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:start;width:min(390px,calc(100vw - 32px));padding:12px 12px 12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--accent-line);box-shadow:var(--shadow)}
+.notice .ni{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent)}
+.notice b{display:block;font-size:13px}
+.notice p{margin-top:2px;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+.diag{display:grid;gap:12px}
+.diag .hint{padding:10px 12px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+.diag .hint b{color:var(--ink)}
+.diag .hint a{color:var(--accent);word-break:break-all}
+
 /* ---- Ortak düzeltmeler ---- */
 .card-h h2{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .toast{background:var(--ink);color:var(--bg)}
@@ -1385,14 +1395,15 @@ function sKisiler(){
 }
 function sGenel(){
   const ns=notifState(),on=S.settings.notify&&ns==='granted';
-  const nTxt=ns==='unsupported'?'Bu tarayıcı bildirimleri desteklemiyor.'
-    :ns==='denied'?'Tarayıcı izni reddedilmiş. Adres çubuğundaki site ayarlarından izin verebilirsin.'
+  const nTxt=inFrame()?'Tarayıcı bildirimleri bu önizleme çerçevesinde çalışmaz. Yayınlanan siteyi aç: <a href="https://gurcana4-dev.github.io/planli-bakim/" target="_blank" rel="noopener">gurcana4-dev.github.io/planli-bakim</a>'
+    :ns==='unsupported'?'Bu tarayıcı bildirimleri desteklemiyor.'
+    :ns==='denied'?'Tarayıcı bildirim iznini reddetmiş. Adres çubuğundaki kilit simgesinden bu site için bildirimlere izin ver, sonra sayfayı yenile.'
     :on?'<span class="ok-txt">Açık.</span> Uygulama açıkken günde bir kez, gecikmiş ve yaklaşan bakımlar için bildirim gelir.'
     :'Kapalı.';
   return '<section class="card"><h2>Hedef</h2><p class="sub">PM uyum hedefi, panodaki ring renklerini ve yan çubuktaki ilerleme göstergesini belirler.</p><div class="row3"><label class="fld"><span>PM uyum hedefi (%)</span><input type="number" min="50" max="100" data-target="1" value="'+S.settings.target+'"></label></div></section>'
     +'<section class="card"><h2>Bildirim ve takvim</h2><p class="sub">'+nTxt+'</p><div class="btns">'
     +'<button type="button" class="btn" data-act="notify-toggle">'+ic('bell')+(on?'Bildirimleri kapat':'Bildirimleri aç')+'</button>'
-    +(on?'<button type="button" class="btn" data-act="notify-test">Test bildirimi gönder</button>':'')
+    +'<button type="button" class="btn" data-act="notify-test">'+ic('bell')+'Bildirimi test et</button>'
     +'<button type="button" class="btn" data-act="export-ics">'+ic('cal')+'Takvime ekle (.ics)</button></div>'
     +'<p class="note">Bildirimler yalnızca uygulama bir sekmede açıkken ya da ana ekrana eklenmişken çalışır, çünkü bu sürümde sunucu yoktur. Uygulama kapalıyken uyarı almanın güvenilir yolu takvim dosyasıdır. Dosyayı Google Takvim, Outlook veya telefon takvimine aktarırsan her bakım için uyarı süresinden önce ve bakım günü sabahı hatırlatma gelir. Planları değiştirdikten sonra dosyayı yeniden aktar.</p></section>'
     +'<section class="card"><h2>Görünüm</h2><p class="sub">Varsayılan görünüm koyu temadır. "Sistem" seçeneği cihazının tema ayarını izler.</p>'+seg('theme',[['dark','Koyu'],['light','Açık'],['auto','Sistem']],S.settings.theme)+'</section>';
@@ -1812,14 +1823,74 @@ function buildICS(){
 /* =========================================================
    Bildirimler
    ========================================================= */
+/* Bildirimi önce servis çalışanıyla, olmazsa doğrudan sayfadan gösterir. Sonuç ayrıntısını döndürür. */
 async function showNotif(title,body,tag){
+  const res={ok:false,path:'',error:'',count:null,perm:notifState()};
+  if(res.perm==='unsupported'){res.error='Bu tarayıcı bildirimleri desteklemiyor.';return res;}
+  if(res.perm!=='granted'){res.error='Bildirim izni yok ('+res.perm+').';return res;}
+  const opt={body:body,tag:tag,icon:'icon-192.png',badge:'icon-192.png',renotify:true};
+  let reg=null;
+  if('serviceWorker' in navigator){
+    try{reg=await navigator.serviceWorker.getRegistration();}catch(e){}
+    /* Servis çalışanı ilk ziyarette henüz etkin olmayabilir: en çok 2 sn bekle. */
+    if(reg&&!reg.active){
+      try{await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,2000))]);reg=await navigator.serviceWorker.getRegistration();}catch(e){}
+    }
+  }
+  if(reg&&reg.active&&reg.showNotification){
+    try{
+      await reg.showNotification(title,opt);
+      res.ok=true;res.path='Servis çalışanı';
+      try{res.count=(await reg.getNotifications({tag:tag})).length;}catch(e){}
+      return res;
+    }catch(e){res.error='Servis çalışanı: '+((e&&e.message)||e);}
+  }
   try{
-    if(!('Notification' in window)||Notification.permission!=='granted')return false;
-    const reg=('serviceWorker' in navigator)?await navigator.serviceWorker.getRegistration():null;
-    if(reg&&reg.showNotification){await reg.showNotification(title,{body:body,tag:tag,icon:'icon-192.png',badge:'icon-192.png'});return true;}
-    new Notification(title,{body:body,tag:tag,icon:'icon-192.png'});
-    return true;
-  }catch(e){return false;}
+    new Notification(title,opt);
+    res.ok=true;res.path='Sayfa';
+    return res;
+  }catch(e){res.error+=(res.error?' · ':'')+'Sayfa: '+((e&&e.message)||e);}
+  return res;
+}
+let lastNotif=null;
+function appNotice(title,body,withDiag){
+  const old=$('#notice');if(old)old.remove();
+  const d=document.createElement('div');
+  d.id='notice';d.className='notice';d.setAttribute('role','status');
+  d.innerHTML='<span class="ni">'+ic('bell')+'</span><div><b>'+esc(title)+'</b><p>'+esc(body)+'</p>'+(withDiag?'<button type="button" class="btn sm" style="margin-top:8px" data-act="notify-diag">Bildirim gelmedi mi?</button>':'')+'</div><button type="button" class="icon-btn sm" data-act="notice-close" aria-label="Kapat">'+ic('x')+'</button>';
+  document.body.appendChild(d);
+  setTimeout(()=>{if(d.parentNode)d.remove();},12000);
+}
+function notifyDiag(r){
+  const yes=t=>'<span class="pill good">'+t+'</span>',no=t=>'<span class="pill overdue">'+t+'</span>',mid=t=>'<span class="pill soon">'+t+'</span>';
+  const perm={granted:yes('Verildi'),denied:no('Reddedildi'),default:mid('Sorulmadı'),unsupported:no('Desteklenmiyor')}[r.perm]||mid(esc(r.perm));
+  const framed=inFrame(),site='https://gurcana4-dev.github.io/planli-bakim/';
+  const rows='<dt>Tarayıcı desteği</dt><dd>'+(r.perm==='unsupported'?no('Yok'):yes('Var'))+'</dd>'
+    +'<dt>Bildirim izni</dt><dd>'+perm+'</dd>'
+    +'<dt>Ortam</dt><dd>'+(framed?mid('Önizleme çerçevesi'):yes('Doğrudan site'))+'</dd>'
+    +'<dt>Gönderim yolu</dt><dd>'+(r.path?esc(r.path):'-')+'</dd>'
+    +'<dt>Tarayıcıya iletildi</dt><dd>'+(r.ok?yes('Evet')+(r.count!=null?' <span class="faint">('+r.count+' bildirim bekliyor)</span>':''):no('Hayır'))+'</dd>'
+    +(r.error?'<dt>Hata</dt><dd>'+esc(r.error)+'</dd>':'');
+  let hint;
+  if(framed)hint='<b>Bu önizlemede tarayıcı bildirimi çalışmaz.</b> Sayfa bir güvenlik çerçevesi içinde açıldığı için tarayıcı bildirim izni vermez. Yayınlanan siteyi doğrudan aç ve testi orada tekrarla: <a href="'+site+'" target="_blank" rel="noopener">'+site+'</a>';
+  else if(r.perm==='unsupported')hint='<b>Bu tarayıcı bildirimleri desteklemiyor.</b> Güncel Edge, Chrome veya Firefox kullan. iPhone ile önce siteyi ana ekrana ekle, uygulamayı oradan aç.';
+  else if(r.perm==='denied')hint='<b>Tarayıcı bildirim iznini reddetmiş.</b> Adres çubuğundaki kilit simgesine tıkla, Bu site için izinler bölümünden Bildirimler seçeneğini İzin ver yap, sayfayı yenile ve testi tekrarla.';
+  else if(r.perm==='default')hint='<b>Bildirim izni henüz verilmedi.</b> Tarayıcının sorduğu izin kutusunda İzin ver seçeneğini seçip testi tekrarla.';
+  else if(r.ok)hint='<b>Tarayıcı bildirimi işletim sistemine iletti.</b> Ekranda göremediysen Windows Ayarlar, Sistem, Bildirimler bölümünde Microsoft Edge (veya Google Chrome) açık olsun, Odak yardımı ve Rahatsız etme kapalı olsun. Bildirim Eylem Merkezinde de görünür. Tarayıcıda adres çubuğundaki kilit simgesi, Bu site için izinler, Bildirimler İzin ver olmalı.';
+  else hint='<b>Bildirim tarayıcıya iletilemedi.</b> Yukarıdaki hata ayrıntısına bak, sayfayı yenileyip testi tekrarla.';
+  openDlg('<div class="dlg"><div class="dlg-h"><div><h2>Bildirim testi</h2><p>'+(r.ok?'Test bildirimi tarayıcıya iletildi.':'Test bildirimi gönderilemedi.')+'</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Kapat">'+ic('x')+'</button></div><div class="dlg-b diag"><dl class="kv">'+rows+'</dl><div class="hint">'+hint+'</div></div><div class="dlg-f"><button type="button" class="btn" data-act="close">Kapat</button><button type="button" class="btn primary" data-act="notify-test">Tekrar dene</button></div></div>');
+}
+async function notifyTest(){
+  const framed=inFrame();
+  let perm=notifState();
+  if(perm==='default'&&!framed){try{await Notification.requestPermission();}catch(e){}perm=notifState();}
+  if(!framed)toast('Test bildirimi gönderiliyor...');
+  const r=framed?{ok:false,path:'',error:'',count:null,perm:perm}:await showNotif('Rebul Planlı Bakım','Test bildirimi: uyarılar bu cihazda çalışıyor.','pb-test-'+Date.now());
+  lastNotif=r;
+  if(r.ok){
+    if(dlg.open)closeDlg();
+    appNotice('Rebul Planlı Bakım','Test bildirimi gönderildi. Sistem bildirimini görmediysen aşağıdaki düğmeye bas.',true);
+  }else notifyDiag(r);
 }
 function checkNotify(force){
   try{
@@ -1830,7 +1901,7 @@ function checkNotify(force){
     const o=A.filter(x=>x.i.st==='overdue').length,s=A.length-o;
     const title='Planlı Bakım: '+(o?o+' gecikmiş':'')+(o&&s?', ':'')+(s?s+' yaklaşan':'');
     const body=A.slice(0,3).map(x=>x.m.tag+' · '+x.t.title+' ('+dueText(x.i.left)+')').join('\n')+(A.length>3?'\n+'+(A.length-3)+' bakım daha':'');
-    showNotif(title,body,'pb-daily').then(ok=>{if(ok&&!force){A.forEach(x=>{S.settings.lastNotify[x.t.id]=ts;});save();}});
+    showNotif(title,body,'pb-daily').then(r=>{if(r.ok&&!force){A.forEach(x=>{S.settings.lastNotify[x.t.id]=ts;});save();}});
   }catch(e){}
 }
 async function notifyToggle(){
@@ -1839,7 +1910,7 @@ async function notifyToggle(){
   let p=Notification.permission;
   try{if(p==='default')p=await Notification.requestPermission();}catch(e){p='denied';}
   S.settings.notify=p==='granted';save();render();
-  if(p==='granted'){toast('Bildirimler açıldı');checkNotify(true);}else toast('Bildirim izni verilmedi.');
+  if(p==='granted'){toast('Bildirimler açıldı');checkNotify(true);}else toast('Bildirim izni verilmedi. Adres çubuğundaki kilit simgesinden bu site için bildirimlere izin ver.');
 }
 
 /* =========================================================
@@ -1878,7 +1949,9 @@ const H={
   'export-ics':()=>download('rebul-planli-bakim.ics','text/calendar',buildICS()),
   'share-link':()=>shareLink(),
   'notify-toggle':()=>notifyToggle(),
-  'notify-test':()=>{showNotif('Rebul Planlı Bakım','Test bildirimi: uyarılar bu cihazda çalışıyor.','pb-test').then(ok=>toast(ok?'Test bildirimi gönderildi':'Bildirim gönderilemedi'));},
+  'notify-test':()=>notifyTest(),
+  'notify-diag':()=>{const n=$('#notice');if(n)n.remove();notifyDiag(lastNotif||{ok:false,path:'',error:'Henüz test yapılmadı.',count:null,perm:notifState()});},
+  'notice-close':()=>{const n=$('#notice');if(n)n.remove();},
   'copy-text':async()=>{const t=$('#txtOut');if(!t)return;const ok=await copyText(t.value);if(ok)toast('Kopyalandı');else{t.focus();t.select();toast('Metni seçtim, Ctrl+C ile kopyala.');}}
 };
 document.addEventListener('click',e=>{
