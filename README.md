@@ -22,9 +22,28 @@ Rebul'un "Ekipman önem seviyesi belirleme" yöntemi uygulanır. Kriterler ve pu
 
 ## Gerçek veriyi yükleme
 
-Makine listesi ve bakım planları şirkete ait olduğu için herkese açık siteye gömülmez. Veri, kendi bilgisayarındaki
-`rebul-veri.json` dosyasındadır (git bu dosyayı yok sayar). Her cihazda bir kez yüklenir:
-Ayarlar > Veri > Yedekten yükle. Veriler o tarayıcıda saklanır.
+Makine listesi ve bakım planları şirkete ait olduğu için sitede **yalnızca parolayla şifreli** durur
+(`rebul-veri.enc.json`). Düz hali, yani `rebul-veri.json`, kendi bilgisayarındadır ve git bu dosyayı yok sayar.
+
+Siteyi ilk kez açan (ve henüz verisi olmayan) kişiye parola sorulur. Doğru parola girilince veri o tarayıcıya
+yüklenir ve bir daha sorulmaz. "Örnek veriyle devam et" seçilirse örnek veri açılır, istendiğinde
+Ayarlar > Veri > **Rebul verisini parolayla yükle** ile sonradan yüklenebilir. Düz yedek dosyası da
+Ayarlar > Veri > Yedekten yükle ile yüklenebilir.
+
+Şifreleme: gzip, PBKDF2-SHA256 (600.000 tur) ile anahtar türetme ve AES-256-GCM. Parola büyük/küçük harfe,
+boşluğa ve tireye duyarsızdır. Parola kodda ya da depoda yoktur, tarayıcıya da kaydedilmez.
+
+Veriyi güncellemek ya da parolayı değiştirmek için (parola yoksa `--yeni` rastgele güçlü bir parola üretir ve yazdırır):
+
+```
+node scripts/sifrele.js rebul-veri.json rebul-veri.enc.json --yeni
+git add rebul-veri.enc.json && git commit -m "Rebul verisini güncelle" && git push
+```
+
+Dikkat: şifreli dosyanın eski sürümleri git geçmişinde kalır ve eski parolayla açılabilir. Parola bir kişiyle
+paylaşıldıysa ve o kişinin erişimi kapatılacaksa yalnızca parolayı değiştirmek, o kişinin elindeki eski veriyi geri almaz.
+Parola zayıf seçilirse (internet üzerinden herkes şifreli dosyayı indirip denemeler yapabileceği için) koruma azalır;
+`--yeni` ile üretilen 16 karakterlik parola 80 bit güvenlik sağlar.
 
 `araclar/excel-veri-olustur.js`, Rebul Excel dosyalarından `rebul-veri.json` üretir (yine git dışında):
 iki .xlsx dosyasını ayrı klasörlere açıp `node araclar/excel-veri-olustur.js <klasör> <çıktı.json>` çalıştırılır.
@@ -36,6 +55,8 @@ iki .xlsx dosyasını ayrı klasörlere açıp `node araclar/excel-veri-olustur.
 | `index.html` | Uygulamanın tamamı (arayüz, mantık, stil) |
 | `logo.png`, `icon-192.png`, `icon-512.png` | Rebul logosu ve uygulama simgeleri |
 | `manifest.webmanifest`, `sw.js` | Ana ekrana ekleme ve çevrimdışı çalışma |
+| `rebul-veri.enc.json` | Parolayla şifreli Rebul verisi (makineler, planlar, tanımlar) |
+| `scripts/sifrele.js` | Bir yedek dosyasını parolayla şifreler |
 
 ## Yayınlama (ücretsiz)
 

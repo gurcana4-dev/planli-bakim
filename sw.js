@@ -1,5 +1,5 @@
 /* Rebul Planlı Bakım: çevrimdışı çalışma ve bildirim tıklaması */
-const CACHE = 'rebul-planli-bakim-v2';
+const CACHE = 'rebul-planli-bakim-v3';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -21,6 +21,8 @@ self.addEventListener('fetch', (e) => {
   const sameOrigin = url.origin === self.location.origin;
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
   if (!sameOrigin && !isFont) return;
+  // Şifreli veri dosyası her zaman ağdan gelir, önbelleğe alınmaz (güncel sürüm, eski parola karışmasın).
+  if (sameOrigin && /\.enc\.json$/.test(url.pathname)) return;
   // Sayfa: önce ağ (güncel sürüm), ağ yoksa önbellek. Diğerleri: önbellek, arka planda yenile.
   if (req.mode === 'navigate') {
     e.respondWith(

@@ -132,9 +132,12 @@ b,strong{font-weight:600}
 .fld{display:flex;flex-direction:column;gap:5px;min-width:0}
 .fld>span{font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.01em}
 .fld em{font-style:normal;font-size:12px;color:var(--ink-3)}
-input[type=text],input[type=search],input[type=number],input[type=date],select,textarea{width:100%;min-width:0;height:38px;padding:0 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+input[type=text],input[type=search],input[type=number],input[type=date],input[type=password],select,textarea{width:100%;min-width:0;height:38px;padding:0 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 textarea{height:auto;min-height:72px;padding:9px 11px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+#pwIn{font-family:var(--mono);letter-spacing:.06em}
+.pw-show{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2)}
+.pw-err{min-height:1.3em;margin:0;font-size:12.5px;color:var(--bad)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
@@ -1068,7 +1071,7 @@ const kpi=(lab,val,sub,right,cls)=>'<div class="panel kpi '+(cls||'')+'"><div cl
 const fcard=(icon,lab,v,s)=>'<div class="panel fc"><span class="fc-ic">'+ic(icon)+'</span><div style="min-width:0"><div class="lab">'+lab+'</div><div class="v">'+v+'</div><div class="s">'+s+'</div></div></div>';
 function vGenel(){
   if(UI.area!=='all'&&!S.machines.some(m=>(m.area||'Diğer')===UI.area))UI.area='all';
-  const demoNote=S.demo?'<div class="demo-note"><span><b>Örnek veri gösteriliyor.</b> Tarihler bugüne göre hazırlandı. Kendi makinelerini girmeden önce örnekleri temizleyebilirsin.</span><button class="btn sm" data-act="clear-demo">Örnek veriyi temizle</button></div>':'';
+  const demoNote=S.demo?'<div class="demo-note"><span><b>Örnek veri gösteriliyor.</b> Tarihler bugüne göre hazırlandı. Kendi makinelerini girmeden önce örnekleri temizleyebilirsin.</span>'+(sifreliB?'<button class="btn sm primary" data-act="sifre-ac">Rebul verisini aç</button>':'')+'<button class="btn sm" data-act="clear-demo">Örnek veriyi temizle</button></div>':'';
   if(!S.machines.length)return '<div class="card">'+empty('Henüz makine yok','Pano, makine ve bakım planı girdikçe dolar.<br><br><button class="btn primary" data-act="new-machine">'+ic('plus')+'İlk makineyi ekle</button>')+'</div>';
   const c=dashCtx(),T0=c.T0,E=c.E,tg=S.settings.target;
   if(!c.ms.length)return demoNote+'<div class="card">'+empty('Süzgece uyan makine yok','Bölüm veya sınıf süzgecini değiştir.')+'</div>';
@@ -1432,6 +1435,7 @@ function sVeri(){
     +'<button type="button" class="btn" data-act="export-json">'+ic('download')+'Yedekle (.json)</button>'
     +'<button type="button" class="btn" data-act="import-json">'+ic('upload')+'Yedekten yükle</button>'
     +(framed?'':'<button type="button" class="btn" data-act="share-link">'+ic('link')+'Paylaşım bağlantısı kopyala</button>')
+    +'<button type="button" class="btn" data-act="sifre-ac">'+ic('upload')+'Rebul verisini parolayla yükle</button>'
     +'<input type="file" id="impFile" accept=".json,application/json" hidden></div>'
     +'<div class="btns" style="margin-top:8px"><button type="button" class="btn" data-act="load-demo">Örnek veriyi yükle</button><button type="button" class="btn" data-act="reset-all">Tüm verileri sil</button></div>'
     +'<p class="note">'+(framed?'Paylaşım bağlantısı yalnızca yayınlanmış sitede kullanılabilir. ':'Paylaşım bağlantısı, tüm kayıtları adresin içine gömer. Bağlantıyı açan kişi veriyi kendi tarayıcısına yükleyebilir. Bağlantıyı yalnızca güvendiğin kişilerle paylaş. ')+'Ortak ve canlı bir veritabanı gerekiyorsa küçük bir ücretsiz sunucu katmanı (ör. Google E-Tablolar veya Supabase) eklenebilir.</p></section>';
@@ -1859,6 +1863,68 @@ async function importFromHash(s){
     if(await ask('Paylaşılan veri yüklensin mi?','Bağlantı '+c.machines.length+' makine ve '+c.tasks.length+' plan içeriyor. Mevcut verinin yerine geçer. İstersen önce Ayarlar sayfasından yedek al.','Yükle')){applyData(o);route='genel';render();toast('Veri yüklendi');}
   }catch(e){toast('Paylaşım bağlantısı okunamadı.');}
 }
+/* ---- Parolayla korunan Rebul verisi (rebul-veri.enc.json: gzip + PBKDF2 + AES-GCM) ---- */
+const SIFRELI='rebul-veri.enc.json',SIFRE_ATLA='planli-bakim.sifre-atla';
+let sifreliB=null;
+const normPw=s=>String(s).replace(/[\s-]+/g,'').toUpperCase();
+async function fetchSifreli(){
+  const r=await fetch(SIFRELI,{cache:'no-store'});
+  if(!r.ok)throw new Error('yok');
+  const b=await r.json();
+  if(!b||b.v!==1||!b.salt||!b.iv||!b.data||!(b.iter>0&&b.iter<=2000000))throw new Error('yok');
+  return b;
+}
+async function openSifreli(b,pw){
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt:unb64u(b.salt),iterations:b.iter},
+    await crypto.subtle.importKey('raw',new TextEncoder().encode(normPw(pw)),'PBKDF2',false,['deriveKey']),
+    {name:'AES-GCM',length:256},false,['decrypt']);
+  let bytes=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64u(b.iv)},key,unb64u(b.data)));
+  if(b.gz){
+    const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    bytes=new Uint8Array(await new Response(ds).arrayBuffer());
+  }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function sifreDlg(b,first){
+  if(!(window.crypto&&crypto.subtle&&'DecompressionStream' in window)){toast('Bu tarayıcı parolayla yüklemeyi desteklemiyor.');return;}
+  openDlg(dlgShell('Rebul verisini aç','Makine listesi ve bakım planları parolayla korunur. Parolayı Rebul bakım yönetiminden al.',
+    fld('Parola','<input type="password" id="pwIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX" aria-describedby="pwErr">','Büyük küçük harf ve tire önemli değil.')
+      +'<label class="pw-show"><input type="checkbox" id="pwShow">Parolayı göster</label><p class="pw-err" id="pwErr" role="alert"></p>',
+    (first?'<button type="button" class="btn" id="pwSkip">Örnek veriyle devam et</button>':'<button type="button" class="btn" data-act="close">Vazgeç</button>')
+      +'<button type="submit" class="btn primary" id="pwGo">Aç ve yükle</button>','pwFrm'),null,f=>{
+    const inp=$('#pwIn'),err=$('#pwErr'),go=$('#pwGo');
+    $('#pwShow').addEventListener('change',e=>{inp.type=e.target.checked?'text':'password';});
+    const skip=$('#pwSkip');
+    if(skip)skip.addEventListener('click',()=>{try{localStorage.setItem(SIFRE_ATLA,'1');}catch(e){}closeDlg();});
+    f.addEventListener('submit',async e=>{
+      e.preventDefault();
+      if(normPw(inp.value).length<12){err.textContent='Parola eksik görünüyor, 16 karakterlik olmalı.';return;}
+      go.disabled=true;go.textContent='Açılıyor…';err.textContent='';
+      let o,c;
+      try{o=await openSifreli(b,inp.value);c=sanitize(o);}
+      catch(x){
+        go.disabled=false;go.textContent='Aç ve yükle';
+        err.textContent=(x&&x.name==='OperationError')?'Parola yanlış.':'Veri okunamadı.';
+        inp.select();return;
+      }
+      if(!S.demo){
+        closeDlg();
+        if(!await ask('Rebul verisi yüklensin mi?',c.machines.length+' makine ve '+c.tasks.length+' plan yüklenecek. Mevcut verinin yerine geçer. İstersen önce Ayarlar sayfasından yedek al.','Yükle'))return;
+      }
+      applyData(o);closeDlg();route='genel';render();
+      try{localStorage.removeItem(SIFRE_ATLA);}catch(e){}
+      toast('Rebul verisi yüklendi: '+c.machines.length+' makine, '+c.tasks.length+' plan');
+    });
+  });
+}
+async function sifreliKontrol(){
+  if(!S.demo||location.hash.indexOf('#d=')===0)return;
+  try{sifreliB=await fetchSifreli();}catch(e){return;}
+  render();
+  let skipped=false;
+  try{skipped=!!localStorage.getItem(SIFRE_ATLA);}catch(e){}
+  if(!skipped&&!dlg.open)sifreDlg(sifreliB,true);
+}
 const icsEsc=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
 const fold=l=>{if(l.length<=70)return l;let o=l.slice(0,70);for(let i=70;i<l.length;i+=69)o+='\r\n '+l.slice(i,i+69);return o;};
 function buildICS(){
@@ -2020,6 +2086,7 @@ const H={
   'load-demo':async()=>{if(await ask('Örnek veri yüklensin mi?','Mevcut tüm verinin yerine örnek veri gelir.','Yükle')){const d=demo();d.settings=S.settings;S=normalize(d);save();render();toast('Örnek veri yüklendi');}},
   'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings,defs:{crit:S.defs.crit,clsName:S.defs.clsName,cats:S.defs.cats}});save();render();toast('Tüm veriler silindi');}},
   'export-json':()=>download('rebul-planli-bakim-yedek-'+iso(today())+'.json','application/json',JSON.stringify(exportObj(),null,2)),
+  'sifre-ac':async()=>{try{sifreDlg(sifreliB||(sifreliB=await fetchSifreli()),false);}catch(e){toast('Şifreli Rebul verisi bu adreste bulunamadı.');}},
   'import-json':()=>{const f=$('#impFile');if(f)f.click();else{nav('ayarlar');}},
   'export-ics':()=>download('rebul-planli-bakim.ics','text/calendar',buildICS()),
   'share-link':()=>shareLink(),
@@ -2083,6 +2150,7 @@ function boot(){
   if(VIEWS[h])route=h;
   render();
   if(h.indexOf('d=')===0)importFromHash(h.slice(2));
+  else sifreliKontrol();
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
     try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}
   }

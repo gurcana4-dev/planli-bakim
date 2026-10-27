@@ -1,3 +1,4 @@
-# Şirkete ait gerçek veri ve ona özel araçlar: herkese açık depoya gönderilmez
+# Şirkete ait gerçek veri ve ona özel araçlar: düz hali herkese açık depoya gönderilmez.
+# Yalnızca parolayla şifreli hali (rebul-veri.enc.json) gönderilir.
 rebul-veri.json
 araclar/
