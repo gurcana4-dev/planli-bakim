@@ -1,44 +1,45 @@
 # Rebul Planlı Bakım
 
-Makine önem sıralaması, zaman çizelgesi, yönetici panosu ve yaklaşan bakım uyarıları olan, sunucusuz tek sayfa uygulama.
+Makine önem sıralaması, bakım takvimi, yönetici panosu ve yaklaşan bakım uyarıları olan, sunucusuz tek sayfa uygulama.
 Hesap, veritabanı veya ücretli servis gerekmez. Tamamı statik dosyadır.
 
 Canlı adres: https://gurcana4-dev.github.io/planli-bakim/
+
+## Önem seviyesi (A / B / C)
+
+Rebul'un "Ekipman önem seviyesi belirleme" yöntemi uygulanır. Kriterler ve puanlar Ayarlar > Önem sınıfları'ndan değiştirilir.
+
+- **Üretim üzerine etkisi:** tolere edilebilir kapasite düşüşü 25, siparişte gecikme 75, müşteri sipariş iptali 100 puan. 100 ise A, 75 ise B, aksi halde C.
+- **Bakım ve kalite etkisi:** ekipman yaşı, hareketli parça sayısı, hız ve vibrasyon, kalite etkisi, çevresel koşul puanları toplanır. 75 ve üzeri A, 50 ve üzeri B, aksi halde C.
+- **Sonuç:** iki seviyeden yüksek olanı. Sıralama önce sınıfa, sonra üretim ve bakım puanına, eşitlikte hat önemine göre yapılır.
+
+## Sayfalar
+
+- **Genel Bakış:** KPI şeridi, hatta göre yük, bakım türü payı, aylık plan, makine sıralaması, uyarılar. Rapor (PDF) yatay A4 çıktı verir.
+- **Zaman Çizelgesi:** takvim ve ajanda. Bu haftadan başlayan 5 hafta ya da aylık görünüm. Bir güne tıklayınca o günün işleri ve gecikmişler listelenir.
+- **Makineler, Bakım Planları, Geçmiş, Rehber, Ayarlar.**
+- **Bakım formu (kontrol listesi):** bir plana "Ünite | Kontrol noktası | Yöntem | Ekipman" satırlarıyla form eklenir. Bakım tamamlanırken her madde Uygun, Uygunsuz ya da Yapılmadı olarak işaretlenir ve geçmişe yazılır.
+
+## Gerçek veriyi yükleme
+
+Makine listesi ve bakım planları şirkete ait olduğu için herkese açık siteye gömülmez. Veri, kendi bilgisayarındaki
+`rebul-veri.json` dosyasındadır (git bu dosyayı yok sayar). Her cihazda bir kez yüklenir:
+Ayarlar > Veri > Yedekten yükle. Veriler o tarayıcıda saklanır.
+
+`araclar/excel-veri-olustur.js`, Rebul Excel dosyalarından `rebul-veri.json` üretir (yine git dışında):
+iki .xlsx dosyasını ayrı klasörlere açıp `node araclar/excel-veri-olustur.js <klasör> <çıktı.json>` çalıştırılır.
 
 ## Dosyalar
 
 | Dosya | Görevi |
 | --- | --- |
 | `index.html` | Uygulamanın tamamı (arayüz, mantık, stil) |
-| `logo.png` | Rebul 1895 logosu (saydam zeminli, beyaz) |
-| `icon-192.png`, `icon-512.png` | Uygulama simgeleri (ana ekrana ekle, sekme simgesi) |
-| `manifest.webmanifest` | Telefonda "ana ekrana ekle" desteği |
-| `sw.js` | Çevrimdışı çalışma ve bildirim tıklaması |
-
-## Pano
-
-Genel Bakış sayfası yöneticiye tek bakışta şunları verir:
-
-- KPI şeridi: PM uyum oranı, gecikmiş, yaklaşan, 30 günlük iş yükü, tamamlanan, kritik (A) makine sağlığı
-- Bölüme göre bakım yükü, bakım türü payı, aylık planlanan bakım (sınıfa göre)
-- Makine önem sıralaması tablosu, aylık tamamlanan bakım grafiği, uyarılar ve otomatik içgörüler
-- Dönem, bölüm ve sınıf süzgeçleri. Rapor (PDF) düğmesi yatay A4 çıktı üretir.
-
-## Tanımlar (Ayarlar sayfası)
-
-Her tanım Ayarlar sayfasındaki sekmelerden yapılır:
-
-- **Hatlar:** üretim hatlarını ve bölümleri ekle, adlandır, önem düzeyi (1-5) ver. Aynı puanlı makineler hat önemine göre sıralanır.
-- **Makineler:** makine ekle, hatlara bağla, önem puanlarını düzenle.
-- **Önem sınıfları:** A ve B eşik puanlarını, sınıf adlarını ve uyarı sürelerini belirle. Dört önem faktörünün adını, sorusunu ve puan açıklamalarını kendi tesisine göre değiştir.
-- **Bakım türleri:** plan formundaki kategori listesi. Ad değişince planlar da güncellenir.
-- **Sorumlular:** plan ve tamamlama formlarındaki kişi ve ekip listesi.
-- **Bildirim ve görünüm:** PM uyum hedefi, tarayıcı bildirimi, takvim dosyası, tema.
-- **Veri:** yedek, geri yükleme, paylaşım bağlantısı. Tanımlar da yedeğe dahildir.
+| `logo.png`, `icon-192.png`, `icon-512.png` | Rebul logosu ve uygulama simgeleri |
+| `manifest.webmanifest`, `sw.js` | Ana ekrana ekleme ve çevrimdışı çalışma |
 
 ## Yayınlama (ücretsiz)
 
-GitHub Pages `main` dalından yayınlar. Dosyaları değiştirip gönderdiğinde site birkaç dakikada güncellenir:
+GitHub Pages `main` dalından yayınlar. Dosyaları değiştirip gönderince site birkaç dakikada güncellenir:
 
 ```bash
 git add .
@@ -46,33 +47,9 @@ git commit -m "Güncelleme"
 git push
 ```
 
-Sıfırdan kurmak için:
-
-```bash
-git init -b main
-git add .
-git commit -m "Rebul Planlı Bakım"
-gh repo create planli-bakim --public --source . --push
-gh api -X POST repos/{owner}/planli-bakim/pages -f "source[branch]=main" -f "source[path]=/"
-```
-
-Alternatifler: Netlify Drop (`app.netlify.com/drop`, klasörü sürükle) veya Cloudflare Pages.
-
 ## Bilmen gerekenler
 
-- **Veri nerede?** Her kullanıcının tarayıcısında (localStorage). Sunucu yoktur. Başka cihaza taşımak için
-  Ayarlar sayfasındaki yedek dosyasını ya da paylaşım bağlantısını kullan.
-- **Uyarılar nasıl çalışır?** Uygulama içinde durum etiketleri, zil simgesi ve sekme başlığındaki sayaç her zaman çalışır.
-  Tarayıcı bildirimi yalnızca uygulama açıkken (ya da ana ekrana eklenmişken) gelir. Uygulama kapalıyken uyarı almanın
-  güvenilir yolu Ayarlar sayfasındaki `.ics` takvim dosyasıdır. Plan değiştirince dosyayı yeniden aktar.
-- **Ortak canlı veri gerekirse:** Bu sürümde yok. Ekip tek bir listeyi birlikte güncelleyecekse Google E-Tablolar
-  (Apps Script) ya da Supabase ücretsiz katmanıyla küçük bir senkron katmanı eklenebilir.
-
-## Uyarı mantığı
-
-- **Gecikmiş:** tarih geçti.
-- **Yaklaşıyor:** tarihe, uyarı süresinden az kaldı. Varsayılan süreler makine sınıfına göredir (A 14, B 7, C 3 gün).
-- **Planlı:** henüz uyarı penceresinde değil.
-
-Makine sınıfı dört faktörün toplamından çıkar (1-5 puan): güvenlik ve çevre, üretime etki, onarım süresi,
-alternatifsizlik. Toplam 15 ve üzeri A, 10-14 B, altı C sınıfıdır. PM uyum hedefi (varsayılan %90) Ayarlar'dan değişir.
+- **Veri nerede?** Her kullanıcının tarayıcısında (localStorage). Sunucu yoktur. Başka cihaza taşımak için Ayarlar > Veri'deki yedek dosyasını kullan.
+- **Uyarılar:** Uygulama içinde durum etiketleri, zil simgesi ve sekme sayacı her zaman çalışır. Tarayıcı bildirimi uygulama açıkken gelir.
+  Uygulama kapalıyken uyarı almanın güvenilir yolu Ayarlar'daki `.ics` takvim dosyasıdır.
+- **Ortak canlı veri gerekirse:** Bu sürümde yok. Google E-Tablolar (Apps Script) ya da Supabase ücretsiz katmanıyla senkron eklenebilir.

@@ -276,54 +276,50 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .demo-note span{flex:1 1 260px;color:var(--ink-2)}
 .demo-note b{color:var(--ink)}
 
-/* ---- Zaman çizelgesi ---- */
+/* ---- Zaman çizelgesi: takvim ve ajanda ---- */
 .tl-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 12px;color:var(--ink-2);font-size:12.5px}
 .tl-legend span{display:inline-flex;align-items:center;gap:7px}
 .tl-legend i{display:inline-block;width:16px;height:10px;border-radius:5px}
 .tl-legend .l-o{background:var(--bad)}
 .tl-legend .l-s{background:var(--warn)}
 .tl-legend .l-k{background:var(--plan)}
-.tl-legend .l-p{border:1.5px dashed var(--plan)}
-.tl-legend .l-w{background:repeating-linear-gradient(135deg,var(--warn-soft) 0 3px,transparent 3px 6px);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--warn) 60%,transparent)}
-.tl-card{overflow:hidden}
-.tl{overflow-x:auto;overscroll-behavior-x:contain}
-.tl-in{position:relative;width:calc(var(--lw) + var(--W))}
-.tl-head{display:flex;border-bottom:1px solid var(--line);background:var(--surface-2)}
-.tl-corner{position:sticky;left:0;z-index:5;flex:none;width:var(--lw);padding:0 14px 7px;display:flex;align-items:flex-end;background:var(--surface-2);border-right:1px solid var(--line);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-.tl-scale{position:relative;flex:none;width:var(--W);height:54px}
-.tl-month{position:absolute;top:0;height:27px;border-left:1px solid var(--line);padding:5px 8px;font-size:12px;font-weight:600;color:var(--ink-2);overflow:hidden;white-space:nowrap}
-.tl-wk{position:absolute;top:32px;transform:translateX(-50%);font:500 11px var(--mono);color:var(--ink-3)}
-.tl-today-tag{position:absolute;bottom:4px;transform:translateX(-50%);padding:1px 8px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:600;z-index:2}
-.tl-body{position:relative}
-.tl-grid{position:absolute;top:0;bottom:0;pointer-events:none;z-index:0}
-.tl-grid i{position:absolute;top:0;bottom:0}
-.g-w{border-left:1px solid var(--line-2)}
-.g-m{border-left:1px solid var(--line)}
-.g-we{background:var(--surface-2);opacity:.7}
-.g-today{border-left:2px solid var(--accent);opacity:.85}
-.tl-row{position:relative;z-index:1;display:flex;border-bottom:1px solid var(--line-2)}
-.tl-row:last-child{border-bottom:0}
-.tl-name{position:sticky;left:0;z-index:4;flex:none;width:var(--lw);display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;background:var(--surface);border-right:1px solid var(--line);cursor:pointer}
-.tl-name:hover{background:var(--surface-2)}
-.tl-name .rk{font:600 12px var(--mono);color:var(--ink-3);width:22px;flex:none}
-.tl-name div{min-width:0;flex:1}
-.tl-name b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
-.tl-name small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tl-name small{color:var(--ink-3);font-family:var(--mono);font-size:11px}
-.tl-lane{position:relative;flex:none;width:var(--W)}
-.tl-mark{--c:var(--plan);--ci:var(--plan-ink);position:absolute;z-index:3;display:flex;align-items:center;gap:6px;height:22px;max-width:150px;padding:0 9px 0 6px;border:1.5px solid var(--c);border-radius:11px;background:var(--c);color:var(--ci);font-size:11.5px;font-weight:600;white-space:nowrap}
-.tl-mark.overdue{--c:var(--bad);--ci:var(--bad-ink)}
-.tl-mark.soon{--c:var(--warn);--ci:var(--warn-ink)}
-.tl-mark i{width:8px;height:8px;border-radius:50%;background:var(--ci);flex:none}
-.tl-mark span{overflow:hidden;text-overflow:ellipsis}
-.tl-mark.proj{background:var(--surface);color:var(--c);border-style:dashed}
-.tl-mark.proj i{background:var(--c)}
-.tl-mark.dot-only{width:16px;height:16px;padding:0;justify-content:center;border-radius:50%;margin-top:3px}
-.tl-mark.dot-only i{width:6px;height:6px}
-.tl-mark:hover{z-index:6;filter:brightness(1.1);box-shadow:0 2px 8px rgba(0,0,0,.25)}
-.tl-lead{position:absolute;z-index:2;height:10px;border-radius:5px;background:repeating-linear-gradient(135deg,var(--warn-soft) 0 3px,transparent 3px 6px);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--warn) 60%,transparent)}
-.tl-lead.over{background:var(--bad-soft);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--bad) 55%,transparent)}
-.tl-none{position:absolute;left:12px;top:12px;color:var(--ink-3);font-size:12px}
+.cal{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+.cal-m{padding:14px}
+.cal-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.cal-h h3{font-size:16px;letter-spacing:-.01em}
+.cal-h small{color:var(--ink-3)}
+.nv{display:flex;gap:6px}
+.cg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cg .dh{padding:7px 4px;background:var(--surface-2);text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.dc{display:flex;flex-direction:column;gap:3px;min-height:100px;padding:6px;background:var(--surface);cursor:pointer;min-width:0;border:0;text-align:left;color:inherit}
+.dc.out{background:var(--bg);opacity:.55}
+.dc:hover{background:var(--surface-2)}
+.dc .n{align-self:flex-start;display:grid;place-items:center;min-width:22px;height:22px;padding:0 4px;border-radius:11px;font:600 12px var(--mono);color:var(--ink-2)}
+.dc.today .n{background:var(--accent);color:var(--accent-ink)}
+.dc.sel{outline:2px solid var(--accent);outline-offset:-2px}
+.ch{display:block;padding:2px 5px;border-radius:5px;font:600 10.5px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch.o{--c:var(--bad);--ci:var(--bad-ink)}
+.ch.s{--c:var(--warn);--ci:var(--warn-ink)}
+.ch.k{--c:var(--plan);--ci:var(--plan-ink)}
+.ch{background:color-mix(in oklab,var(--c) 20%,transparent);color:var(--c)}
+.ch.fi{background:var(--c);color:var(--ci)}
+.dc .more{font:600 10.5px var(--mono);color:var(--ink-3)}
+.dc .more.o{color:var(--bad)}
+.ag{display:grid;gap:12px}
+.ag-b{padding:12px 14px}
+.ag h4{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.ag h4 em{font-style:normal;color:var(--bad)}
+.ag-e{font-size:12.5px}
+.ai{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:7px 4px;border-top:1px solid var(--line-2);cursor:pointer;border-radius:6px}
+.ai:first-of-type{border-top:0}
+.ai:hover{background:var(--surface-2)}
+.ai .ai-t{min-width:0}
+.ai .ai-t b,.ai .ai-t small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai .ai-t b{font-size:12.5px;font-weight:600}
+.ai .ai-t small{color:var(--ink-3);font:500 10.5px var(--mono)}
+.ai-s{padding:2px 8px;border-radius:99px;font:600 10.5px var(--mono);white-space:nowrap;background:var(--plan-soft);color:var(--plan)}
+.ai.overdue .ai-s{background:var(--bad-soft);color:var(--bad)}
+.ai.soon .ai-s{background:var(--warn-soft);color:var(--warn)}
 
 /* ---- Makineler ---- */
 .mlist{overflow:hidden}
@@ -336,7 +332,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .m-score{display:flex;align-items:center;gap:10px}
 .facs{display:inline-flex;align-items:flex-end;gap:3px;height:22px}
 .facs i{display:block;width:5px;border-radius:2px;background:var(--ink-3);opacity:.85}
-.m-score small{font:500 12px var(--mono);color:var(--ink-2)}
+.m-score small{font:500 12px var(--mono);color:var(--ink-2);white-space:nowrap}
 .m-next small{display:block;color:var(--ink-3);margin-top:3px}
 .m-act{display:flex;gap:6px}
 .howto{margin-bottom:14px;padding:14px 16px;font-size:13px;color:var(--ink-2)}
@@ -464,6 +460,19 @@ textarea.code{height:220px;font:12px/1.5 var(--mono)}
 .fc-top{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:center}
 .fc-n{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 12px var(--mono)}
 .lvls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.chk{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.chk h3{margin-bottom:6px}
+.chk-u{margin-top:10px;padding:2px 0;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.chk-r{display:grid;grid-template-columns:minmax(0,1fr) 124px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line-2)}
+.chk-r b{display:block;font-size:12.5px;font-weight:600}
+.chk-r small{color:var(--ink-3);font-size:11px}
+.chk-r select{height:32px;font-size:12.5px}
+.chk-r.bad select{border-color:var(--bad);color:var(--bad)}
+.chk-d{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2)}
+.chk-d summary{cursor:pointer;font-weight:600;font-size:13px}
+.chk-d .mini{margin-top:10px;max-height:240px;overflow:auto}
+.copts{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.optrow{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:8px}
 
 /* ---- Bildirim bandı ve tanı penceresi ---- */
 .notice{position:fixed;top:72px;right:16px;z-index:70;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:start;width:min(390px,calc(100vw - 32px));padding:12px 12px 12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--accent-line);box-shadow:var(--shadow)}
@@ -485,6 +494,7 @@ select option{background:var(--surface);color:var(--ink)}
   .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:1180px){
+  .cal{grid-template-columns:minmax(0,1fr)}
   .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
   .grid-3>:nth-child(3){grid-column:1/-1}
   .grid-3b{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -513,6 +523,9 @@ select option{background:var(--surface);color:var(--ink)}
   .tabbar button{position:relative;flex:1 0 66px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:0;border-radius:8px;background:none;color:var(--side-ink-3);font-size:11px;font-weight:600}
   .tabbar button[aria-current="page"]{color:var(--accent-ink);background:var(--accent)}
   .tabbar .n{position:absolute;top:2px;right:12px;min-width:16px;padding:0 4px;border-radius:99px;background:var(--bad);color:var(--bad-ink);font:600 10px/16px var(--mono)}
+  .dc{min-height:64px;padding:4px}
+  .ch{font-size:9.5px;padding:1px 3px}
+  .cal-m{padding:10px}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .kpi .val{font-size:22px}
   .grid-3,.grid-3b{grid-template-columns:minmax(0,1fr)}
@@ -521,10 +534,6 @@ select option{background:var(--surface);color:var(--ink)}
   .donut{grid-template-columns:128px minmax(0,1fr)}
   .btn.primary .lbl{display:none}
   .btn.primary{padding:0 11px}
-  .tl-name small{display:none}
-  .tl-name{padding:8px 8px 8px 10px;gap:6px}
-  .tl-name .rk{width:18px}
-  .tl-corner{padding:0 10px 7px}
   .mrow{grid-template-columns:34px minmax(0,1fr) auto;gap:8px 12px;padding:14px}
   .mrow .m-score{grid-column:2;grid-row:2}
   .mrow .m-next{grid-column:2/4;grid-row:3}
@@ -564,6 +573,7 @@ select option{background:var(--surface);color:var(--ink)}
   .defrow.cl>.mini-fld:nth-child(3){grid-column:2}
   .defrow.cl>.mini-fld:nth-child(4){grid-column:3}
   .lvls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .copts{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:480px){
   .kv{grid-template-columns:96px minmax(0,1fr)}
@@ -711,13 +721,20 @@ const STLAB={overdue:'Gecikmiş',soon:'Yaklaşıyor',ok:'Planlı'};
 const STORD={overdue:0,soon:1,ok:2};
 const CATS=['Yağlama','Kontrol ve muayene','Filtre ve sarf değişimi','Temizlik','Kalibrasyon','Yasal periyodik kontrol','Genel revizyon','Diğer'];
 const TITLE_SUG=['Yağlama (gresleme noktaları)','Yağ seviyesi ve sızıntı kontrolü','Hava filtresi değişimi','Hidrolik yağ filtresi değişimi','Kayış ve zincir gerginlik kontrolü','Rulman titreşim ölçümü','Emniyet ventili ve basınç kontrolü','Elektrik pano termal kamera taraması','Topraklama ve izolasyon ölçümü','Kalibrasyon (manometre, sensör)','Soğutma sıvısı değişimi','Acil durdurma ve emniyet devreleri testi','Genel temizlik ve görsel kontrol','Yasal periyodik muayene'];
-const FACTORS=[
-  {k:'safety',   t:'Güvenlik ve çevre',  d:'Arıza insan veya çevre için risk doğurur mu?', o:['Risk yok','Küçük risk','Orta','Yüksek','Can güvenliği veya çevre']},
-  {k:'production',t:'Üretime etkisi',    d:'Makine durursa hat ya da sevkiyat ne olur?',    o:['Etkilemez','Küçük aksama','Hat yavaşlar','Hat durur','Tüm tesis durur']},
-  {k:'repair',   t:'Onarım süresi',      d:'Yedek parça ve onarım ne kadar sürer?',          o:['Aynı gün','1-2 gün','Hafta içi','Haftalar','Aylar (parça ithal)']},
-  {k:'backup',   t:'Alternatifsizlik',   d:'Yerine geçecek makine ya da yedek var mı?',      o:['Yedeği hazır','Elle telafi edilir','Kısmi alternatif','Zor alternatif','Alternatifi yok']}
-];
-const FACTORS_DEFAULT=JSON.parse(JSON.stringify(FACTORS));
+/* Rebul ekipman önem seviyesi: "Üretim üzerine etkisi" ile "Bakım ve kalite üzerine etkisi" ayrı puanlanır.
+   Üretim puanı 100 ise A, 75 ise B, aksi halde C. Bakım ve kalite toplamı 75 ve üzeriyse A, 50 ve üzeriyse B, aksi halde C.
+   Sonuç iki seviyenin yüksek olanıdır. */
+const CRIT_DEFAULT={
+  prod:{t:'Üretim üzerine etkisi',opts:[['Tolere edilebilir kapasite düşüşü',25],['Siparişte gecikme',75],['Müşteri sipariş iptali',100]]},
+  mq:[
+    {k:'age',t:'Ekipman yaşı',opts:[['3 yaşından küçük',10],['3 yaşından büyük',15],['6 yaşından büyük',20]]},
+    {k:'parts',t:'Hareketli parça sayısı',opts:[["5'ten az",5],['5-10 arası',10],["10'dan fazla",15]]},
+    {k:'vib',t:'Hız ve vibrasyon',opts:[['Az',5],['Orta',10],['Çok',15]]},
+    {k:'qual',t:'Kalite üzerine etkisi',opts:[['Az',5],['Orta',15],['Çok',30]]},
+    {k:'env',t:'Çevresel koşul (toz, nem, ısı, sıvı)',opts:[['Az',5],['Orta',10],['Çok',20]]}
+  ],
+  cut:{prodA:100,prodB:75,mqA:75,mqB:50}
+};
 const TIPS=[
   {t:'Her makineyi A sınıfı yapma',b:'A sınıfı makineler toplamın yaklaşık beşte biri olmalı. Hepsi kritikse hiçbiri kritik değildir. Ekip öncelik veremez ve gecikmeler kontrolsüz birikir.'},
   {t:'Uyarı süresi, işin hazırlık süresi kadar olmalı',b:'Yedek parça temini, iş emri hazırlığı ve duruş izni toplamı kadar önceden uyarı al. Parçası ithal gelen bir makinede 3 gün önceden gelen uyarı, geç kalmış uyarıdır.'},
@@ -736,7 +753,7 @@ const TIPS=[
    ========================================================= */
 const KEY='planli-bakim.v1';
 let S=null,memOnly=false;
-const UI={q:'',st:'all',m:'all',sort:'prio',period:90,area:'all',cls:'all'};
+const UI={q:'',st:'all',m:'all',sort:'prio',period:90,area:'all',cls:'all',calMode:'roll',tlLine:'all',selD:null,calR:null,calM:null};
 let route='genel';
 
 const defaults=()=>({lead:{A:14,B:7,C:3},theme:'dark',target:90,ui:2,notify:false,lastNotify:{},tlZoom:'ay3',tlClass:'all',showProj:true});
@@ -751,25 +768,36 @@ function normalizeDefs(d,machines,tasks){
   uniq(tasks.map(t=>t.cat)).forEach(c=>{if(cats.indexOf(c)<0)cats.push(c);});
   const owners=Array.isArray(d.owners)?d.owners.map(String):[];
   uniq(tasks.map(t=>t.owner)).forEach(o=>{if(owners.indexOf(o)<0)owners.push(o);});
-  const factors=FACTORS_DEFAULT.map(f=>{
-    const s=Array.isArray(d.factors)?d.factors.find(x=>x&&x.k===f.k):null;
-    return {k:f.k,t:s&&s.t?String(s.t):f.t,d:s&&s.d?String(s.d):f.d,o:f.o.map((x,j)=>s&&Array.isArray(s.o)&&s.o[j]?String(s.o[j]):x)};
+  const dc=d.crit||{};
+  const optsOf=(s,f)=>f.opts.map((o,j)=>{
+    const so=s&&Array.isArray(s.opts)?s.opts[j]:null;
+    return [so&&so[0]?String(so[0]):o[0],so&&isFinite(+so[1])?Math.max(0,Math.round(+so[1])):o[1]];
   });
-  const cut=Object.assign({A:15,B:10},d.cut||{});
-  cut.A=Math.min(20,Math.max(6,Math.round(+cut.A)||15));
-  cut.B=Math.min(cut.A-1,Math.max(5,Math.round(+cut.B)||10));
+  const crit={
+    prod:{t:dc.prod&&dc.prod.t?String(dc.prod.t):CRIT_DEFAULT.prod.t,opts:optsOf(dc.prod,CRIT_DEFAULT.prod)},
+    mq:CRIT_DEFAULT.mq.map(f=>{const s=Array.isArray(dc.mq)?dc.mq.find(x=>x&&x.k===f.k):null;return {k:f.k,t:s&&s.t?String(s.t):f.t,opts:optsOf(s,f)};}),
+    cut:Object.assign({},CRIT_DEFAULT.cut,dc.cut||{})
+  };
+  ['prodA','prodB','mqA','mqB'].forEach(k=>{crit.cut[k]=Math.max(1,Math.round(+crit.cut[k])||CRIT_DEFAULT.cut[k]);});
+  if(crit.cut.prodB>=crit.cut.prodA)crit.cut.prodB=Math.max(1,crit.cut.prodA-1);
+  if(crit.cut.mqB>=crit.cut.mqA)crit.cut.mqB=Math.max(1,crit.cut.mqA-1);
   const clsName=Object.assign({A:'Kritik',B:'Önemli',C:'Normal'},d.clsName||{});
-  return {lines:lines,cats:cats,owners:owners,factors:factors,cut:cut,clsName:clsName};
+  return {lines:lines,cats:cats,owners:owners,crit:crit,clsName:clsName};
 }
-function applyDefs(){
-  S.defs.factors.forEach((f,i)=>{if(FACTORS[i])Object.assign(FACTORS[i],{t:f.t,d:f.d,o:f.o.slice()});});
-}
+let _rk=null,_rkMap=null;
+function applyDefs(){_rk=null;_rkMap=null;}
+/* Eski kayıtlardaki dört faktörlü puanı Rebul kriterlerine yaklaşık çevirir. */
+const legacyCrit=m=>{
+  const p=+m.production||3,r=+m.repair||3,s=+m.safety||3;
+  return {prod:p>=5?100:p>=3?75:25,age:15,parts:10,vib:r>=4?15:r>=3?10:5,qual:s>=5?30:s>=3?15:5,env:10};
+};
 function normalize(o){
   o=o||{};
   const s=Object.assign(defaults(),o.settings||{});
   s.lead=Object.assign({A:14,B:7,C:3},s.lead||{});
   s.lastNotify=s.lastNotify||{};
   const machines=Array.isArray(o.machines)?o.machines:[],tasks=Array.isArray(o.tasks)?o.tasks:[];
+  machines.forEach(m=>{if(!m.c||typeof m.c!=='object')m.c=legacyCrit(m);});
   return {v:1,demo:!!o.demo,machines:machines,tasks:tasks,history:Array.isArray(o.history)?o.history:[],settings:s,defs:normalizeDefs(o.defs,machines,tasks)};
 }
 function save(){
@@ -795,11 +823,19 @@ function load(){
    Hesaplamalar
    ========================================================= */
 const mById=id=>S.machines.find(m=>m.id===id);
-const score=m=>(+m.safety||1)+(+m.production||1)+(+m.repair||1)+(+m.backup||1);
-const klass=m=>{const s=score(m),c=S.defs.cut;return s>=c.A?'A':s>=c.B?'B':'C';};
+const CO={A:0,B:1,C:2};
+const prodPts=m=>(m.c&&+m.c.prod)||0;
+const mqPts=m=>S.defs.crit.mq.reduce((a,f)=>a+((m.c&&+m.c[f.k])||0),0);
+const lvl=(p,a,b)=>p>=a?'A':p>=b?'B':'C';
+const prodLvl=m=>lvl(prodPts(m),S.defs.crit.cut.prodA,S.defs.crit.cut.prodB);
+const mqLvl=m=>lvl(mqPts(m),S.defs.crit.cut.mqA,S.defs.crit.cut.mqB);
+const klass=m=>{const a=prodLvl(m),b=mqLvl(m);return a<b?a:b;};
+const critText=m=>prodPts(m)+' + '+mqPts(m);
+const critRule=()=>{const c=S.defs.crit.cut;return 'Önem seviyesi iki ayrı puanla belirlenir. <b>Üretim üzerine etkisi</b> '+c.prodA+' puansa A, '+c.prodB+' puansa B, altı C. <b>Bakım ve kalite etkisi</b> (ekipman yaşı, hareketli parça, hız ve vibrasyon, kalite, çevre) toplamı '+c.mqA+' ve üzeriyse A, '+c.mqB+' ve üzeriyse B, altı C. Makinenin sınıfı bu ikisinden yüksek olanıdır.';};
 const lineImp=name=>{const l=S.defs.lines.find(x=>x.name===name);return l?l.imp:3;};
-const ranked=()=>S.machines.slice().sort((a,b)=>score(b)-score(a)||lineImp(b.area)-lineImp(a.area)||a.name.localeCompare(b.name,'tr'));
-const rankOf=id=>ranked().findIndex(m=>m.id===id)+1;
+const cmpImp=(a,b)=>CO[klass(a)]-CO[klass(b)]||prodPts(b)-prodPts(a)||mqPts(b)-mqPts(a)||lineImp(b.area)-lineImp(a.area)||a.name.localeCompare(b.name,'tr');
+const ranked=()=>_rk||(_rk=S.machines.slice().sort(cmpImp));
+const rankOf=id=>{if(!_rkMap){_rkMap={};ranked().forEach((m,i)=>{_rkMap[m.id]=i+1;});}return _rkMap[id]||0;};
 const everyOf=t=>Math.max(1,Math.floor(Number(t.every))||1);
 function leadOf(t){
   if(t.lead!==null&&t.lead!==undefined&&t.lead!==''&&!isNaN(+t.lead))return Math.max(0,+t.lead);
@@ -818,7 +854,7 @@ function enriched(){
   S.tasks.forEach(t=>{const m=mById(t.machineId);if(m)out.push({t,m,i:info(t)});});
   return out;
 }
-const prio=(a,b)=>STORD[a.i.st]-STORD[b.i.st]||score(b.m)-score(a.m)||a.i.left-b.i.left;
+const prio=(a,b)=>STORD[a.i.st]-STORD[b.i.st]||cmpImp(a.m,b.m)||a.i.left-b.i.left;
 function nextDue(t,doneD){
   const every=everyOf(t);
   if(t.mode==='after')return shift(doneD,every,t.unit);
@@ -828,11 +864,11 @@ function nextDue(t,doneD){
   return nd;
 }
 const ensureOwner=n=>{if(n&&S.defs.owners.indexOf(n)<0)S.defs.owners.push(n);};
-function complete(taskId,doneISO,by,note){
+function complete(taskId,doneISO,by,note,chk){
   const t=S.tasks.find(x=>x.id===taskId);
   if(!t)return null;
   const m=mById(t.machineId);
-  S.history.unshift({id:uid(),taskId:t.id,machineId:t.machineId,tag:m?m.tag:'',mname:m?m.name:'',title:t.title,due:t.due,done:doneISO,by:by||'',note:note||''});
+  S.history.unshift({id:uid(),taskId:t.id,machineId:t.machineId,tag:m?m.tag:'',mname:m?m.name:'',title:t.title,due:t.due,done:doneISO,by:by||'',note:note||'',chk:chk||null});
   const nd=nextDue(t,parseD(doneISO));
   t.due=iso(nd);
   if(by){t.owner=by;ensureOwner(by);}
@@ -860,7 +896,7 @@ function alertItems(){return enriched().filter(x=>x.i.st!=='ok').sort(prio);}
 function demo(){
   const T=today();
   const dd=n=>iso(addDays(T,n));
-  const M=(tag,name,area,s,p,r,b)=>({id:uid(),tag,name,area,safety:s,production:p,repair:r,backup:b,notes:''});
+  const M=(tag,name,area,s,p,r,b)=>({id:uid(),tag,name,area,brand:'',c:legacyCrit({safety:s,production:p,repair:r}),notes:''});
   const m={
     hpr:M('HPR-01','Hidrolik Pres 400 Ton','Pres Atölyesi',5,5,4,4),
     cnc:M('CNC-03','CNC Torna Merkezi','Talaşlı İmalat',3,5,4,3),
@@ -1043,7 +1079,8 @@ function vGenel(){
   const in7=E.filter(e=>e.i.left>=0&&e.i.left<=7).length;
   let hrs30=0,cnt30=0;const wk=[0,0,0,0,0];
   E.forEach(e=>{occs(e.t,addDays(T0,35)).forEach(d=>{const k=diff(d<T0?T0:d,T0),h=+e.t.hours||0;if(k<=30){hrs30+=h;cnt30++;}if(k<35)wk[Math.floor(k/7)]+=h;});});
-  const Am=c.ms.filter(m=>klass(m)==='A');
+  const topK=c.ms.some(m=>klass(m)==='A')?'A':'B';
+  const Am=c.ms.filter(m=>klass(m)===topK);
   const hA=Am.filter(m=>!E.some(e=>e.t.machineId===m.id&&e.i.st!=='ok'));
   const aPct=Am.length?Math.round(hA.length/Am.length*100):null;
   const kpis=kpi('PM uyum oranı',c.comp?'%'+c.comp.pct:'-',(c.comp?c.comp.ontime+' / '+c.comp.n+' zamanında':'son '+c.P+' gün: veri yok')+dl(c.dRate,' puan'),ring(c.comp?c.comp.pct:0,compColor,54,c.comp?c.comp.pct:'-','PM uyum oranı'))
@@ -1051,7 +1088,7 @@ function vGenel(){
     +kpi('Yaklaşan bakım',c.soon.length,'7 gün içinde: '+in7+' iş',ic('clock'),c.soon.length?'warn':'')
     +kpi('30 günlük iş yükü',nfH(hrs30)+'<small>sa</small>',cnt30+' iş emri',spark(wk))
     +kpi('Tamamlanan ('+c.P+' gün)',c.cur.length,'zamanında: '+c.cur.filter(h=>h.done<=h.due).length+dl(c.dCount,'%'),ic('check'))
-    +kpi('Kritik (A) makine sağlığı',aPct==null?'-':hA.length+' / '+Am.length,aPct==null?'A sınıfı makine yok':'gecikme ve uyarısı olmayan',ring(aPct||0,aPct==null?'var(--ink-3)':aPct>=80?'var(--good)':aPct>=50?'var(--warn)':'var(--bad)',54,aPct==null?'-':aPct,'A sınıfı sağlık'));
+    +kpi(topK==='A'?'Kritik (A) makine sağlığı':'Önemli (B) makine sağlığı',aPct==null?'-':hA.length+' / '+Am.length,aPct==null?topK+' sınıfı makine yok':'gecikme ve uyarısı olmayan',ring(aPct||0,aPct==null?'var(--ink-3)':aPct>=80?'var(--good)':aPct>=50?'var(--warn)':'var(--bad)',54,aPct==null?'-':aPct,topK+' sınıfı sağlık'));
   /* --- Bölüme göre yük --- */
   const by={};
   E.forEach(e=>{const a=c.area(e.m);(by[a]=by[a]||{o:0,s:0,k:0})[e.i.st==='overdue'?'o':e.i.st==='soon'?'s':'k']++;});
@@ -1086,7 +1123,7 @@ function vGenel(){
     const col=pc==null?'var(--ink-3)':pc>=tg?'var(--good)':pc>=tg-10?'var(--warn)':'var(--bad)';
     const nx=l[0];
     return '<tr data-act="edit-machine" data-id="'+m.id+'" tabindex="0"><td class="rk">'+(i+1)+'</td><td class="nm"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+'</small></td>'
-      +'<td><div class="cl">'+clsB(klass(m))+score(m)+'</div></td><td class="r">'+l.length+'</td>'
+      +'<td><div class="cl">'+clsB(klass(m))+critText(m)+'</div></td><td class="r">'+l.length+'</td>'
       +'<td class="r" style="color:'+(ov.length?'var(--bad)':'var(--ink-3)')+'">'+(ov.length||'-')+'</td>'
       +'<td class="dn '+(nx?nx.i.st:'')+'">'+(nx?dueText(nx.i.left)+'<small>'+fmtShort(nx.i.due)+'</small>':'-')+'</td>'
       +'<td>'+(pc==null?'<span class="faint">-</span>':'<div class="pc" style="--c:'+col+';--w:'+pc+'%"><span>%'+pc+'</span><i></i></div>')+'</td></tr>';
@@ -1130,83 +1167,62 @@ function vGenel(){
 }
 
 /* =========================================================
-   Görünüm: Zaman çizelgesi
+   Görünüm: Zaman çizelgesi (takvim ve ajanda)
    ========================================================= */
-const ZOOM={hf:{label:'6 hafta',dayW:28,ahead:42},ay3:{label:'3 ay',dayW:15,ahead:90},ay6:{label:'6 ay',dayW:8,ahead:180}};
+const mondayOf=d=>addDays(d,-((d.getDay()+6)%7));
+const CAL_DOW=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
 function vZaman(){
-  const z=ZOOM[S.settings.tlZoom]||ZOOM.ay3;
-  const back=14,total=back+z.ahead,dw=z.dayW,W=total*dw;
-  const start=addDays(today(),-back);
-  const todayX=back*dw+dw/2;
-  const showLbl=dw>=15;
-  let mon='',wk='',grid='';
-  for(let d=new Date(start);diff(d,start)<total;){
-    const nx=new Date(d.getFullYear(),d.getMonth()+1,1);
-    const a=diff(d,start),b=Math.min(total,diff(nx,start));
-    mon+='<div class="tl-month" style="left:'+a*dw+'px;width:'+(b-a)*dw+'px">'+MONTHS[d.getMonth()]+' '+d.getFullYear()+'</div>';
-    if(a>0)grid+='<i class="g-m" style="left:'+a*dw+'px"></i>';
-    d=nx;
+  const T0=today(),roll=UI.calMode!=='month';
+  const cf=S.settings.tlClass,lf=UI.tlLine||'all';
+  const pass=m=>(cf==='all'||klass(m)===cf)&&(lf==='all'||(m.area||'Diğer')===lf);
+  const E=enriched().filter(x=>pass(x.m));
+  if(!S.machines.length)return '<div class="card">'+empty('Takvimde gösterilecek bakım yok','Önce makine ve bakım planı ekle.')+'</div>';
+  let gs,weeks,title;
+  if(roll){
+    if(!UI.calR)UI.calR=mondayOf(T0);
+    gs=UI.calR;weeks=5;title=fmtShort(gs)+' - '+fmtDate(addDays(gs,34));
+  }else{
+    if(!UI.calM)UI.calM=new Date(T0.getFullYear(),T0.getMonth(),1);
+    const first=UI.calM;
+    gs=mondayOf(first);
+    weeks=Math.ceil((((first.getDay()+6)%7)+new Date(first.getFullYear(),first.getMonth()+1,0).getDate())/7);
+    title=MONTHS[first.getMonth()]+' '+first.getFullYear();
   }
-  for(let i=0;i<total;i++){
-    const d=addDays(start,i),dow=d.getDay();
-    if(dow===1){grid+='<i class="g-w" style="left:'+i*dw+'px"></i>';if(showLbl)wk+='<span class="tl-wk" style="left:'+(i*dw+dw/2)+'px">'+d.getDate()+'</span>';}
-    if(showLbl&&(dow===0||dow===6))grid+='<i class="g-we" style="left:'+i*dw+'px;width:'+dw+'px"></i>';
+  const ge=addDays(gs,weeks*7-1),by={};
+  E.forEach(x=>occs(x.t,ge).forEach((d,k)=>{
+    if(d<gs)return;
+    const key=iso(d);(by[key]=by[key]||[]).push({x:x,d:d,first:k===0,st:k===0?x.i.st:'ok'});
+  }));
+  Object.keys(by).forEach(k=>by[k].sort((a,b)=>cmpImp(a.x.m,b.x.m)));
+  const selK=UI.selD||iso(T0),narrow=window.innerWidth<860,maxChips=narrow?2:3;
+  let g='';
+  CAL_DOW.forEach(n=>{g+='<div class="dh">'+n+'</div>';});
+  for(let i=0;i<weeks*7;i++){
+    const d=addDays(gs,i),k=iso(d),l=by[k]||[];
+    const out=!roll&&d.getMonth()!==UI.calM.getMonth();
+    const lab=(roll&&(i===0||d.getDate()===1))?d.getDate()+' '+MON_S[d.getMonth()]:d.getDate();
+    const sev=l.some(o=>o.st==='overdue')?'o':l.some(o=>o.st==='soon')?'s':'k';
+    g+='<button type="button" class="dc'+(out?' out':'')+(k===iso(T0)?' today':'')+(k===selK?' sel':'')+'" data-act="cal-day" data-d="'+k+'" aria-label="'+d.getDate()+' '+MONTHS[d.getMonth()]+', '+l.length+' bakım"><span class="n">'+lab+'</span>'
+      +l.slice(0,maxChips).map(o=>'<span class="ch '+(o.st==='overdue'?'o':o.st==='soon'?'s':'k')+(o.first?' fi':'')+'">'+esc(o.x.m.tag)+'</span>').join('')
+      +(l.length>maxChips?'<span class="more'+(sev==='o'?' o':'')+'">+'+(l.length-maxChips)+' daha</span>':'')+'</button>';
   }
-  const cf=S.settings.tlClass;
-  const list=ranked().filter(m=>cf==='all'||klass(m)===cf);
-  const rows=list.map(m=>{
-    const rk=rankOf(m.id);
-    const ev=[];
-    S.tasks.filter(t=>t.machineId===m.id).forEach(t=>{
-      const i=info(t),every=everyOf(t);
-      const approx=t.unit==='gun'?every:t.unit==='hafta'?7*every:t.unit==='ay'?30*every:365*every;
-      ev.push({t:t,i:i,idx:diff(i.due,start),proj:false,date:i.due});
-      if(S.settings.showProj&&approx>=7){
-        for(let k=1;k<400;k++){
-          const dt=shift(i.due,every*k,t.unit,anchorOf(t)),idx=diff(dt,start);
-          if(idx>=total)break;
-          if(idx<0)continue;
-          ev.push({t:t,i:Object.assign({},i,{st:'ok'}),idx:idx,proj:true,date:dt,freq:approx});
-        }
-      }
-    });
-    const vis=ev.filter(e=>e.idx<total).sort((a,b)=>Math.max(a.idx,0)-Math.max(b.idx,0));
-    const lanes=[];let marks='',bars='';
-    vis.forEach(e=>{
-      const cx=Math.max(0,e.idx)*dw+dw/2;
-      const left=Math.max(0,cx-8);
-      const lbl=showLbl&&!(e.proj&&e.freq<=14);
-      const wpx=lbl?Math.min(150,34+e.t.title.length*6.3):16;
-      let L=lanes.findIndex(end=>end<=left-4);
-      if(L<0){L=lanes.length;lanes.push(0);}
-      lanes[L]=left+wpx;
-      const y=8+L*28;
-      if(!e.proj){
-        if(e.i.st==='overdue'){
-          if(todayX-cx>2)bars+='<i class="tl-lead over" style="left:'+cx+'px;width:'+(todayX-cx)+'px;top:'+(y+6)+'px"></i>';
-        }else{
-          const a=Math.max(0,(e.idx-e.i.lead)*dw+dw/2);
-          if(cx-a>2)bars+='<i class="tl-lead" style="left:'+a+'px;width:'+(cx-a)+'px;top:'+(y+6)+'px"></i>';
-        }
-      }
-      const tip=m.tag+' · '+e.t.title+' · '+fmtDate(e.date)+(e.proj?' (öngörülen)':e.i.st==='overdue'?' · '+dueText(e.i.left):'');
-      marks+='<button type="button" class="tl-mark '+e.i.st+(e.proj?' proj':'')+(lbl?'':' dot-only')+'" data-act="open-task" data-id="'+e.t.id+'" style="left:'+left+'px;top:'+y+'px" title="'+esc(tip)+'" aria-label="'+esc(tip)+'"><i></i>'+(lbl?'<span>'+esc(e.t.title)+'</span>':'')+'</button>';
-    });
-    const h=Math.max(1,lanes.length)*28+14;
-    return '<div class="tl-row"><div class="tl-name" data-act="edit-machine" data-id="'+m.id+'" title="Makineyi düzenle"><span class="rk">#'+rk+'</span><div><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+'</small></div>'+clsB(klass(m))+'</div>'
-      +'<div class="tl-lane" style="height:'+h+'px">'+bars+marks+(vis.length?'':'<span class="tl-none">Plan yok</span>')+'</div></div>';
-  }).join('');
+  const over=E.filter(x=>x.i.st==='overdue').sort(prio);
+  const sel=(by[selK]||[]);
+  const hrs=sel.reduce((a,o)=>a+(+o.x.t.hours||0),0);
+  const sd=parseD(selK);
+  const item=(x,txt,st,canDone)=>'<div class="ai '+st+'" data-act="open-task" data-id="'+x.t.id+'" tabindex="0"><div class="ai-t"><b>'+esc(x.t.title)+'</b><small>'+esc(x.m.tag)+' · '+esc(x.m.name)+'</small></div><span class="ai-s">'+txt+'</span>'+(canDone?'<button type="button" class="btn sm done" data-act="done" data-id="'+x.t.id+'" aria-label="Yapıldı olarak işaretle">'+ic('check')+'</button>':'')+'</div>';
+  const lineNames=Array.from(new Set(S.machines.map(m=>m.area||'Diğer'))).sort((a,b)=>a.localeCompare(b,'tr'));
   const controls='<div class="toolbar">'
-    +seg('tl-zoom',Object.keys(ZOOM).map(k=>[k,ZOOM[k].label]),S.settings.tlZoom)
-    +seg('tl-class',[['all','Tümü'],['A','A'],['B','B'],['C','C']],S.settings.tlClass)
-    +'<button type="button" class="chip" data-act="tl-proj" aria-pressed="'+!!S.settings.showProj+'">Öngörülen tekrarlar</button>'
-    +'</div>';
-  const legend='<div class="tl-legend"><span><i class="l-o"></i>Gecikmiş</span><span><i class="l-s"></i>Yaklaşıyor</span><span><i class="l-k"></i>Planlı</span><span><i class="l-p"></i>Öngörülen tekrar</span><span><i class="l-w"></i>Uyarı penceresi</span></div>';
-  if(!list.length)return controls+'<div class="card">'+empty('Gösterilecek makine yok',S.machines.length?'Bu sınıfta makine yok.':'Önce makine ve bakım planı ekle.')+'</div>';
-  return controls+legend+'<div class="card tl-card"><div class="tl" id="tl"><div class="tl-in" style="--W:'+W+'px">'
-    +'<div class="tl-head"><div class="tl-corner">Makine · önem sırası</div><div class="tl-scale">'+mon+wk+'<span class="tl-today-tag" style="left:'+todayX+'px">Bugün</span></div></div>'
-    +'<div class="tl-body"><div class="tl-grid" style="left:var(--lw);width:'+W+'px">'+grid+'<i class="g-today" style="left:'+todayX+'px"></i></div>'+rows+'</div>'
-    +'</div></div></div>';
+    +seg('tl-class',[['all','Tümü'],['A','A'],['B','B'],['C','C']],cf)
+    +'<label class="sel"><span>Hat</span><select id="tlLine" aria-label="Hat">'+[['all','Tümü']].concat(lineNames.map(a=>[a,a])).map(o=>'<option value="'+esc(o[0])+'"'+(lf===o[0]?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select></label>'
+    +seg('cal-mode',[['roll','5 hafta'],['month','Ay']],roll?'roll':'month')
+    +'<span class="grow"></span><div class="nv"><button type="button" class="btn sm" data-act="cal-nav" data-v="-1" aria-label="Geri">‹</button><button type="button" class="btn sm" data-act="cal-nav" data-v="0">Bugün</button><button type="button" class="btn sm" data-act="cal-nav" data-v="1" aria-label="İleri">›</button></div></div>';
+  const legend='<div class="tl-legend"><span><i class="l-o"></i>Gecikmiş</span><span><i class="l-s"></i>Yaklaşıyor</span><span><i class="l-k"></i>Planlı</span><span>Dolu etiket: planlanan ilk bakım, soluk etiket: sonraki tekrar</span></div>';
+  return controls+legend+'<div class="cal"><div class="card cal-m"><div class="cal-h"><h3>'+title+'</h3><small>'+E.length+' plan</small></div><div class="cg">'+g+'</div></div>'
+    +'<div class="ag"><section class="card ag-b"><h4><em>Gecikmiş</em> · '+over.length+' iş</h4>'
+      +(over.length?over.slice(0,6).map(x=>item(x,(-x.i.left)+' gün','overdue',true)).join('')+(over.length>6?'<button type="button" class="btn sm ghost" data-act="go" data-r="planlar" style="margin-top:6px">Tümünü gör ('+over.length+')</button>':''):'<p class="faint ag-e">Gecikmiş iş yok.</p>')+'</section>'
+    +'<section class="card ag-b"><h4>'+sd.getDate()+' '+MONTHS[sd.getMonth()]+' '+DOW[sd.getDay()]+(sel.length?' · '+sel.length+' iş'+(hrs?' · '+nfH(hrs)+' sa':''):'')+'</h4>'
+      +(sel.length?sel.slice(0,40).map(o=>item(o.x,o.first?dueText(diff(o.d,T0)):'tekrar',o.st,o.first)).join('')+(sel.length>40?'<p class="faint ag-e">+'+(sel.length-40)+' iş daha</p>':''):'<p class="faint ag-e">Bu gün planlı bakım yok.</p>')+'</section></div></div>';
 }
 
 /* =========================================================
@@ -1217,15 +1233,16 @@ function vMakineler(){
   const rows=R.map((m,i)=>{
     const l=E.filter(x=>x.t.machineId===m.id).sort((a,b)=>a.i.left-b.i.left);
     const nx=l[0];
-    const facs=FACTORS.map(f=>'<i title="'+f.t+': '+(m[f.k]||1)+'/5" style="height:'+(m[f.k]||1)*20+'%"></i>').join('');
+    const crit=[{k:'prod',t:S.defs.crit.prod.t,opts:S.defs.crit.prod.opts}].concat(S.defs.crit.mq);
+    const facs=crit.map(f=>{const mx=Math.max.apply(null,f.opts.map(o=>o[1]).concat([1])),v=(m.c&&+m.c[f.k])||0;return '<i title="'+esc(f.t)+': '+v+' puan" style="height:'+Math.max(8,v/mx*100)+'%"></i>';}).join('');
     return '<div class="mrow"><div class="big">'+(i+1)+'</div>'
-      +'<div class="m-name"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+(m.area?' · '+esc(m.area):'')+' · '+l.length+' plan</small></div>'
-      +'<div class="m-score">'+clsB(klass(m))+'<span class="facs" aria-hidden="true">'+facs+'</span><small>'+score(m)+'/20</small></div>'
+      +'<div class="m-name"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+(m.brand?' · '+esc(m.brand):'')+(m.area?' · '+esc(m.area):'')+' · '+l.length+' plan</small></div>'
+      +'<div class="m-score">'+clsB(klass(m))+'<span class="facs" aria-hidden="true">'+facs+'</span><small title="Üretim etkisi + bakım ve kalite etkisi">'+critText(m)+'</small></div>'
       +'<div class="m-next">'+(nx?pill(nx.i.st)+'<small>'+esc(nx.t.title)+' · '+fmtShort(nx.i.due)+'</small>':'<span class="faint">Henüz plan yok</span>')+'</div>'
       +'<div class="m-act"><button class="btn sm" data-act="new-task" data-m="'+m.id+'">'+ic('plus')+'Plan</button><button class="btn sm" data-act="edit-machine" data-id="'+m.id+'">'+ic('edit')+'Düzenle</button></div></div>';
   }).join('');
   return '<div class="toolbar"><button class="btn primary" data-act="new-machine">'+ic('plus')+'Makine ekle</button></div>'
-    +'<div class="card howto">Sıralama dört faktörün toplamına göre yapılır: <b>güvenlik, üretime etki, onarım süresi, alternatifsizlik</b>. Her biri 1-5 puandır. Toplam <b>'+S.defs.cut.A+' ve üzeri A</b>, <b>'+S.defs.cut.B+'-'+(S.defs.cut.A-1)+' B</b>, altı <b>C</b> sınıfıdır. Eşikleri, hatları ve faktörleri Ayarlar sayfasından değiştirebilirsin. Uyarı süreleri sınıfa göre otomatik belirlenir.</div>'
+    +'<div class="card howto">'+critRule()+' Puanları, eşikleri ve hatları Ayarlar sayfasından değiştirebilirsin. Uyarı süreleri sınıfa göre otomatik belirlenir.</div>'
     +'<div class="card mlist">'+(rows||empty('Henüz makine yok','Makine ekleyerek başla. Her makine için önem puanı girersin.'))+'</div>';
 }
 
@@ -1286,7 +1303,7 @@ function vGecmis(){
       +'<div><b>'+esc(h.mname||'-')+'</b><small class="mono">'+esc(h.tag||'')+'</small></div>'
       +'<div><b>'+esc(h.title)+'</b><small>Planlanan: '+fmtDate(parseD(h.due))+'</small></div>'
       +'<div>'+(l<=0?'<span class="pill good">Zamanında</span>':'<span class="pill soon">'+l+' gün geç</span>')+'</div>'
-      +'<div><b>'+esc(h.by||'-')+'</b><small>'+esc(h.note||'')+'</small></div></div>';
+      +'<div><b>'+esc(h.by||'-')+'</b><small>'+esc((h.chk?h.chk.ok+'/'+h.chk.n+' madde uygun. ':'')+(h.note||''))+'</small></div></div>';
   }).join('');
   return '<div class="hsum"><div class="card stat"><small>Son 90 günde tamamlanan</small><b>'+d90.length+'</b></div>'
     +'<div class="card stat '+(pct==null?'':pct>=90?'good':pct>=75?'warn':'bad')+'"><small>Zamanında tamamlama</small><b>'+(pct==null?'-':'%'+pct)+'</b></div>'
@@ -1306,12 +1323,12 @@ function vRehber(){
     +step('Uyarıları aç','Ayarlar sayfasından tarayıcı bildirimlerini aç ve takvim dosyasını telefonuna ekle. Uygulama kapalıyken seni uyaran takvimdir.')
     +step('Haftada bir "Önce bunlara bak" listesini gözden geçir','Gecikmiş ve yaklaşanları sorumlulara dağıt, yapılanları işaretle, bulguları nota yaz.')
   +'</ol></section>'
-  +'<section class="card"><h2>Makine önemi nasıl belirlenir</h2><p class="lead">Önem, makinenin ne kadar değerli olduğu değil, bozulduğunda ne kadar acıttığıdır. Dört soruya 1-5 puan ver, toplamı sınıfı belirler.</p>'
-    +'<div class="factors">'+FACTORS.map(f=>'<div><b>'+f.t+'</b><span>'+f.d+'</span></div>').join('')+'</div>'
-    +'<div class="tbl"><table><thead><tr><th>Sınıf</th><th>Puan</th><th>Uyarı</th><th>Uyum hedefi</th><th>Yaklaşım</th></tr></thead><tbody>'
-    +'<tr><td>'+clsB('A')+'</td><td>'+S.defs.cut.A+'-20</td><td>14-21 gün</td><td>%95 ve üzeri</td><td>Önleyici bakım ve durum izleme (titreşim, sıcaklık, basınç). Kritik yedek parça stokta tutulur.</td></tr>'
-    +'<tr><td>'+clsB('B')+'</td><td>'+S.defs.cut.B+'-'+(S.defs.cut.A-1)+'</td><td>7-10 gün</td><td>%90 ve üzeri</td><td>Takvimli önleyici bakım. Yedek parça ihtiyaç doğunca sipariş edilir.</td></tr>'
-    +'<tr><td>'+clsB('C')+'</td><td>4-'+(S.defs.cut.B-1)+'</td><td>3-5 gün</td><td>%80 ve üzeri</td><td>Basit rutin kontrol ve temizlik. Bozulunca onarmak çoğu zaman daha ucuzdur.</td></tr>'
+  +'<section class="card"><h2>Makine önemi nasıl belirlenir</h2><p class="lead">Önem, makinenin ne kadar değerli olduğu değil, bozulduğunda ne kadar acıttığıdır. '+critRule()+'</p>'
+    +'<div class="factors">'+[{t:S.defs.crit.prod.t,opts:S.defs.crit.prod.opts}].concat(S.defs.crit.mq).map(f=>'<div><b>'+esc(f.t)+'</b><span>'+f.opts.map(o=>esc(o[0])+' ('+o[1]+')').join(' · ')+'</span></div>').join('')+'</div>'
+    +'<div class="tbl"><table><thead><tr><th>Sınıf</th><th>Ad</th><th>Uyarı</th><th>Uyum hedefi</th><th>Yaklaşım</th></tr></thead><tbody>'
+    +'<tr><td>'+clsB('A')+'</td><td>'+esc(S.defs.clsName.A)+'</td><td>14-21 gün</td><td>%95 ve üzeri</td><td>Önleyici bakım ve durum izleme (titreşim, sıcaklık, basınç). Kritik yedek parça stokta tutulur.</td></tr>'
+    +'<tr><td>'+clsB('B')+'</td><td>'+esc(S.defs.clsName.B)+'</td><td>7-10 gün</td><td>%90 ve üzeri</td><td>Takvimli önleyici bakım. Yedek parça ihtiyaç doğunca sipariş edilir.</td></tr>'
+    +'<tr><td>'+clsB('C')+'</td><td>'+esc(S.defs.clsName.C)+'</td><td>3-5 gün</td><td>%80 ve üzeri</td><td>Basit rutin kontrol ve temizlik. Bozulunca onarmak çoğu zaman daha ucuzdur.</td></tr>'
     +'</tbody></table></div>'
     +'<p style="margin-top:12px">Uygulamanın varsayılan uyarı süreleri 14, 7 ve 3 gündür. Ayarlar sayfasından kendi fabrikana göre değiştirebilirsin.</p></section>'
   +'<section class="card"><h2>Sabit takvim mi, yapıldığı tarihten mi?</h2><p class="lead">Her planda bu seçimi yaparsın. Yanlış seçim, planın zamanla gerçeğe uymamasına yol açar.</p>'
@@ -1360,27 +1377,28 @@ function sHatlar(){
 function sMakineler(){
   const rows=ranked().map((m,i)=>'<div class="defrow m"><span class="rk">'+(i+1)+'</span><div class="mn"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+'</small></div>'
     +'<select data-def="machine-line" data-id="'+m.id+'" aria-label="'+esc(m.name)+' hattı"><option value="">Hat atanmamış</option>'+lineOpts(m.area||'')+'</select>'
-    +'<span class="cls-wrap">'+clsB(klass(m))+score(m)+'/20</span>'
+    +'<span class="cls-wrap">'+clsB(klass(m))+critText(m)+'</span>'
     +'<button type="button" class="btn sm" data-act="edit-machine" data-id="'+m.id+'">'+ic('edit')+'Düzenle</button></div>').join('');
-  return '<section class="card"><h2>Makineler</h2><p class="sub">Makineleri ekle, hatlara bağla ve önem puanlarını düzenle. Sıra; önem puanına, eşit puanda ise hat önemine göre kendiliğinden belirlenir.</p>'
+  return '<section class="card"><h2>Makineler</h2><p class="sub">Makineleri ekle, hatlara bağla ve önem puanlarını düzenle. Sıra; önce sınıfa, sonra üretim ve bakım puanına, eşitlikte hat önemine göre kendiliğinden belirlenir.</p>'
     +'<div class="btns" style="margin-bottom:10px"><button type="button" class="btn primary" data-act="new-machine">'+ic('plus')+'Makine ekle</button></div>'
     +'<div class="deflist">'+(rows||'<p class="faint" style="padding:6px 0">Henüz makine yok.</p>')+'</div></section>';
 }
 function sOnem(){
-  const c=S.defs.cut,nm=S.defs.clsName,ld=S.settings.lead;
-  const rng={A:c.A+'-20',B:c.B+'-'+(c.A-1),C:'4-'+(c.B-1)};
+  const D=S.defs,cr=D.crit,c=cr.cut,nm=D.clsName,ld=S.settings.lead;
+  const cond={A:'Üretim ≥ '+c.prodA+' veya Bakım/Kalite ≥ '+c.mqA,B:'Üretim ≥ '+c.prodB+' veya Bakım/Kalite ≥ '+c.mqB,C:'Diğer tüm makineler'};
   const cls=['A','B','C'].map(k=>'<div class="defrow cl"><span class="cls '+k+'">'+k+'</span>'
     +'<label class="mini-fld"><span>Ad</span><input type="text" data-def="clsname" data-k="'+k+'" value="'+esc(nm[k])+'" maxlength="20"></label>'
-    +(k==='C'?'<div class="mini-fld"><span>Puan aralığı</span><div class="ro">'+rng.C+' · kalanlar</div></div>'
-      :'<label class="mini-fld"><span>En az puan · '+rng[k]+'</span><input type="number" min="'+(k==='A'?6:5)+'" max="20" data-def="cut" data-k="'+k+'" value="'+c[k]+'"></label>')
+    +'<div class="mini-fld"><span>Koşul</span><div class="ro">'+cond[k]+'</div></div>'
     +'<label class="mini-fld"><span>Uyarı (gün önce)</span><input type="number" min="0" max="365" data-lead="'+k+'" value="'+ld[k]+'"></label></div>').join('');
-  const fac=S.defs.factors.map((f,i)=>'<div class="fcard"><div class="fc-top"><span class="fc-n">'+(i+1)+'</span><input type="text" data-def="fac" data-i="'+i+'" data-f="t" value="'+esc(f.t)+'" maxlength="40" aria-label="Faktör adı"></div>'
-    +'<input type="text" data-def="fac" data-i="'+i+'" data-f="d" value="'+esc(f.d)+'" maxlength="100" aria-label="Faktör sorusu">'
-    +'<div class="lvls">'+f.o.map((o,j)=>'<label class="mini-fld"><span>'+(j+1)+' puan</span><input type="text" data-def="fac" data-i="'+i+'" data-f="o" data-j="'+j+'" value="'+esc(o)+'" maxlength="40"></label>').join('')+'</div></div>').join('');
-  return '<section class="card"><h2>Önem sınıfları</h2><p class="sub">Dört faktörün toplamı (en çok 20 puan) makinenin sınıfını belirler. Eşikleri, sınıf adlarını ve her sınıfın uyarı süresini buradan değiştir. Eşiği değiştirince makinelerin sınıfı, sıralama ve panolar anında güncellenir.</p>'
-    +cls+'<div class="btns" style="margin-top:12px"><button type="button" class="btn" data-act="def-reset-cut">Varsayılan eşiklere dön (15 ve 10)</button></div></section>'
-    +'<section class="card"><h2>Önem faktörleri</h2><p class="sub">Makine formundaki dört puanlama sorusu. Faktör adını, sorusunu ve her puanın karşılığını kendi tesisine göre yaz. Puan anlamı: 1 en düşük, 5 en yüksek etki.</p>'
-    +fac+'<div class="btns"><button type="button" class="btn" data-act="def-reset-fac">Varsayılan faktörlere dön</button></div></section>';
+  const thr=[['prodA','Üretim: A için en az puan'],['prodB','Üretim: B için en az puan'],['mqA','Bakım ve kalite: A için en az toplam'],['mqB','Bakım ve kalite: B için en az toplam']]
+    .map(x=>'<label class="fld"><span>'+x[1]+'</span><input type="number" min="1" max="500" data-def="critcut" data-k="'+x[0]+'" value="'+c[x[0]]+'"></label>').join('');
+  const grp=(g,n,f)=>'<div class="fcard"><div class="fc-top"><span class="fc-n">'+n+'</span><input type="text" data-def="critt" data-g="'+g+'" value="'+esc(f.t)+'" maxlength="70" aria-label="Kriter adı"></div>'
+    +'<div class="copts">'+f.opts.map((o,j)=>'<div class="mini-fld"><span>Seçenek '+(j+1)+' · puan</span><div class="optrow"><input type="text" data-def="crito" data-g="'+g+'" data-j="'+j+'" data-f="l" value="'+esc(o[0])+'" maxlength="70" aria-label="Seçenek adı"><input type="number" min="0" max="500" data-def="crito" data-g="'+g+'" data-j="'+j+'" data-f="p" value="'+o[1]+'" aria-label="Puan"></div></div>').join('')+'</div></div>';
+  return '<section class="card"><h2>Önem sınıfları</h2><p class="sub">'+critRule()+' Sınıf adlarını ve her sınıfın uyarı süresini buradan değiştirirsin. Bir seçeneğin puanını değiştirirsen o puanı kullanan makinelerin puanı da güncellenir. Eşik değişince sınıflar, sıralama ve pano anında yenilenir.</p>'
+    +cls+'<div class="row2" style="margin-top:14px">'+thr+'</div></section>'
+    +'<section class="card"><h2>1. Üretim üzerine etkisi</h2><p class="sub">Makine durursa üretim ne olur? Makine formunda bu üç seçenekten biri işaretlenir.</p>'+grp('prod',1,cr.prod)+'</section>'
+    +'<section class="card"><h2>2. Bakım ve kalite üzerine etkisi</h2><p class="sub">Beş kriterin puanı toplanır. Her kriter için kendi seçeneklerini ve puanlarını yazabilirsin.</p>'
+    +cr.mq.map((f,i)=>grp(f.k,i+1,f)).join('')+'<div class="btns"><button type="button" class="btn" data-act="def-reset-crit">Rebul varsayılanlarına dön</button></div></section>';
 }
 function sListe(kind,items,usedFn,title,sub,ph,unit){
   const rows=items.map((n,i)=>'<div class="defrow s"><input type="text" value="'+esc(n)+'" maxlength="50" data-def="'+kind+'" data-i="'+i+'" data-f="name" aria-label="Ad">'
@@ -1441,15 +1459,25 @@ function defChange(t){
     const m=mById(t.dataset.id);if(m){m.area=t.value;save();render();toast('Makine hatta bağlandı');}
   }else if(k==='clsname'){
     const c=t.dataset.k;if(v)D.clsName[c]=v;else t.value=D.clsName[c];save();toast('Sınıf adı kaydedildi');
-  }else if(k==='cut'){
-    const key=t.dataset.k,val=Math.round(+t.value),A=key==='A'?val:D.cut.A,B=key==='B'?val:D.cut.B;
-    if(!(A>B&&B>=5&&A<=20)){t.value=D.cut[key];toast('Eşikler tutarsız: A eşiği B eşiğinden büyük olmalı. B en az 5, A en çok 20 olabilir.');return;}
-    D.cut[key]=val;save();render();toast('Eşik kaydedildi');
-  }else if(k==='fac'){
-    const fa=D.factors[i];if(!fa)return;
-    if(f==='o'){const j=+t.dataset.j;if(v)fa.o[j]=v;else t.value=fa.o[j];}
-    else if(v)fa[f]=v;else t.value=fa[f];
-    save();toast('Faktör kaydedildi');
+  }else if(k==='critcut'){
+    const key=t.dataset.k,val=Math.max(1,Math.round(+t.value)||0),cu=D.crit.cut;
+    const n=Object.assign({},cu);n[key]=val;
+    if(!(n.prodA>n.prodB&&n.mqA>n.mqB)){t.value=cu[key];toast('Eşikler tutarsız: A için gereken puan, B için gerekenden büyük olmalı.');return;}
+    cu[key]=val;save();render();toast('Eşik kaydedildi, sınıflar güncellendi');
+  }else if(k==='critt'){
+    const g=t.dataset.g,cr=g==='prod'?D.crit.prod:D.crit.mq.find(x=>x.k===g);
+    if(cr){if(v)cr.t=v;else t.value=cr.t;save();toast('Kriter adı kaydedildi');}
+  }else if(k==='crito'){
+    const g=t.dataset.g,j=+t.dataset.j,cr=g==='prod'?D.crit.prod:D.crit.mq.find(x=>x.k===g),o=cr&&cr.opts[j];
+    if(!o)return;
+    if(f==='l'){if(v)o[0]=v;else t.value=o[0];save();toast('Seçenek kaydedildi');}
+    else{
+      const n=Math.max(0,Math.round(+t.value)||0),old=o[1];
+      let moved=0;
+      if(old!==n)S.machines.forEach(m=>{if(m.c&&+m.c[g]===old){m.c[g]=n;moved++;}});
+      o[1]=n;t.value=n;save();render();
+      toast('Puan kaydedildi'+(moved?'. '+moved+' makinenin puanı da güncellendi.':'.'));
+    }
   }
 }
 function defAdd(el){
@@ -1490,10 +1518,7 @@ async function defDel(el){
    ========================================================= */
 const VIEWS={
   genel:{title:'Rebul Planlı Bakım Panosu',sub:()=>'Fabrika geneli · yönetici özeti · '+fmtLong(today()),r:vGenel},
-  zaman:{title:'Zaman Çizelgesi',sub:()=>'Makineler önem sırasına göre dizili, en kritik olan en üstte',r:vZaman,after:()=>{
-    const el=$('#tl');
-    if(el&&window.innerWidth<860)el.scrollLeft=11*(ZOOM[S.settings.tlZoom]||ZOOM.ay3).dayW;
-  }},
+  zaman:{title:'Zaman Çizelgesi',sub:()=>'Bakım takvimi ve günlük ajanda · bir güne tıkla',r:vZaman},
   makineler:{title:'Makineler',sub:()=>S.machines.length+' makine · önem puanına göre sıralı',r:vMakineler},
   planlar:{title:'Bakım Planları',sub:()=>S.tasks.length+' plan',r:vPlanlar,after:renderPlanList},
   gecmis:{title:'Geçmiş',sub:()=>'Tamamlanan bakımlar',r:vGecmis},
@@ -1601,29 +1626,57 @@ const ownerList=()=>'<datalist id="ownerSug">'+S.defs.owners.map(o=>'<option val
 function machineForm(id){
   const m=id?mById(id):null;
   if(id&&!m)return;
-  const d=m||{tag:'',name:'',area:'',safety:3,production:3,repair:3,backup:3,notes:''};
-  const sels=FACTORS.map(f=>fld(f.t,'<select name="'+f.k+'">'+f.o.map((o,i)=>'<option value="'+(i+1)+'"'+((+d[f.k]||3)===i+1?' selected':'')+'>'+(i+1)+' · '+o+'</option>').join('')+'</select>',f.d)).join('');
-  const body='<div class="row2">'+fld('Makine etiketi','<input type="text" name="tag" required maxlength="20" value="'+esc(d.tag)+'" placeholder="HPR-01">')+fld('Makine adı','<input type="text" name="name" required maxlength="60" value="'+esc(d.name)+'" placeholder="Hidrolik Pres 400 Ton">')+'</div>'
-    +fld('Hat / bölüm','<select name="area"><option value="">Hat atanmamış</option>'+lineOpts(d.area||'')+'</select>','Hatları Ayarlar sayfasındaki Hatlar sekmesinden tanımlarsın.')
-    +'<div><h3>Önem analizi</h3><div class="row2">'+sels+'</div></div>'
+  const cr=S.defs.crit;
+  const d=m||{tag:'',name:'',brand:'',area:'',form:'',c:{prod:cr.prod.opts[1]?cr.prod.opts[1][1]:0},notes:''};
+  const cc=d.c||{};
+  const critSel=(name,opts,cur)=>{
+    const known=cur===0||opts.some(o=>o[1]===cur);
+    return '<select name="'+name+'"><option value="0"'+(cur===0?' selected':'')+'>Seçilmedi · 0 puan</option>'
+      +opts.map(o=>'<option value="'+o[1]+'"'+(o[1]===cur?' selected':'')+'>'+esc(o[0])+' · '+o[1]+' puan</option>').join('')
+      +(known?'':'<option value="'+cur+'" selected>Özel · '+cur+' puan</option>')+'</select>';
+  };
+  const mqSels=cr.mq.map(f=>fld(esc(f.t),critSel('c_'+f.k,f.opts,+cc[f.k]||0))).join('');
+  const body='<div class="row2">'+fld('Makine kodu','<input type="text" name="tag" required maxlength="24" value="'+esc(d.tag)+'" placeholder="SMP102">')+fld('Makine adı','<input type="text" name="name" required maxlength="80" value="'+esc(d.name)+'" placeholder="Selefon makinesi">')+'</div>'
+    +'<div class="row2">'+fld('Marka','<input type="text" name="brand" maxlength="40" value="'+esc(d.brand||'')+'" placeholder="Ünlü">')+fld('Hat / bölüm','<select name="area"><option value="">Hat atanmamış</option>'+lineOpts(d.area||'')+'</select>','Ayarlar > Hatlar sekmesinden tanımlanır.')+'</div>'
+    +fld('Planlı bakım form no','<input type="text" name="form" maxlength="24" value="'+esc(d.form||'')+'" placeholder="FRBK001">')
+    +'<div><h3>1. '+esc(cr.prod.t)+'</h3>'+fld('Makine durursa üretim ne olur?',critSel('c_prod',cr.prod.opts,+cc.prod||0))+'</div>'
+    +'<div><h3>2. Bakım ve kalite üzerine etkisi</h3><div class="row2">'+mqSels+'</div></div>'
     +'<div class="scoreprev"><b id="spScore"></b><span id="spTxt"></span></div>'
     +fld('Not','<textarea name="notes" maxlength="400" placeholder="Seri no, üretici, yedek parça tedarikçisi...">'+esc(d.notes||'')+'</textarea>');
   const foot=(m?'<button type="button" class="btn sp" data-act="del-machine" data-id="'+m.id+'">'+ic('trash')+'Sil</button>':'')+'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">Kaydet</button>';
-  openDlg(dlgShell(m?'Makineyi düzenle':'Makine ekle','Dört faktörün toplamı önem sınıfını belirler.',body,foot),fd=>{
-    const obj={tag:String(fd.get('tag')).trim(),name:String(fd.get('name')).trim(),area:String(fd.get('area')).trim(),notes:String(fd.get('notes')).trim()};
-    FACTORS.forEach(f=>{obj[f.k]=Math.min(5,Math.max(1,+fd.get(f.k)||3));});
+  openDlg(dlgShell(m?'Makineyi düzenle':'Makine ekle','Sınıf, üretim etkisi ile bakım ve kalite etkisinden yüksek olanıdır.',body,foot),fd=>{
+    const obj={tag:String(fd.get('tag')).trim(),name:String(fd.get('name')).trim(),brand:String(fd.get('brand')).trim(),area:String(fd.get('area')).trim(),form:String(fd.get('form')).trim(),notes:String(fd.get('notes')).trim(),c:{prod:+fd.get('c_prod')||0}};
+    cr.mq.forEach(f=>{obj.c[f.k]=+fd.get('c_'+f.k)||0;});
     if(!obj.tag||!obj.name)return false;
     if(m)Object.assign(m,obj);else S.machines.push(Object.assign({id:uid()},obj));
     save();render();toast(m?'Makine güncellendi':'Makine eklendi');
   },f=>{
     const upd=()=>{
-      const s=FACTORS.reduce((a,x)=>a+(+f.elements[x.k].value||1),0);
-      const k=s>=15?'A':s>=10?'B':'C';
-      $('#spScore').textContent=s+'/20';
-      $('#spTxt').innerHTML='Sınıf '+clsB(k)+' · uyarı '+S.settings.lead[k]+' gün önceden';
+      const c=S.defs.crit.cut,p=+f.elements.c_prod.value||0;
+      const q=S.defs.crit.mq.reduce((a,x)=>a+(+f.elements['c_'+x.k].value||0),0);
+      const pl=lvl(p,c.prodA,c.prodB),ql=lvl(q,c.mqA,c.mqB),k=pl<ql?pl:ql;
+      $('#spScore').textContent=k;
+      $('#spTxt').innerHTML='Üretim '+p+' ('+pl+') · Bakım ve kalite '+q+' ('+ql+') · sınıf '+clsB(k)+' '+esc(S.defs.clsName[k])+' · uyarı '+S.settings.lead[k]+' gün önceden';
     };
     f.addEventListener('input',upd);upd();
   });
+}
+/* Bakım formu (kontrol listesi): satır başına "Ünite | Kontrol noktası | Yöntem | Ekipman". */
+const itemsText=a=>(a||[]).map(i=>[i.u||'',i.p||'',i.m||'',i.e||''].join(' | ')).join('\n');
+function parseItems(txt){
+  return String(txt||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).slice(0,150).map(l=>{
+    const p=l.split('|').map(x=>x.trim());
+    return p.length===1?{u:'',p:p[0],m:'',e:''}:{u:p[0],p:p[1]||'',m:p[2]||'',e:p[3]||''};
+  }).filter(i=>i.p);
+}
+function chkHtml(t){
+  if(!t.items||!t.items.length)return '';
+  let last=null,h='<div class="chk"><h3>Bakım formu · '+t.items.length+' madde</h3>';
+  t.items.forEach((it,i)=>{
+    if(it.u&&it.u!==last){h+='<div class="chk-u">'+esc(it.u)+'</div>';last=it.u;}
+    h+='<div class="chk-r"><div><b>'+esc(it.p)+'</b><small>'+esc([it.m,it.e].filter(Boolean).join(' · '))+'</small></div><select name="chk'+i+'" aria-label="'+esc(it.p)+'"><option value="ok">Uygun</option><option value="bad">Uygunsuz</option><option value="na">Yapılmadı</option></select></div>';
+  });
+  return h+'</div>';
 }
 function taskForm(id,presetM){
   if(!S.machines.length){toast('Önce bir makine ekle.');machineForm();return;}
@@ -1639,10 +1692,11 @@ function taskForm(id,presetM){
     +'<div class="row2">'+fld('Kategori','<select name="cat">'+co+'</select>')+fld('Takvim türü','<select name="mode"><option value="fixed"'+(d.mode!=='after'?' selected':'')+'>Sabit takvim</option><option value="after"'+(d.mode==='after'?' selected':'')+'>Yapıldığı tarihten</option></select>')+'</div>'
     +'<div class="row3">'+fld('Her','<input type="number" name="every" min="1" max="999" required value="'+everyOf(d)+'">')+fld('Birim','<select name="unit">'+uo+'</select>')+fld('Sonraki bakım','<input type="date" name="due" required value="'+esc(d.due)+'">')+'</div>'
     +'<div class="row3">'+fld('Uyarı (gün önce)','<input type="number" name="lead" min="0" max="365" value="'+(d.lead==null?'':esc(d.lead))+'" placeholder="Otomatik">','<span id="leadHint"></span>')+fld('Sorumlu','<input type="text" name="owner" maxlength="40" list="ownerSug" value="'+esc(d.owner||'')+'" placeholder="Ad Soyad">'+ownerList())+fld('Süre (saat)','<input type="number" name="hours" min="0" step="0.5" value="'+esc(d.hours==null?'':d.hours)+'">')+'</div>'
-    +fld('Not','<textarea name="notes" maxlength="400" placeholder="Kullanılacak malzeme, güvenlik uyarısı, kontrol listesi...">'+esc(d.notes||'')+'</textarea>');
+    +fld('Not','<textarea name="notes" maxlength="400" placeholder="Kullanılacak malzeme, güvenlik uyarısı...">'+esc(d.notes||'')+'</textarea>')
+    +fld('Bakım formu (kontrol listesi)','<textarea name="items" rows="6" class="code" style="height:130px" placeholder="ŞİŞE DEVİRME ÜNİTESİ | Encoder zincirinin yağlanması | Yağlama | Fırça-yağ">'+esc(itemsText(d.items))+'</textarea>','İsteğe bağlı. Satır başına bir madde: Ünite | Kontrol noktası | Yöntem | Ekipman. Bakımı tamamlarken her madde için sonuç işaretlenir.');
   const foot=(t?'<button type="button" class="btn sp" data-act="del-task" data-id="'+t.id+'">'+ic('trash')+'Sil</button>':'')+'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">Kaydet</button>';
   openDlg(dlgShell(t?'Planı düzenle':'Yeni bakım planı','Sıklık dolunca sonraki tarih otomatik hesaplanır.',body,foot),fd=>{
-    const obj={machineId:fd.get('machineId'),title:String(fd.get('title')).trim(),cat:fd.get('cat'),every:Math.max(1,parseInt(fd.get('every'),10)||1),unit:fd.get('unit'),mode:fd.get('mode'),due:fd.get('due'),lead:fd.get('lead')===''?null:Math.max(0,parseInt(fd.get('lead'),10)||0),owner:String(fd.get('owner')).trim(),hours:parseFloat(String(fd.get('hours')).replace(',','.'))||0,notes:String(fd.get('notes')).trim()};
+    const obj={machineId:fd.get('machineId'),title:String(fd.get('title')).trim(),cat:fd.get('cat'),every:Math.max(1,parseInt(fd.get('every'),10)||1),unit:fd.get('unit'),mode:fd.get('mode'),due:fd.get('due'),lead:fd.get('lead')===''?null:Math.max(0,parseInt(fd.get('lead'),10)||0),owner:String(fd.get('owner')).trim(),hours:parseFloat(String(fd.get('hours')).replace(',','.'))||0,notes:String(fd.get('notes')).trim(),items:parseItems(fd.get('items'))};
     if(!obj.title||!obj.due)return false;
     obj.day=parseD(obj.due).getDate();
     ensureOwner(obj.owner);
@@ -1658,12 +1712,20 @@ function doneForm(id){
   if(!t)return;
   const m=mById(t.machineId);
   const body='<div class="row2">'+fld('Yapıldığı tarih','<input type="date" name="done" required max="'+iso(today())+'" value="'+iso(today())+'">')+fld('Yapan kişi','<input type="text" name="by" maxlength="40" list="ownerSug" value="'+esc(t.owner||'')+'" placeholder="Ad Soyad">'+ownerList())+'</div>'
-    +fld('Bulgu ve not','<textarea name="note" maxlength="400" placeholder="Ne bulundu, ne değişti? Tekrarlayan bir sorun varsa yaz."></textarea>')
+    +chkHtml(t)
+    +fld('Bulgu ve not','<textarea name="note" maxlength="400" placeholder="Ne bulundu, ne değişti? Uygunsuz madde varsa açıklamasını yaz."></textarea>')
     +'<div class="scoreprev"><span id="dnext"></span></div>';
   openDlg(dlgShell('Bakımı tamamla',esc(m?m.tag+' · ':'')+esc(t.title),body,'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">'+ic('check')+'Yapıldı olarak kaydet</button>'),fd=>{
-    const nd=complete(id,fd.get('done'),String(fd.get('by')).trim(),String(fd.get('note')).trim());
-    render();toast('Kaydedildi. Sonraki bakım: '+fmtDate(nd));
+    let chk=null;
+    if(t.items&&t.items.length){
+      const bad=[];let ok=0;
+      t.items.forEach((it,i)=>{const v=fd.get('chk'+i);if(v==='ok')ok++;else bad.push({u:it.u,p:it.p,r:v==='bad'?'Uygunsuz':'Yapılmadı'});});
+      chk={n:t.items.length,ok:ok,bad:bad};
+    }
+    const nd=complete(id,fd.get('done'),String(fd.get('by')).trim(),String(fd.get('note')).trim(),chk);
+    render();toast('Kaydedildi. Sonraki bakım: '+fmtDate(nd)+(chk&&chk.bad.length?' · '+chk.bad.length+' madde uygun değil':''));
   },f=>{
+    f.addEventListener('change',e=>{if(e.target.name&&e.target.name.indexOf('chk')===0)e.target.closest('.chk-r').classList.toggle('bad',e.target.value==='bad');});
     const upd=()=>{
       const v=f.elements.done.value;if(!v)return;
       const dn=parseD(v),nd=nextDue(t,dn),late=diff(dn,parseD(t.due));
@@ -1685,14 +1747,16 @@ function taskDetail(id){
     +'<dt>Durum</dt><dd>'+pill(i.st)+' <span class="muted">'+dueText(i.left)+'</span></dd>'
     +'<dt>Sonraki bakım</dt><dd><b>'+fmtLong(i.due)+'</b></dd>'
     +'<dt>Makine</dt><dd>'+clsB(klass(m))+' #'+rankOf(m.id)+' · '+esc(m.name)+' <span class="faint mono">'+esc(m.tag)+'</span></dd>'
+    +(m.form?'<dt>Form no</dt><dd class="mono">'+esc(m.form)+'</dd>':'')
     +'<dt>Sıklık</dt><dd>'+freq(t)+' · '+(t.mode==='after'?'yapıldığı tarihten':'sabit takvim')+'</dd>'
     +'<dt>Uyarı</dt><dd>'+i.lead+' gün önce'+(custom?'':' <span class="faint">(sınıf '+klass(m)+' varsayılanı)</span>')+'</dd>'
     +'<dt>Sorumlu</dt><dd>'+esc(t.owner||'-')+'</dd>'
     +'<dt>Süre</dt><dd>'+(t.hours?t.hours+' saat':'-')+'</dd>'
     +'<dt>Kategori</dt><dd>'+esc(t.cat||'-')+'</dd>'
     +(t.notes?'<dt>Not</dt><dd>'+esc(t.notes)+'</dd>':'')+'</dl>'
+    +(t.items&&t.items.length?'<details class="chk-d"><summary>Bakım formu · '+t.items.length+' madde</summary><ul class="mini">'+t.items.map(it=>'<li><span>'+(it.u?'<small>'+esc(it.u)+'</small><br>':'')+esc(it.p)+'</span><small>'+esc([it.m,it.e].filter(Boolean).join(' · '))+'</small></li>').join('')+'</ul></details>':'')
     +'<div><h3>Sonraki tekrarlar (öngörülen)</h3><ul class="mini">'+next.map(d=>'<li><span>'+fmtLong(d)+'</span></li>').join('')+'</ul></div>'
-    +'<div><h3>Son kayıtlar</h3>'+(hist.length?'<ul class="mini">'+hist.map(h=>'<li><span>'+fmtDate(parseD(h.done))+(h.by?' · '+esc(h.by):'')+(h.note?'<br><small>'+esc(h.note)+'</small>':'')+'</span>'+(h.done>h.due?'<span class="pill soon">'+diff(parseD(h.done),parseD(h.due))+' gün geç</span>':'<span class="pill good">Zamanında</span>')+'</li>').join('')+'</ul>':'<p class="faint">Bu plan için henüz kayıt yok.</p>')+'</div>';
+    +'<div><h3>Son kayıtlar</h3>'+(hist.length?'<ul class="mini">'+hist.map(h=>'<li><span>'+fmtDate(parseD(h.done))+(h.by?' · '+esc(h.by):'')+(h.chk?' · '+h.chk.ok+'/'+h.chk.n+' uygun':'')+(h.chk&&h.chk.bad.length?'<br><small>Uygun olmayan: '+esc(h.chk.bad.map(b=>b.p).join('; '))+'</small>':'')+(h.note?'<br><small>'+esc(h.note)+'</small>':'')+'</span>'+(h.done>h.due?'<span class="pill soon">'+diff(parseD(h.done),parseD(h.due))+' gün geç</span>':'<span class="pill good">Zamanında</span>')+'</li>').join('')+'</ul>':'<p class="faint">Bu plan için henüz kayıt yok.</p>')+'</div>';
   const foot='<button type="button" class="btn sp" data-act="del-task" data-id="'+t.id+'">'+ic('trash')+'Sil</button><button type="button" class="btn" data-act="edit-task" data-id="'+t.id+'">'+ic('edit')+'Düzenle</button><button type="button" class="btn primary" data-act="done" data-id="'+t.id+'">'+ic('check')+'Yapıldı</button>';
   openDlg(dlgShell(esc(t.title),esc(m.tag)+' · '+esc(m.name),body,foot,'detail'));
 }
@@ -1738,10 +1802,10 @@ const exportObj=()=>({app:'rebul-planli-bakim',version:1,exported:iso(today()),m
 function sanitize(o){
   if(!o||!Array.isArray(o.machines)||!Array.isArray(o.tasks))throw new Error('format');
   const re=/^\d{4}-\d{2}-\d{2}$/;
-  const machines=o.machines.filter(m=>m&&m.id&&m.tag&&m.name).map(m=>({id:String(m.id),tag:String(m.tag),name:String(m.name),area:String(m.area||''),safety:Math.min(5,Math.max(1,+m.safety||3)),production:Math.min(5,Math.max(1,+m.production||3)),repair:Math.min(5,Math.max(1,+m.repair||3)),backup:Math.min(5,Math.max(1,+m.backup||3)),notes:String(m.notes||'')}));
+  const machines=o.machines.filter(m=>m&&m.id&&m.tag&&m.name).map(m=>({id:String(m.id),tag:String(m.tag),name:String(m.name),area:String(m.area||''),brand:String(m.brand||''),form:String(m.form||''),c:(m.c&&typeof m.c==='object')?{prod:Math.max(0,+m.c.prod||0),age:Math.max(0,+m.c.age||0),parts:Math.max(0,+m.c.parts||0),vib:Math.max(0,+m.c.vib||0),qual:Math.max(0,+m.c.qual||0),env:Math.max(0,+m.c.env||0)}:legacyCrit(m),notes:String(m.notes||'')}));
   const ids=new Set(machines.map(m=>m.id));
-  const tasks=o.tasks.filter(t=>t&&t.id&&t.title&&ids.has(t.machineId)&&re.test(String(t.due))).map(t=>({id:String(t.id),machineId:t.machineId,title:String(t.title),cat:String(t.cat||''),every:Math.max(1,parseInt(t.every,10)||1),unit:UNIT[t.unit]?t.unit:'ay',mode:t.mode==='after'?'after':'fixed',due:String(t.due),day:Math.min(31,Math.max(0,parseInt(t.day,10)||0)),lead:(t.lead===null||t.lead===undefined||t.lead==='')?null:Math.max(0,+t.lead||0),owner:String(t.owner||''),hours:+t.hours||0,notes:String(t.notes||'')}));
-  const history=(Array.isArray(o.history)?o.history:[]).filter(h=>h&&re.test(String(h.done))&&re.test(String(h.due))&&h.title).map(h=>({id:String(h.id||uid()),taskId:String(h.taskId||''),machineId:String(h.machineId||''),tag:String(h.tag||''),mname:String(h.mname||''),title:String(h.title),due:String(h.due),done:String(h.done),by:String(h.by||''),note:String(h.note||'')}));
+  const tasks=o.tasks.filter(t=>t&&t.id&&t.title&&ids.has(t.machineId)&&re.test(String(t.due))).map(t=>({id:String(t.id),machineId:t.machineId,title:String(t.title),cat:String(t.cat||''),every:Math.max(1,parseInt(t.every,10)||1),unit:UNIT[t.unit]?t.unit:'ay',mode:t.mode==='after'?'after':'fixed',due:String(t.due),day:Math.min(31,Math.max(0,parseInt(t.day,10)||0)),lead:(t.lead===null||t.lead===undefined||t.lead==='')?null:Math.max(0,+t.lead||0),owner:String(t.owner||''),hours:+t.hours||0,notes:String(t.notes||''),items:Array.isArray(t.items)?t.items.slice(0,150).map(i=>({u:String(i.u||''),p:String(i.p||''),m:String(i.m||''),e:String(i.e||'')})).filter(i=>i.p):[]}));
+  const history=(Array.isArray(o.history)?o.history:[]).filter(h=>h&&re.test(String(h.done))&&re.test(String(h.due))&&h.title).map(h=>({id:String(h.id||uid()),taskId:String(h.taskId||''),machineId:String(h.machineId||''),tag:String(h.tag||''),mname:String(h.mname||''),title:String(h.title),due:String(h.due),done:String(h.done),by:String(h.by||''),note:String(h.note||''),chk:(h.chk&&typeof h.chk==='object'&&Array.isArray(h.chk.bad))?{n:+h.chk.n||0,ok:+h.chk.ok||0,bad:h.chk.bad.slice(0,150).map(b=>({u:String(b.u||''),p:String(b.p||''),r:String(b.r||'')}))}:null}));
   return {machines,tasks,history,lead:o.settings&&o.settings.lead,defs:o.defs};
 }
 function applyData(o){
@@ -1930,20 +1994,31 @@ const H={
   'edit-machine':el=>machineForm(el.dataset.id),
   'del-task':el=>deleteTask(el.dataset.id),
   'del-machine':el=>deleteMachine(el.dataset.id),
-  'tl-zoom':el=>{S.settings.tlZoom=el.dataset.v;save();render();},
   'tl-class':el=>{S.settings.tlClass=el.dataset.v;save();render();},
-  'tl-proj':()=>{S.settings.showProj=!S.settings.showProj;save();render();},
+  'cal-mode':el=>{UI.calMode=el.dataset.v;render();},
+  'cal-day':el=>{UI.selD=el.dataset.d;render();},
+  'cal-nav':el=>{
+    const v=+el.dataset.v,T0=today();
+    if(UI.calMode==='month')UI.calM=v===0?new Date(T0.getFullYear(),T0.getMonth(),1):new Date((UI.calM||T0).getFullYear(),(UI.calM||T0).getMonth()+v,1);
+    else UI.calR=v===0?mondayOf(T0):addDays(UI.calR||mondayOf(T0),v*28);
+    if(v===0)UI.selD=iso(T0);
+    render();
+  },
   'flt-st':el=>{UI.st=el.dataset.v;render();},
   print:()=>window.print(),
   'set-tab':el=>{UI.stab=el.dataset.v;render();},
   'def-add':el=>defAdd(el),
   'def-del':el=>defDel(el),
-  'def-reset-cut':async()=>{if(await ask('Eşikler sıfırlansın mı?','A sınıfı için 15, B sınıfı için 10 puan eşiği geri yüklenir.','Sıfırla')){S.defs.cut={A:15,B:10};save();render();toast('Eşikler varsayılana döndü');}},
-  'def-reset-fac':async()=>{if(await ask('Faktörler sıfırlansın mı?','Faktör adları, soruları ve puan açıklamaları varsayılana döner.','Sıfırla')){S.defs.factors=JSON.parse(JSON.stringify(FACTORS_DEFAULT));save();render();toast('Faktörler varsayılana döndü');}},
+  'def-reset-crit':async()=>{if(await ask('Kriterler sıfırlansın mı?','Kriter adları, seçenekler, puanlar ve eşikler Rebul varsayılanlarına döner. Değiştirilmiş puanı kullanan makineler de varsayılan puana çekilir.','Sıfırla')){
+    [['prod',S.defs.crit.prod.opts,CRIT_DEFAULT.prod.opts]].concat(S.defs.crit.mq.map((f,i)=>[f.k,f.opts,CRIT_DEFAULT.mq[i].opts])).forEach(p=>{
+      const map={};p[1].forEach((o,j)=>{if(p[2][j]&&o[1]!==p[2][j][1])map[o[1]]=p[2][j][1];});
+      if(Object.keys(map).length)S.machines.forEach(m=>{if(m.c&&map[+m.c[p[0]]]!==undefined)m.c[p[0]]=map[+m.c[p[0]]];});
+    });
+    S.defs.crit=JSON.parse(JSON.stringify(CRIT_DEFAULT));save();render();toast('Kriterler Rebul varsayılanlarına döndü');}},
   theme:el=>{S.settings.theme=el.dataset.v;save();applyTheme();render();},
-  'clear-demo':async()=>{if(await ask('Örnek veri temizlensin mi?','Örnek makineler, planlar ve geçmiş silinir. Ayarların korunur.','Temizle')){S=normalize({demo:false,settings:S.settings,defs:{cut:S.defs.cut,clsName:S.defs.clsName,factors:S.defs.factors,cats:S.defs.cats}});save();render();toast('Örnek veri temizlendi. Makine ekleyerek başlayabilirsin.');}},
+  'clear-demo':async()=>{if(await ask('Örnek veri temizlensin mi?','Örnek makineler, planlar ve geçmiş silinir. Ayarların korunur.','Temizle')){S=normalize({demo:false,settings:S.settings,defs:{crit:S.defs.crit,clsName:S.defs.clsName,cats:S.defs.cats}});save();render();toast('Örnek veri temizlendi. Makine ekleyerek başlayabilirsin.');}},
   'load-demo':async()=>{if(await ask('Örnek veri yüklensin mi?','Mevcut tüm verinin yerine örnek veri gelir.','Yükle')){const d=demo();d.settings=S.settings;S=normalize(d);save();render();toast('Örnek veri yüklendi');}},
-  'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings,defs:{cut:S.defs.cut,clsName:S.defs.clsName,factors:S.defs.factors,cats:S.defs.cats}});save();render();toast('Tüm veriler silindi');}},
+  'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings,defs:{crit:S.defs.crit,clsName:S.defs.clsName,cats:S.defs.cats}});save();render();toast('Tüm veriler silindi');}},
   'export-json':()=>download('rebul-planli-bakim-yedek-'+iso(today())+'.json','application/json',JSON.stringify(exportObj(),null,2)),
   'import-json':()=>{const f=$('#impFile');if(f)f.click();else{nav('ayarlar');}},
   'export-ics':()=>download('rebul-planli-bakim.ics','text/calendar',buildICS()),
@@ -1978,7 +2053,8 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   const t=e.target;
-  if(t.id==='fPeriod'){UI.period=+t.value||90;render();}
+  if(t.id==='tlLine'){UI.tlLine=t.value;render();}
+  else if(t.id==='fPeriod'){UI.period=+t.value||90;render();}
   else if(t.id==='fArea'){UI.area=t.value;render();}
   else if(t.id==='fCls'){UI.cls=t.value;render();}
   else if(t.dataset&&t.dataset.target){
