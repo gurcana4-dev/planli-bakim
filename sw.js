@@ -1,6 +1,6 @@
-/* Planlı Bakım Takvimi: çevrimdışı çalışma ve bildirim tıklaması */
-const CACHE = 'planli-bakim-v1';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+/* Rebul Planlı Bakım: çevrimdışı çalışma ve bildirim tıklaması */
+const CACHE = 'rebul-planli-bakim-v2';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));

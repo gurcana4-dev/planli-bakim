@@ -1,42 +1,50 @@
-# Planlı Bakım Takvimi
+# Rebul Planlı Bakım
 
-Makine önem sıralaması, zaman çizelgesi ve yaklaşan bakım uyarıları olan, sunucusuz tek sayfa uygulama.
+Makine önem sıralaması, zaman çizelgesi, yönetici panosu ve yaklaşan bakım uyarıları olan, sunucusuz tek sayfa uygulama.
 Hesap, veritabanı veya ücretli servis gerekmez. Tamamı statik dosyadır.
+
+Canlı adres: https://gurcana4-dev.github.io/planli-bakim/
 
 ## Dosyalar
 
 | Dosya | Görevi |
 | --- | --- |
 | `index.html` | Uygulamanın tamamı (arayüz, mantık, stil) |
+| `logo.png` | Rebul 1895 logosu (saydam zeminli, beyaz) |
+| `icon-192.png`, `icon-512.png` | Uygulama simgeleri (ana ekrana ekle, sekme simgesi) |
+| `manifest.webmanifest` | Telefonda "ana ekrana ekle" desteği |
 | `sw.js` | Çevrimdışı çalışma ve bildirim tıklaması |
-| `manifest.webmanifest`, `icon.svg` | Telefonda "ana ekrana ekle" desteği |
 
-## Ücretsiz yayınlama (herkes bir adresten açar)
+## Pano
 
-### Seçenek 1: GitHub Pages (önerilen, kalıcı adres)
+Genel Bakış sayfası yöneticiye tek bakışta şunları verir:
 
-Klasörde şu komutları çalıştır. `gh` komutu için GitHub CLI kurulu ve giriş yapılmış olmalı.
+- KPI şeridi: PM uyum oranı, gecikmiş, yaklaşan, 30 günlük iş yükü, tamamlanan, kritik (A) makine sağlığı
+- Bölüme göre bakım yükü, bakım türü payı, aylık planlanan bakım (sınıfa göre)
+- Makine önem sıralaması tablosu, aylık tamamlanan bakım grafiği, uyarılar ve otomatik içgörüler
+- Dönem, bölüm ve sınıf süzgeçleri. Rapor (PDF) düğmesi yatay A4 çıktı üretir.
+
+## Yayınlama (ücretsiz)
+
+GitHub Pages `main` dalından yayınlar. Dosyaları değiştirip gönderdiğinde site birkaç dakikada güncellenir:
+
+```bash
+git add .
+git commit -m "Güncelleme"
+git push
+```
+
+Sıfırdan kurmak için:
 
 ```bash
 git init -b main
 git add .
-git commit -m "Planlı Bakım Takvimi"
+git commit -m "Rebul Planlı Bakım"
 gh repo create planli-bakim --public --source . --push
 gh api -X POST repos/{owner}/planli-bakim/pages -f "source[branch]=main" -f "source[path]=/"
 ```
 
-Birkaç dakika sonra adres hazır olur: `https://KULLANICI-ADIN.github.io/planli-bakim/`
-
-Arayüzden yapmak istersen: GitHub'da boş bir public depo aç, dosyaları yükle, **Settings > Pages** bölümünde
-kaynak olarak `main` dalını ve `/ (root)` klasörünü seç.
-
-### Seçenek 2: Netlify Drop (en hızlı)
-
-`app.netlify.com/drop` adresine klasörü sürükle. Adres anında oluşur. Kalıcı olması için ücretsiz hesapla sahiplen.
-
-### Seçenek 3: Cloudflare Pages
-
-Depoyu Cloudflare Pages'e bağla. Build komutu boş, çıktı klasörü `/` olmalı.
+Alternatifler: Netlify Drop (`app.netlify.com/drop`, klasörü sürükle) veya Cloudflare Pages.
 
 ## Bilmen gerekenler
 
@@ -50,11 +58,9 @@ Depoyu Cloudflare Pages'e bağla. Build komutu boş, çıktı klasörü `/` olma
 
 ## Uyarı mantığı
 
-Her plan için durum, sonraki bakım tarihine göre hesaplanır:
-
 - **Gecikmiş:** tarih geçti.
 - **Yaklaşıyor:** tarihe, uyarı süresinden az kaldı. Varsayılan süreler makine sınıfına göredir (A 14, B 7, C 3 gün).
 - **Planlı:** henüz uyarı penceresinde değil.
 
 Makine sınıfı dört faktörün toplamından çıkar (1-5 puan): güvenlik ve çevre, üretime etki, onarım süresi,
-alternatifsizlik. Toplam 15 ve üzeri A, 10-14 B, altı C sınıfıdır.
+alternatifsizlik. Toplam 15 ve üzeri A, 10-14 B, altı C sınıfıdır. PM uyum hedefi (varsayılan %90) Ayarlar'dan değişir.
