@@ -1,0 +1,14 @@
+{
+  "name": "Planlı Bakım Takvimi",
+  "short_name": "Bakım",
+  "description": "Makine önem sıralaması, zaman çizelgesi ve yaklaşan bakım uyarıları.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f7",
+  "theme_color": "#0b6a73",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

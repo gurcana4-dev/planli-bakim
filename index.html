@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b6a73">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Planlı Bakım Takvimi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Yerleşim: solda gezinme, üstte durum şeridi, altta öncelik kuyruğu ve makine sıralaması.
+   Renk: grafit nötrler + çelik-turkuaz vurgu. Durum renkleri (kırmızı/amber/mavi-gri) vurgudan ayrı tutulur.
+   Yazı: IBM Plex Sans (metin), IBM Plex Mono (makine etiketleri ve sayılar). */
+:root{
+  --bg:#f2f5f7; --surface:#ffffff; --surface-2:#f7f9fb; --line:#dde3e8; --line-2:#ebeff2;
+  --ink:#15202a; --ink-2:#465665; --ink-3:#637382;
+  --accent:#0b6a73; --accent-ink:#ffffff; --accent-soft:#e0f0f1; --accent-line:#a9d3d6;
+  --bad:#c0392b; --bad-ink:#ffffff; --bad-soft:#fce9e6;
+  --warn:#a85f00; --warn-ink:#ffffff; --warn-soft:#fdf1d9;
+  --good:#2b7a4b; --good-soft:#e1f3e8;
+  --plan:#486a8c; --plan-ink:#ffffff; --plan-soft:#e7eef5;
+  --shadow:0 12px 40px rgba(14,24,34,.16);
+  --font:'IBM Plex Sans',system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+  --lw:224px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e151b; --surface:#151e26; --surface-2:#1a2530; --line:#26343f; --line-2:#1f2b35;
+    --ink:#e7eef3; --ink-2:#aab8c4; --ink-3:#8394a3;
+    --accent:#4cc2c9; --accent-ink:#052328; --accent-soft:#12353a; --accent-line:#1f5a60;
+    --bad:#ff8272; --bad-ink:#2a0c08; --bad-soft:#3a1d1a;
+    --warn:#f2b24d; --warn-ink:#2b1a00; --warn-soft:#38290f;
+    --good:#6fd29a; --good-soft:#143122;
+    --plan:#92b4d6; --plan-ink:#0c1a28; --plan-soft:#1b2a3a;
+    --shadow:0 12px 40px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e151b; --surface:#151e26; --surface-2:#1a2530; --line:#26343f; --line-2:#1f2b35;
+  --ink:#e7eef3; --ink-2:#aab8c4; --ink-3:#8394a3;
+  --accent:#4cc2c9; --accent-ink:#052328; --accent-soft:#12353a; --accent-line:#1f5a60;
+  --bad:#ff8272; --bad-ink:#2a0c08; --bad-soft:#3a1d1a;
+  --warn:#f2b24d; --warn-ink:#2b1a00; --warn-soft:#38290f;
+  --good:#6fd29a; --good-soft:#143122;
+  --plan:#92b4d6; --plan-ink:#0c1a28; --plan-soft:#1b2a3a;
+  --shadow:0 12px 40px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{ color-scheme:light; }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+h1,h2,h3,h4,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+small{font-size:12px}
+b,strong{font-weight:600}
+.mono,.tag{font-family:var(--mono)}
+.muted{color:var(--ink-2)}
+.faint{color:var(--ink-3)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- Kabuk ---- */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:20px 14px 16px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 6px}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{display:block;font-size:15px;letter-spacing:-.01em;line-height:1.2}
+.brand small{color:var(--ink-3);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:none;color:var(--ink-2);font-weight:500;text-align:left}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav .n{margin-left:auto;min-width:22px;padding:1px 7px;border-radius:99px;font:600 11.5px var(--mono);text-align:center;background:var(--warn-soft);color:var(--warn)}
+.nav .n.bad{background:var(--bad-soft);color:var(--bad)}
+.side-foot{margin-top:auto;padding:12px;border:1px dashed var(--line);border-radius:10px;color:var(--ink-3);font-size:12px;line-height:1.5}
+.side-foot b{color:var(--ink-2)}
+.main{min-width:0;padding:0 28px 64px}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 14px;background:var(--bg)}
+.top h1{font-size:22px;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+.top p{color:var(--ink-3);font-size:13px;margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.tabbar{display:none}
+
+/* ---- Düğmeler ve girdiler ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-weight:600;font-size:13px;white-space:nowrap;transition:background .12s,border-color .12s}
+.btn:hover{background:var(--surface-2);border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{height:30px;padding:0 10px;font-size:12px}
+.btn.sm .ic{width:15px;height:15px}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:var(--bad-ink)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.done:hover{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.icon-btn{position:relative;display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink-2)}
+.icon-btn:hover{background:var(--surface-2);color:var(--ink)}
+.icon-btn .b{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--bad);color:var(--bad-ink);font:600 11px/18px var(--mono);text-align:center}
+.icon-btn .b.warn{background:var(--warn);color:var(--warn-ink)}
+.fld{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fld>span{font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.01em}
+.fld em{font-style:normal;font-size:12px;color:var(--ink-3)}
+input[type=text],input[type=search],input[type=number],input[type=date],select,textarea{width:100%;min-width:0;height:38px;padding:0 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+textarea{height:auto;min-height:72px;padding:9px 11px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ---- Kart, rozet, durum ---- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px 0}
+.card-h h2{font-size:15px;letter-spacing:-.01em}
+.card-h small{color:var(--ink-3)}
+.pad{padding:18px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 8px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.overdue{background:var(--bad-soft);color:var(--bad)}
+.pill.soon{background:var(--warn-soft);color:var(--warn)}
+.pill.ok{background:var(--plan-soft);color:var(--plan)}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--plan)}
+.dot.overdue{background:var(--bad)}
+.dot.soon{background:var(--warn)}
+.dot.none{background:var(--line)}
+.cls{display:inline-grid;place-items:center;flex:none;width:22px;height:22px;border-radius:6px;font:600 12px var(--mono)}
+.cls.A{background:var(--ink);color:var(--surface)}
+.cls.B{box-shadow:inset 0 0 0 1.5px var(--ink-2);color:var(--ink-2)}
+.cls.C{background:var(--line-2);color:var(--ink-3)}
+.tag{font-size:12px;font-weight:500;color:var(--ink-2);letter-spacing:.01em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink-2);font-weight:500;font-size:13px}
+.chip:hover{border-color:var(--ink-3)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chip i{font:600 11.5px var(--mono);font-style:normal;opacity:.7}
+.seg-ctl{display:inline-flex;padding:3px;border-radius:9px;background:var(--line-2);gap:2px}
+.seg-ctl button{height:30px;padding:0 12px;border:0;border-radius:7px;background:none;color:var(--ink-2);font-weight:600;font-size:12.5px}
+.seg-ctl button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.toolbar .grow{flex:1}
+.search{position:relative;flex:1 1 220px;max-width:340px}
+.search .ic{position:absolute;left:11px;top:10px;color:var(--ink-3);width:17px;height:17px}
+.search input{padding-left:36px}
+.toolbar select{width:auto;min-width:150px}
+.empty{padding:36px 18px;text-align:center;color:var(--ink-3)}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px;margin-bottom:16px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--ink)}
+.banner p{flex:1 1 260px;font-size:13px}
+
+/* ---- Genel bakış ---- */
+.grid-2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;align-items:start}
+.stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.strip{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0;margin-bottom:16px}
+.strip>div{padding:20px 22px}
+.strip>div+div{border-left:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-content:center}
+.strip h2{font-size:18px;letter-spacing:-.015em;line-height:1.35;font-weight:500;text-wrap:balance}
+.strip h2 b{font-family:var(--mono);font-weight:600}
+.bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--line-2);margin:16px 0 10px;gap:2px}
+.bar i{display:block;min-width:4px}
+.bar .o{background:var(--bad)}
+.bar .s{background:var(--warn)}
+.bar .k{background:var(--plan)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--ink-2);font-size:12.5px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.stat small{display:block;color:var(--ink-3);font-size:12px;line-height:1.3}
+.stat b{display:block;margin-top:3px;font:600 24px/1.1 var(--mono);letter-spacing:-.02em}
+.stat em{display:block;margin-top:3px;font-style:normal;font-size:12px;color:var(--ink-3)}
+.stat.good b{color:var(--good)}
+.stat.warn b{color:var(--warn)}
+.stat.bad b{color:var(--bad)}
+.qlist{padding:6px 8px 8px}
+.qrow{display:grid;grid-template-columns:12px minmax(0,1.1fr) minmax(0,1.2fr) 112px auto;align-items:center;gap:14px;padding:11px 10px;border-radius:9px;cursor:pointer}
+.qrow:hover{background:var(--surface-2)}
+.qrow+.qrow{border-top:1px solid var(--line-2)}
+.q-m{display:flex;align-items:center;gap:8px;min-width:0}
+.q-mi{min-width:0;flex:1}
+.q-mi b,.q-mi small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-mi small{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--ink-2)}
+.q-t{min-width:0}
+.q-t b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.q-t small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-t small,.q-d small{color:var(--ink-3)}
+.q-d b{display:block;font-size:13px}
+.q-d.overdue b{color:var(--bad)}
+.q-d.soon b{color:var(--warn)}
+.rank-list{padding:8px 8px 10px}
+.rk-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto 12px;gap:10px;align-items:center;padding:8px 10px;border-radius:9px;cursor:pointer}
+.rk-row:hover{background:var(--surface-2)}
+.rk-n{font:600 13px var(--mono);color:var(--ink-3)}
+.rk-row:nth-child(-n+3) .rk-n{color:var(--ink)}
+.rk-t{min-width:0}
+.rk-t b,.rk-t small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-t small{color:var(--ink-3)}
+.tipcard{padding:18px;display:flex;flex-direction:column;gap:8px}
+.tipcard .lab{display:flex;align-items:center;gap:8px;color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.tipcard h3{font-size:15px;line-height:1.35;text-wrap:balance}
+.tipcard p{color:var(--ink-2);font-size:13.5px;line-height:1.6}
+.tipcard .more{align-self:flex-start;margin-top:4px}
+
+/* ---- Zaman çizelgesi ---- */
+.tl-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 12px;color:var(--ink-2);font-size:12.5px}
+.tl-legend span{display:inline-flex;align-items:center;gap:7px}
+.tl-legend i{display:inline-block;width:16px;height:10px;border-radius:5px}
+.tl-legend .l-o{background:var(--bad)}
+.tl-legend .l-s{background:var(--warn)}
+.tl-legend .l-k{background:var(--plan)}
+.tl-legend .l-p{border:1.5px dashed var(--plan)}
+.tl-legend .l-w{background:repeating-linear-gradient(135deg,var(--warn-soft) 0 3px,transparent 3px 6px);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--warn) 60%,transparent)}
+.tl-card{overflow:hidden}
+.tl{overflow-x:auto;overscroll-behavior-x:contain}
+.tl-in{position:relative;width:calc(var(--lw) + var(--W))}
+.tl-head{display:flex;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.tl-corner{position:sticky;left:0;z-index:5;flex:none;width:var(--lw);padding:0 14px 7px;display:flex;align-items:flex-end;background:var(--surface-2);border-right:1px solid var(--line);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tl-scale{position:relative;flex:none;width:var(--W);height:54px}
+.tl-month{position:absolute;top:0;height:27px;border-left:1px solid var(--line);padding:5px 8px;font-size:12px;font-weight:600;color:var(--ink-2);overflow:hidden;white-space:nowrap}
+.tl-wk{position:absolute;top:32px;transform:translateX(-50%);font:500 11px var(--mono);color:var(--ink-3)}
+.tl-today-tag{position:absolute;bottom:4px;transform:translateX(-50%);padding:1px 8px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:600;z-index:2}
+.tl-body{position:relative}
+.tl-grid{position:absolute;top:0;bottom:0;pointer-events:none;z-index:0}
+.tl-grid i{position:absolute;top:0;bottom:0}
+.g-w{border-left:1px solid var(--line-2)}
+.g-m{border-left:1px solid var(--line)}
+.g-we{background:var(--surface-2);opacity:.7}
+.g-today{border-left:2px solid var(--accent);opacity:.85}
+.tl-row{position:relative;z-index:1;display:flex;border-bottom:1px solid var(--line-2)}
+.tl-row:last-child{border-bottom:0}
+.tl-name{position:sticky;left:0;z-index:4;flex:none;width:var(--lw);display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;background:var(--surface);border-right:1px solid var(--line);cursor:pointer}
+.tl-name:hover{background:var(--surface-2)}
+.tl-name .rk{font:600 12px var(--mono);color:var(--ink-3);width:22px;flex:none}
+.tl-name div{min-width:0;flex:1}
+.tl-name b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.tl-name small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl-name small{color:var(--ink-3);font-family:var(--mono);font-size:11px}
+.tl-lane{position:relative;flex:none;width:var(--W)}
+.tl-mark{--c:var(--plan);--ci:var(--plan-ink);position:absolute;z-index:3;display:flex;align-items:center;gap:6px;height:22px;max-width:150px;padding:0 9px 0 6px;border:1.5px solid var(--c);border-radius:11px;background:var(--c);color:var(--ci);font-size:11.5px;font-weight:600;white-space:nowrap}
+.tl-mark.overdue{--c:var(--bad);--ci:var(--bad-ink)}
+.tl-mark.soon{--c:var(--warn);--ci:var(--warn-ink)}
+.tl-mark i{width:8px;height:8px;border-radius:50%;background:var(--ci);flex:none}
+.tl-mark span{overflow:hidden;text-overflow:ellipsis}
+.tl-mark.proj{background:var(--surface);color:var(--c);border-style:dashed}
+.tl-mark.proj i{background:var(--c)}
+.tl-mark.dot-only{width:16px;height:16px;padding:0;justify-content:center;border-radius:50%;margin-top:3px}
+.tl-mark.dot-only i{width:6px;height:6px}
+.tl-mark:hover{z-index:6;filter:brightness(1.1);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.tl-lead{position:absolute;z-index:2;height:10px;border-radius:5px;background:repeating-linear-gradient(135deg,var(--warn-soft) 0 3px,transparent 3px 6px);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--warn) 60%,transparent)}
+.tl-lead.over{background:var(--bad-soft);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--bad) 55%,transparent)}
+.tl-none{position:absolute;left:12px;top:12px;color:var(--ink-3);font-size:12px}
+
+/* ---- Makineler ---- */
+.mlist{overflow:hidden}
+.mrow{display:grid;grid-template-columns:44px minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.2fr) auto;gap:16px;align-items:center;padding:14px 18px}
+.mrow+.mrow{border-top:1px solid var(--line-2)}
+.mrow .big{font:600 22px var(--mono);color:var(--ink-3);letter-spacing:-.03em}
+.mrow:nth-child(-n+3) .big{color:var(--ink)}
+.m-name b{display:block}
+.m-name small{color:var(--ink-3);font-family:var(--mono);font-size:11.5px}
+.m-score{display:flex;align-items:center;gap:10px}
+.facs{display:inline-flex;align-items:flex-end;gap:3px;height:22px}
+.facs i{display:block;width:5px;border-radius:2px;background:var(--ink-3);opacity:.85}
+.m-score small{font:500 12px var(--mono);color:var(--ink-2)}
+.m-next small{display:block;color:var(--ink-3);margin-top:3px}
+.m-act{display:flex;gap:6px}
+.howto{margin-bottom:14px;padding:14px 16px;font-size:13px;color:var(--ink-2)}
+.howto b{color:var(--ink)}
+
+/* ---- Planlar ---- */
+.plist{overflow:hidden}
+.prow{display:grid;grid-template-columns:116px minmax(0,1.1fr) minmax(0,1.4fr) 128px 150px auto;gap:14px;align-items:center;padding:12px 18px;cursor:pointer}
+.prow:hover{background:var(--surface-2)}
+.prow+.prow{border-top:1px solid var(--line-2)}
+.prow .p-m{min-width:0}
+.prow .p-t{min-width:0}
+.prow .p-m b,.prow .p-m small,.prow .p-t b,.prow .p-t small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow .p-m small,.prow .p-t small,.prow .p-f,.prow .p-d small{color:var(--ink-3)}
+.prow .p-f{font-size:13px;color:var(--ink-2)}
+.prow .p-d b{display:block;font-size:13px}
+.prow .p-d.overdue b{color:var(--bad)}
+.prow .p-d.soon b{color:var(--warn)}
+.p-act{display:flex;gap:6px}
+
+/* ---- Geçmiş ---- */
+.hrow{display:grid;grid-template-columns:96px minmax(0,1.2fr) minmax(0,1.4fr) 130px minmax(0,1fr);gap:14px;align-items:center;padding:12px 18px}
+.hrow+.hrow{border-top:1px solid var(--line-2)}
+.hrow b,.hrow small{display:block}
+.hrow small{color:var(--ink-3)}
+.hsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:16px}
+.hsum .card{padding:16px 18px}
+
+/* ---- Rehber ---- */
+.guide{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:880px}
+.guide section{padding:22px 24px}
+.guide h2{font-size:17px;letter-spacing:-.015em;margin-bottom:6px}
+.guide .lead{color:var(--ink-2);margin-bottom:14px;max-width:68ch}
+.guide p{max-width:68ch;color:var(--ink-2)}
+.steps{display:grid;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:12px;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 13px var(--mono)}
+.steps b{display:block}
+.steps span{color:var(--ink-2)}
+.tbl{overflow-x:auto;margin-top:10px}
+.tbl table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.tbl th{text-align:left;padding:8px 10px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:nth-child(-n+4){white-space:nowrap}
+.rules{display:grid;gap:14px}
+.rules li{max-width:68ch}
+.rules b{display:block;color:var(--ink);margin-bottom:2px}
+.rules span{color:var(--ink-2)}
+.factors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.factors div{padding:12px 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line-2)}
+.factors b{display:block;font-size:13px}
+.factors span{font-size:12.5px;color:var(--ink-2)}
+
+/* ---- Ayarlar ---- */
+.set{display:grid;gap:16px;max-width:820px}
+.set section{padding:20px 22px}
+.set h2{font-size:15px;margin-bottom:4px}
+.set .sub{color:var(--ink-2);font-size:13px;margin-bottom:14px;max-width:62ch}
+.set .btns{display:flex;flex-wrap:wrap;gap:8px}
+.set .row3{max-width:480px}
+.note{margin-top:10px;font-size:12.5px;color:var(--ink-3);max-width:62ch}
+.ok-txt{color:var(--good);font-weight:600}
+
+/* ---- Pencere, açılır panel, toast ---- */
+dialog{padding:0;border:0;border-radius:14px;width:min(580px,calc(100vw - 24px));max-height:calc(100vh - 24px);background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(8,15,22,.55)}
+.dlg{display:flex;flex-direction:column;max-height:calc(100vh - 24px)}
+.dlg-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 4px}
+.dlg-h h2{font-size:17px;letter-spacing:-.015em;line-height:1.3}
+.dlg-h p{color:var(--ink-3);font-size:13px;margin-top:2px}
+.dlg-b{padding:14px 20px 8px;overflow-y:auto;display:grid;gap:14px}
+.dlg-f{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:14px 20px 18px}
+.dlg-f .sp{margin-right:auto}
+.kv{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 14px;font-size:13px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.mini{display:grid;gap:6px;font-size:13px}
+.mini li{display:flex;justify-content:space-between;gap:12px;padding:7px 10px;border-radius:8px;background:var(--surface-2)}
+.mini li small{color:var(--ink-3)}
+.dlg h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.scoreprev{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--accent-line)}
+.scoreprev b{font:600 20px var(--mono)}
+.scoreprev span{font-size:13px;color:var(--ink-2)}
+.pop{position:fixed;z-index:60;top:68px;right:max(16px,calc((100vw - 1400px)/2 + 16px));width:min(400px,calc(100vw - 32px));max-height:calc(100vh - 90px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.pop-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px}
+.pop-h b{font-size:14px}
+.pop .it{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 16px;cursor:pointer}
+.pop .it:hover{background:var(--surface-2)}
+.pop .it+.it{border-top:1px solid var(--line-2)}
+.pop .it b,.pop .it small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pop .it small{color:var(--ink-3)}
+.pop-f{padding:10px 16px 14px}
+.toast{position:fixed;left:50%;bottom:24px;z-index:80;transform:translate(-50%,20px);max-width:calc(100vw - 32px);padding:11px 18px;border-radius:10px;background:var(--ink);color:var(--surface);font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+textarea.code{height:220px;font:12px/1.5 var(--mono)}
+
+/* ---- Dar ekran ---- */
+@media (max-width:1180px){
+  .grid-2{grid-template-columns:minmax(0,1fr)}
+  .qrow{grid-template-columns:12px minmax(0,1fr) 104px auto;gap:6px 12px}
+  .qrow .q-t{grid-column:2;grid-row:2}
+  .qrow .q-m{grid-column:2;grid-row:1}
+  .qrow .dot{grid-row:1}
+  .qrow .q-d{grid-column:3;grid-row:1/3}
+  .qrow .q-a{grid-column:4;grid-row:1/3}
+  .prow{grid-template-columns:116px minmax(0,1fr) minmax(0,1fr) 132px auto}
+  .prow .p-f{display:none}
+}
+@media (max-width:860px){
+  :root{--lw:150px}
+  .app{display:block}
+  .side{display:none}
+  .main{padding:0 16px 96px}
+  .top{padding:14px 0 10px}
+  .top h1{font-size:19px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;overflow-x:auto;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);gap:2px;scrollbar-width:none}
+  .tabbar::-webkit-scrollbar{display:none}
+  .tabbar button{position:relative;flex:1 0 66px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:0;border-radius:8px;background:none;color:var(--ink-3);font-size:11px;font-weight:600}
+  .tabbar button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+  .tabbar .n{position:absolute;top:2px;right:12px;min-width:16px;padding:0 4px;border-radius:99px;background:var(--bad);color:var(--bad-ink);font:600 10px/16px var(--mono)}
+  .strip{grid-template-columns:minmax(0,1fr)}
+  .strip>div+div{border-left:0;border-top:1px solid var(--line)}
+  .strip>div{padding:16px}
+  .btn.primary .lbl{display:none}
+  .btn.primary{padding:0 11px}
+  .tl-name small{display:none}
+  .tl-name{padding:8px 8px 8px 10px;gap:6px}
+  .tl-name .rk{width:18px}
+  .tl-corner{padding:0 10px 7px}
+  .mrow{grid-template-columns:34px minmax(0,1fr) auto;gap:8px 12px;padding:14px}
+  .mrow .m-score{grid-column:2;grid-row:2}
+  .mrow .m-next{grid-column:2/4;grid-row:3}
+  .mrow .m-act{grid-column:3;grid-row:1}
+  .mrow .big{font-size:18px;align-self:start}
+  .prow{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:14px}
+  .prow .p-s{grid-column:1;grid-row:1}
+  .prow .p-t{grid-column:1/3;grid-row:2}
+  .prow .p-m{grid-column:1/3;grid-row:3}
+  .prow .p-d{grid-column:2;grid-row:1;text-align:right}
+  .prow .p-act{grid-column:1/3;grid-row:4;margin-top:4px}
+  .hrow{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}
+  .hrow>*:nth-child(1){grid-column:1;grid-row:1}
+  .hrow>*:nth-child(4){grid-column:2;grid-row:1}
+  .hrow>*:nth-child(2){grid-column:1/3}
+  .hrow>*:nth-child(3){grid-column:1/3}
+  .hrow>*:nth-child(5){grid-column:1/3}
+  .hsum{grid-template-columns:minmax(0,1fr)}
+  .factors{grid-template-columns:minmax(0,1fr)}
+  .guide section{padding:18px}
+  .row3{grid-template-columns:minmax(0,1fr)}
+  .toast{bottom:84px}
+  .pop{right:16px;top:60px}
+  .set section{padding:18px}
+}
+@media (max-width:480px){
+  .qrow{grid-template-columns:12px minmax(0,1fr) auto}
+  .qrow .q-d{grid-column:3;grid-row:1}
+  .qrow .q-a{grid-column:2/4;grid-row:3;justify-self:start}
+  .qrow .q-t{grid-column:2/4}
+  .qrow .q-m{grid-column:2/4}
+  .strip>div+div{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .stat b{font-size:19px}
+  .kv{grid-template-columns:96px minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-gantt" viewBox="0 0 24 24"><path d="M3 3v18M7 7h8M10 12h10M7 17h6"/></symbol>
+    <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 8h6"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7 9l5-5 5 5M5 20h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0b6a73"/><rect x="10" y="12" width="28" height="26" rx="4" fill="none" stroke="#fff" stroke-width="3"/><path d="M10 20h28" stroke="#fff" stroke-width="3"/><path d="M17 8v7M31 8v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M18 29l4.5 4.5L31 25" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>Planlı Bakım</b><small>Takvim</small></div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Ana gezinme"></nav>
+    <div class="side-foot" id="sideFoot"></div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div>
+        <h1 id="pageTitle">Genel Bakış</h1>
+        <p id="pageSub"></p>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="bellBtn" data-act="bell" aria-label="Uyarılar" aria-haspopup="true"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span class="b" id="bellBadge" hidden></span></button>
+        <button class="btn primary" data-act="new-task" aria-label="Yeni bakım planı"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg><span class="lbl">Yeni plan</span></button>
+      </div>
+    </header>
+    <main id="view" tabindex="-1"></main>
+  </div>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Gezinme"></nav>
+<div class="pop" id="pop" hidden></div>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   Yardımcılar
+   ========================================================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+const DAY=864e5;
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());};
+const parseD=s=>{const p=String(s).split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);};
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const diff=(a,b)=>Math.round((a-b)/DAY);
+const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
+function shift(d,n,unit,anchor){
+  if(unit==='gun')return addDays(d,n);
+  if(unit==='hafta')return addDays(d,7*n);
+  const months=unit==='yil'?12*n:n;
+  const r=new Date(d.getFullYear(),d.getMonth()+months,1);
+  const last=new Date(r.getFullYear(),r.getMonth()+1,0).getDate();
+  r.setDate(Math.min(anchor||d.getDate(),last));
+  return r;
+}
+/* Ay sonuna denk gelen sabit takvimli bakımlar (ör. 31'i) kaymasın diye ilk gün saklanır. */
+const anchorOf=t=>t.mode==='after'?0:(+t.day||0);
+const MONTHS=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const MON_S=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const DOW=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const fmtDate=d=>d.getDate()+' '+MON_S[d.getMonth()]+' '+d.getFullYear();
+const fmtShort=d=>d.getDate()+' '+MON_S[d.getMonth()];
+const fmtLong=d=>d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear()+' '+DOW[d.getDay()];
+const trLower=s=>String(s).toLocaleLowerCase('tr');
+
+/* =========================================================
+   Sabitler ve bilgi metinleri
+   ========================================================= */
+const UNIT={gun:'gün',hafta:'hafta',ay:'ay',yil:'yıl'};
+const LOC={gun:'günde',hafta:'haftada',ay:'ayda',yil:'yılda'};
+const ADJ={gun:'Günlük',hafta:'Haftalık',ay:'Aylık',yil:'Yıllık'};
+const STLAB={overdue:'Gecikmiş',soon:'Yaklaşıyor',ok:'Planlı'};
+const STORD={overdue:0,soon:1,ok:2};
+const CATS=['Yağlama','Kontrol ve muayene','Filtre ve sarf değişimi','Temizlik','Kalibrasyon','Yasal periyodik kontrol','Genel revizyon','Diğer'];
+const TITLE_SUG=['Yağlama (gresleme noktaları)','Yağ seviyesi ve sızıntı kontrolü','Hava filtresi değişimi','Hidrolik yağ filtresi değişimi','Kayış ve zincir gerginlik kontrolü','Rulman titreşim ölçümü','Emniyet ventili ve basınç kontrolü','Elektrik pano termal kamera taraması','Topraklama ve izolasyon ölçümü','Kalibrasyon (manometre, sensör)','Soğutma sıvısı değişimi','Acil durdurma ve emniyet devreleri testi','Genel temizlik ve görsel kontrol','Yasal periyodik muayene'];
+const FACTORS=[
+  {k:'safety',   t:'Güvenlik ve çevre',  d:'Arıza insan veya çevre için risk doğurur mu?', o:['Risk yok','Küçük risk','Orta','Yüksek','Can güvenliği veya çevre']},
+  {k:'production',t:'Üretime etkisi',    d:'Makine durursa hat ya da sevkiyat ne olur?',    o:['Etkilemez','Küçük aksama','Hat yavaşlar','Hat durur','Tüm tesis durur']},
+  {k:'repair',   t:'Onarım süresi',      d:'Yedek parça ve onarım ne kadar sürer?',          o:['Aynı gün','1-2 gün','Hafta içi','Haftalar','Aylar (parça ithal)']},
+  {k:'backup',   t:'Alternatifsizlik',   d:'Yerine geçecek makine ya da yedek var mı?',      o:['Yedeği hazır','Elle telafi edilir','Kısmi alternatif','Zor alternatif','Alternatifi yok']}
+];
+const TIPS=[
+  {t:'Her makineyi A sınıfı yapma',b:'A sınıfı makineler toplamın yaklaşık beşte biri olmalı. Hepsi kritikse hiçbiri kritik değildir. Ekip öncelik veremez ve gecikmeler kontrolsüz birikir.'},
+  {t:'Uyarı süresi, işin hazırlık süresi kadar olmalı',b:'Yedek parça temini, iş emri hazırlığı ve duruş izni toplamı kadar önceden uyarı al. Parçası ithal gelen bir makinede 3 gün önceden gelen uyarı, geç kalmış uyarıdır.'},
+  {t:'Küçük ve sık, büyük ve nadirden iyidir',b:'Haftalık on beş dakikalık yağlama ve görsel kontrol, yılda bir yapılan büyük revizyondan daha çok arıza önler. Büyük işi küçük parçalara böl.'},
+  {t:'Yasal muayeneleri ayrı izle',b:'Basınçlı kap, kaldırma-taşıma ekipmanı ve elektrik tesisatı gibi yasal periyodu olan işlerde gecikme tolere edilmez. Kategoriyi "Yasal periyodik kontrol" seç ve uyarı süresini uzun tut.'},
+  {t:'Gecikmenin nedenini yaz',b:'Aynı plan üst üste gecikiyorsa sorun plandadır: süre gerçekçi değil, kaynak yok ya da duruş izni alınamıyor. Nedeni yazmadan çözemezsin.'},
+  {t:'İş tanımı ölçülebilir olsun',b:'"Hidrolik sistemi kontrol et" yerine "yağ seviyesi min çizgisinin üstünde, çalışma basıncı 160 bar, sızıntı yok" yaz. Yapan kişi değişse bile iş aynı yapılır.'},
+  {t:'Tamamlarken bulguyu not düş',b:'"Yapıldı" notları arıza analizinin ham verisidir. Üç ayda üç kez "keçe terliyor" yazıldıysa, arıza gelmeden parçayı değiştir.'},
+  {t:'Aylık gözden geçirmeyi atlama',b:'Hiç bulgu çıkmayan bakımı seyrelt, sürekli bulgu çıkanı sıklaştır. Plan canlı bir belgedir. Yılda bir yazıp bırakılan plan, bir süre sonra gerçeği anlatmaz.'},
+  {t:'Takvimi duruş pencereleriyle kur',b:'Bayram, yıllık duruş ve model değişikliği tarihlerini önceden gör. Ağır bakımları bu pencerelere taşı, üretimin en yoğun haftasına denk getirme.'},
+  {t:'Her planın tek bir sorumlusu olsun',b:'"Bakım ekibi" sorumlu değildir, bir kişidir. İsmi yazılı plan kaybolmaz. Gecikince kime sorulacağı da bellidir.'}
+];
+
+/* =========================================================
+   Durum ve kayıt
+   ========================================================= */
+const KEY='planli-bakim.v1';
+let S=null,memOnly=false;
+const UI={q:'',st:'all',m:'all',sort:'prio',tip:null};
+let route='genel';
+
+const defaults=()=>({lead:{A:14,B:7,C:3},theme:'auto',notify:false,lastNotify:{},tlZoom:'ay3',tlClass:'all',showProj:true});
+function normalize(o){
+  o=o||{};
+  const s=Object.assign(defaults(),o.settings||{});
+  s.lead=Object.assign({A:14,B:7,C:3},s.lead||{});
+  s.lastNotify=s.lastNotify||{};
+  return {v:1,demo:!!o.demo,machines:Array.isArray(o.machines)?o.machines:[],tasks:Array.isArray(o.tasks)?o.tasks:[],history:Array.isArray(o.history)?o.history:[],settings:s};
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));memOnly=false;}catch(e){memOnly=true;}
+}
+function load(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY);}catch(e){memOnly=true;}
+  if(raw){try{S=normalize(JSON.parse(raw));}catch(e){S=null;}}
+  if(!S){S=normalize(demo());save();}
+}
+
+/* =========================================================
+   Hesaplamalar
+   ========================================================= */
+const mById=id=>S.machines.find(m=>m.id===id);
+const score=m=>(+m.safety||1)+(+m.production||1)+(+m.repair||1)+(+m.backup||1);
+const klass=m=>{const s=score(m);return s>=15?'A':s>=10?'B':'C';};
+const ranked=()=>S.machines.slice().sort((a,b)=>score(b)-score(a)||a.name.localeCompare(b.name,'tr'));
+const rankOf=id=>ranked().findIndex(m=>m.id===id)+1;
+const everyOf=t=>Math.max(1,Math.floor(Number(t.every))||1);
+function leadOf(t){
+  if(t.lead!==null&&t.lead!==undefined&&t.lead!==''&&!isNaN(+t.lead))return Math.max(0,+t.lead);
+  const m=mById(t.machineId);
+  return S.settings.lead[m?klass(m):'C'];
+}
+function info(t){
+  const due=parseD(t.due);
+  const left=diff(due,today());
+  const lead=leadOf(t);
+  const st=left<0?'overdue':left<=lead?'soon':'ok';
+  return {due,left,lead,st};
+}
+function enriched(){
+  const out=[];
+  S.tasks.forEach(t=>{const m=mById(t.machineId);if(m)out.push({t,m,i:info(t)});});
+  return out;
+}
+const prio=(a,b)=>STORD[a.i.st]-STORD[b.i.st]||score(b.m)-score(a.m)||a.i.left-b.i.left;
+function nextDue(t,doneD){
+  const every=everyOf(t);
+  if(t.mode==='after')return shift(doneD,every,t.unit);
+  const due=parseD(t.due);
+  let n=1,nd=shift(due,every*n,t.unit,anchorOf(t));
+  while(nd<=doneD&&n<1000){n++;nd=shift(due,every*n,t.unit,anchorOf(t));}
+  return nd;
+}
+function complete(taskId,doneISO,by,note){
+  const t=S.tasks.find(x=>x.id===taskId);
+  if(!t)return null;
+  const m=mById(t.machineId);
+  S.history.unshift({id:uid(),taskId:t.id,machineId:t.machineId,tag:m?m.tag:'',mname:m?m.name:'',title:t.title,due:t.due,done:doneISO,by:by||'',note:note||''});
+  const nd=nextDue(t,parseD(doneISO));
+  t.due=iso(nd);
+  if(by)t.owner=by;
+  save();
+  return nd;
+}
+function compliance(){
+  const from=addDays(today(),-90);
+  const hs=S.history.filter(h=>parseD(h.done)>=from);
+  const ontime=hs.filter(h=>h.done<=h.due).length;
+  const ov=enriched().filter(x=>x.i.st==='overdue'&&x.i.left>=-90).length;
+  const n=hs.length+ov;
+  return n?{pct:Math.round(ontime/n*100),ontime,n}:null;
+}
+function worst(mid,E){
+  const l=E.filter(x=>x.t.machineId===mid);
+  if(!l.length)return 'none';
+  return l.some(x=>x.i.st==='overdue')?'overdue':l.some(x=>x.i.st==='soon')?'soon':'ok';
+}
+function alertItems(){return enriched().filter(x=>x.i.st!=='ok').sort(prio);}
+
+/* =========================================================
+   Örnek veri (tarihler bugüne göre hesaplanır)
+   ========================================================= */
+function demo(){
+  const T=today();
+  const dd=n=>iso(addDays(T,n));
+  const M=(tag,name,area,s,p,r,b)=>({id:uid(),tag,name,area,safety:s,production:p,repair:r,backup:b,notes:''});
+  const m={
+    hpr:M('HPR-01','Hidrolik Pres 400 Ton','Pres Atölyesi',5,5,4,4),
+    cnc:M('CNC-03','CNC Torna Merkezi','Talaşlı İmalat',3,5,4,3),
+    kmp:M('KMP-01','Vidalı Kompresör 75 kW','Yardımcı Tesisler',3,5,3,4),
+    jen:M('JEN-01','Jeneratör 500 kVA','Elektrik Odası',4,3,4,3),
+    asn:M('ASN-01','Yük Asansörü','Depo',5,2,3,3),
+    kay:M('KAY-02','Kaynak Robotu','Montaj Hattı',3,4,3,2),
+    sog:M('SOG-01','Soğutma Kulesi','Yardımcı Tesisler',3,3,3,3),
+    enj:M('ENJ-02','Enjeksiyon Makinesi 250T','Plastik Hattı',2,4,3,2),
+    frk:M('FRK-04','Elektrikli Forklift','Depo',4,2,2,2),
+    pkt:M('PKT-01','Paketleme Hattı','Sevkiyat',2,3,2,2),
+    tsl:M('TSL-02','Şerit Testere','Hazırlık',2,2,2,1)
+  };
+  const T1=(k,title,cat,every,unit,mode,due,hours,owner,lead)=>({id:uid(),machineId:m[k].id,title,cat,every,unit,mode,due:dd(due),lead:lead==null?null:lead,owner,hours,notes:''});
+  const tasks=[
+    T1('hpr','Hidrolik yağ seviyesi ve sızıntı kontrolü','Kontrol ve muayene',1,'hafta','fixed',2,0.5,'Mehmet Y.'),
+    T1('hpr','Hidrolik yağ filtresi değişimi','Filtre ve sarf değişimi',3,'ay','after',22,2,'Mehmet Y.'),
+    T1('hpr','Piston keçeleri ve basınç testi','Genel revizyon',12,'ay','fixed',48,6,'Ekip A'),
+    T1('cnc','Kılavuz ray yağlaması','Yağlama',2,'hafta','fixed',1,0.5,'Selin K.'),
+    T1('cnc','Soğutma sıvısı değişimi ve tank temizliği','Temizlik',3,'ay','fixed',27,3,'Selin K.'),
+    T1('cnc','Geometri ve rulman titreşim ölçümü','Kalibrasyon',6,'ay','fixed',74,4,'Dış servis'),
+    T1('kmp','Hava filtresi ve yağ seviyesi kontrolü','Kontrol ve muayene',1,'ay','fixed',-3,1,'Okan T.'),
+    T1('kmp','Yağ ve separatör değişimi','Filtre ve sarf değişimi',6,'ay','after',9,4,'Okan T.'),
+    T1('kmp','Emniyet ventili ve basınç kontrolü','Yasal periyodik kontrol',12,'ay','fixed',96,2,'Dış servis'),
+    T1('jen','Boşta çalıştırma testi','Kontrol ve muayene',1,'hafta','fixed',5,0.5,'Okan T.'),
+    T1('jen','Yağ, filtre ve akü kontrolü','Filtre ve sarf değişimi',6,'ay','fixed',33,3,'Okan T.'),
+    T1('asn','Yasal periyodik muayene','Yasal periyodik kontrol',12,'ay','fixed',17,2,'Dış kuruluş',30),
+    T1('asn','Halat ve fren kontrolü','Kontrol ve muayene',3,'ay','fixed',35,2,'Dış servis'),
+    T1('kay','Kaynak nozulu ve tabanca ucu değişimi','Filtre ve sarf değişimi',2,'hafta','fixed',4,1,'Selin K.'),
+    T1('kay','Robot kablo paketi ve yağ kontrolü','Kontrol ve muayene',6,'ay','fixed',110,3,'Dış servis'),
+    T1('sog','Havuz temizliği ve su kimyası','Temizlik',1,'ay','fixed',13,2,'Mehmet Y.'),
+    T1('sog','Fan kayışı ve motor yağlaması','Yağlama',3,'ay','fixed',40,2,'Mehmet Y.'),
+    T1('enj','Kalıp bölgesi ve ısıtıcı bant kontrolü','Kontrol ve muayene',1,'ay','fixed',-9,1.5,'Selin K.'),
+    T1('enj','Vida ve silindir temizliği','Temizlik',6,'ay','fixed',58,6,'Ekip A'),
+    T1('frk','Akü suyu ve şarj kontrolü','Kontrol ve muayene',2,'hafta','fixed',11,0.5,'Depo ekibi'),
+    T1('frk','Yasal periyodik muayene','Yasal periyodik kontrol',12,'ay','fixed',62,1,'Dış kuruluş'),
+    T1('pkt','Bant, rulo ve sensör temizliği','Temizlik',1,'hafta','fixed',6,0.5,'Depo ekibi'),
+    T1('pkt','Motor ve redüktör yağlaması','Yağlama',3,'ay','fixed',21,1.5,'Depo ekibi'),
+    T1('tsl','Bıçak değişimi ve soğutma sıvısı','Filtre ve sarf değişimi',1,'ay','fixed',8,1,'Selin K.'),
+    T1('tsl','Genel temizlik ve yağlama','Yağlama',3,'ay','fixed',50,1,'Selin K.')
+  ];
+  const mk=Object.keys(m).map(k=>m[k]);
+  const hist=[];
+  const pat=[0,0,0,1,0,0,0,0,0,2,0,0,0,0,0];
+  let n=0;
+  tasks.forEach(tk=>{
+    const small=tk.unit==='hafta'||tk.unit==='gun'||(tk.unit==='ay'&&tk.every===1);
+    if(!small)return;
+    const base=parseD(tk.due);
+    for(let k=1;k<=3;k++){
+      const due=shift(base,-tk.every*k,tk.unit);
+      if(diff(due,T)<-85)break;
+      let done=addDays(due,pat[n++%pat.length]);
+      if(done>T)done=due;
+      const mm=mk.find(x=>x.id===tk.machineId);
+      hist.push({id:uid(),taskId:tk.id,machineId:tk.machineId,tag:mm.tag,mname:mm.name,title:tk.title,due:iso(due),done:iso(done),by:tk.owner,note:''});
+    }
+  });
+  hist.sort((a,b)=>a.done<b.done?1:-1);
+  return {demo:true,machines:mk,tasks,history:hist};
+}
+
+/* =========================================================
+   Küçük arayüz parçaları
+   ========================================================= */
+const ic=(n,c)=>'<svg class="ic '+(c||'')+'" aria-hidden="true"><use href="#i-'+n+'"/></svg>';
+const pill=st=>'<span class="pill '+st+'">'+STLAB[st]+'</span>';
+const clsB=k=>'<span class="cls '+k+'" title="Önem sınıfı '+k+'">'+k+'</span>';
+const freq=t=>everyOf(t)===1?ADJ[t.unit]:everyOf(t)+' '+LOC[t.unit]+' bir';
+const dueText=l=>l<0?(-l)+' gün gecikti':l===0?'Bugün':l===1?'Yarın':l+' gün kaldı';
+const tipOfDay=()=>{
+  const d=today();
+  const doy=Math.floor((d-new Date(d.getFullYear(),0,0))/DAY);
+  return TIPS[((UI.tip==null?doy:UI.tip)%TIPS.length+TIPS.length)%TIPS.length];
+};
+const seg=(act,opts,cur)=>'<div class="seg-ctl" role="group">'+opts.map(o=>'<button type="button" data-act="'+act+'" data-v="'+o[0]+'" aria-pressed="'+(cur===o[0])+'">'+o[1]+'</button>').join('')+'</div>';
+const empty=(t,b)=>'<div class="empty"><b>'+t+'</b>'+b+'</div>';
+
+/* =========================================================
+   Görünüm: Genel bakış
+   ========================================================= */
+function qRow(x){
+  const t=x.t,m=x.m,i=x.i;
+  return '<div class="qrow" data-act="open-task" data-id="'+t.id+'" tabindex="0">'
+    +'<span class="dot '+i.st+'"></span>'
+    +'<div class="q-m"><div class="q-mi"><small>'+esc(m.tag)+'</small><b>'+esc(m.name)+'</b></div>'+clsB(klass(m))+'</div>'
+    +'<div class="q-t"><b>'+esc(t.title)+'</b><small>'+esc(t.cat||'')+(t.owner?' · '+esc(t.owner):'')+'</small></div>'
+    +'<div class="q-d '+i.st+'"><b>'+dueText(i.left)+'</b><small>'+fmtDate(i.due)+'</small></div>'
+    +'<div class="q-a"><button class="btn sm done" data-act="done" data-id="'+t.id+'">'+ic('check')+'Yapıldı</button></div>'
+    +'</div>';
+}
+function vGenel(){
+  const E=enriched().sort(prio);
+  const over=E.filter(x=>x.i.st==='overdue'),soon=E.filter(x=>x.i.st==='soon'),ok=E.filter(x=>x.i.st==='ok');
+  const tot=E.length;
+  const load=Math.round(E.filter(x=>x.i.left<=30).reduce((a,x)=>a+(+x.t.hours||0),0)*10)/10;
+  const c=compliance();
+  const head=!tot?'Henüz bakım planı yok. İlk makineyi ve planı ekleyerek başla.'
+    :(over.length||soon.length)?'<b>'+over.length+'</b> gecikmiş, <b>'+soon.length+'</b> yaklaşan bakım var.'
+    :'Uyarı yok. Tüm bakımlar planına uygun.';
+  const bar=tot?'<div class="bar" role="img" aria-label="Gecikmiş '+over.length+', yaklaşan '+soon.length+', planlı '+ok.length+'">'
+    +(over.length?'<i class="o" style="flex:'+over.length+'"></i>':'')
+    +(soon.length?'<i class="s" style="flex:'+soon.length+'"></i>':'')
+    +(ok.length?'<i class="k" style="flex:'+ok.length+'"></i>':'')+'</div>'
+    +'<div class="legend"><span><i class="dot overdue"></i>Gecikmiş '+over.length+'</span><span><i class="dot soon"></i>Yaklaşan '+soon.length+'</span><span><i class="dot"></i>Planlı '+ok.length+'</span></div>':'';
+  const cc=c?(c.pct>=90?'good':c.pct>=75?'warn':'bad'):'';
+  const q=E.filter(x=>x.i.st!=='ok');
+  const nextUp=ok.slice().sort((a,b)=>a.i.left-b.i.left).slice(0,5);
+  const show=(q.length?q:nextUp).slice(0,10);
+  const qTitle=q.length?'Önce bunlara bak':'Sıradaki bakımlar';
+  const qSub=q.length?'Makine önemine göre sıralı · '+q.length+' uyarı':'Uyarı yok · en yakın planlar';
+  const R=ranked().slice(0,7);
+  const tip=tipOfDay();
+  const demoBanner=S.demo?'<div class="banner"><p><b>Örnek veri gösteriliyor.</b> Tarihler bugüne göre hazırlandı. Kendi makinelerini eklemeye başlamadan önce örnekleri temizleyebilirsin.</p><button class="btn sm" data-act="clear-demo">Örnek veriyi temizle</button></div>':'';
+  return demoBanner
+  +'<section class="card strip"><div><h2>'+head+'</h2>'+bar+'</div><div>'
+    +'<div class="stat"><small>30 günlük iş yükü</small><b>'+String(load).replace('.',',')+' sa</b><em>planlanan bakım süresi</em></div>'
+    +'<div class="stat '+cc+'"><small>PM uyum oranı</small><b>'+(c?'%'+c.pct:'-')+'</b><em>'+(c?c.ontime+' / '+c.n+' zamanında':'son 90 gün')+'</em></div>'
+    +'<div class="stat"><small>Makine · plan</small><b>'+S.machines.length+' · '+tot+'</b><em>aktif kayıt</em></div>'
+  +'</div></section>'
+  +'<div class="grid-2"><div class="stack">'
+    +'<section class="card"><div class="card-h"><h2>'+qTitle+'</h2><small>'+qSub+'</small></div>'
+    +'<div class="qlist">'+(show.length?show.map(qRow).join(''):empty('Gösterilecek bakım yok','Yeni plan ekleyerek başla.'))+'</div></section>'
+  +'</div><div class="stack">'
+    +'<section class="card"><div class="card-h"><h2>Makine önem sıralaması</h2><button class="btn sm ghost" data-act="go" data-r="makineler">Tümü</button></div>'
+    +'<div class="rank-list">'+(R.length?R.map((m,i)=>'<div class="rk-row" data-act="edit-machine" data-id="'+m.id+'" tabindex="0"><span class="rk-n">'+(i+1)+'</span><div class="rk-t"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+' · '+score(m)+'/20 puan</small></div>'+clsB(klass(m))+'<span class="dot '+worst(m.id,E)+'" title="En kötü durum"></span></div>').join(''):empty('Makine yok','Makineleri ekleyip puanla.'))+'</div></section>'
+    +'<section class="card tipcard"><div class="lab">'+ic('bulb')+'Saha notu</div><h3>'+esc(tip.t)+'</h3><p>'+esc(tip.b)+'</p><button class="btn sm ghost more" data-act="tip-next">Başka not</button></section>'
+  +'</div></div>';
+}
+
+/* =========================================================
+   Görünüm: Zaman çizelgesi
+   ========================================================= */
+const ZOOM={hf:{label:'6 hafta',dayW:28,ahead:42},ay3:{label:'3 ay',dayW:15,ahead:90},ay6:{label:'6 ay',dayW:8,ahead:180}};
+function vZaman(){
+  const z=ZOOM[S.settings.tlZoom]||ZOOM.ay3;
+  const back=14,total=back+z.ahead,dw=z.dayW,W=total*dw;
+  const start=addDays(today(),-back);
+  const todayX=back*dw+dw/2;
+  const showLbl=dw>=15;
+  let mon='',wk='',grid='';
+  for(let d=new Date(start);diff(d,start)<total;){
+    const nx=new Date(d.getFullYear(),d.getMonth()+1,1);
+    const a=diff(d,start),b=Math.min(total,diff(nx,start));
+    mon+='<div class="tl-month" style="left:'+a*dw+'px;width:'+(b-a)*dw+'px">'+MONTHS[d.getMonth()]+' '+d.getFullYear()+'</div>';
+    if(a>0)grid+='<i class="g-m" style="left:'+a*dw+'px"></i>';
+    d=nx;
+  }
+  for(let i=0;i<total;i++){
+    const d=addDays(start,i),dow=d.getDay();
+    if(dow===1){grid+='<i class="g-w" style="left:'+i*dw+'px"></i>';if(showLbl)wk+='<span class="tl-wk" style="left:'+(i*dw+dw/2)+'px">'+d.getDate()+'</span>';}
+    if(showLbl&&(dow===0||dow===6))grid+='<i class="g-we" style="left:'+i*dw+'px;width:'+dw+'px"></i>';
+  }
+  const cf=S.settings.tlClass;
+  const list=ranked().filter(m=>cf==='all'||klass(m)===cf);
+  const rows=list.map(m=>{
+    const rk=rankOf(m.id);
+    const ev=[];
+    S.tasks.filter(t=>t.machineId===m.id).forEach(t=>{
+      const i=info(t),every=everyOf(t);
+      const approx=t.unit==='gun'?every:t.unit==='hafta'?7*every:t.unit==='ay'?30*every:365*every;
+      ev.push({t:t,i:i,idx:diff(i.due,start),proj:false,date:i.due});
+      if(S.settings.showProj&&approx>=7){
+        for(let k=1;k<400;k++){
+          const dt=shift(i.due,every*k,t.unit,anchorOf(t)),idx=diff(dt,start);
+          if(idx>=total)break;
+          if(idx<0)continue;
+          ev.push({t:t,i:Object.assign({},i,{st:'ok'}),idx:idx,proj:true,date:dt,freq:approx});
+        }
+      }
+    });
+    const vis=ev.filter(e=>e.idx<total).sort((a,b)=>Math.max(a.idx,0)-Math.max(b.idx,0));
+    const lanes=[];let marks='',bars='';
+    vis.forEach(e=>{
+      const cx=Math.max(0,e.idx)*dw+dw/2;
+      const left=Math.max(0,cx-8);
+      const lbl=showLbl&&!(e.proj&&e.freq<=14);
+      const wpx=lbl?Math.min(150,34+e.t.title.length*6.3):16;
+      let L=lanes.findIndex(end=>end<=left-4);
+      if(L<0){L=lanes.length;lanes.push(0);}
+      lanes[L]=left+wpx;
+      const y=8+L*28;
+      if(!e.proj){
+        if(e.i.st==='overdue'){
+          if(todayX-cx>2)bars+='<i class="tl-lead over" style="left:'+cx+'px;width:'+(todayX-cx)+'px;top:'+(y+6)+'px"></i>';
+        }else{
+          const a=Math.max(0,(e.idx-e.i.lead)*dw+dw/2);
+          if(cx-a>2)bars+='<i class="tl-lead" style="left:'+a+'px;width:'+(cx-a)+'px;top:'+(y+6)+'px"></i>';
+        }
+      }
+      const tip=m.tag+' · '+e.t.title+' · '+fmtDate(e.date)+(e.proj?' (öngörülen)':e.i.st==='overdue'?' · '+dueText(e.i.left):'');
+      marks+='<button type="button" class="tl-mark '+e.i.st+(e.proj?' proj':'')+(lbl?'':' dot-only')+'" data-act="open-task" data-id="'+e.t.id+'" style="left:'+left+'px;top:'+y+'px" title="'+esc(tip)+'" aria-label="'+esc(tip)+'"><i></i>'+(lbl?'<span>'+esc(e.t.title)+'</span>':'')+'</button>';
+    });
+    const h=Math.max(1,lanes.length)*28+14;
+    return '<div class="tl-row"><div class="tl-name" data-act="edit-machine" data-id="'+m.id+'" title="Makineyi düzenle"><span class="rk">#'+rk+'</span><div><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+'</small></div>'+clsB(klass(m))+'</div>'
+      +'<div class="tl-lane" style="height:'+h+'px">'+bars+marks+(vis.length?'':'<span class="tl-none">Plan yok</span>')+'</div></div>';
+  }).join('');
+  const controls='<div class="toolbar">'
+    +seg('tl-zoom',Object.keys(ZOOM).map(k=>[k,ZOOM[k].label]),S.settings.tlZoom)
+    +seg('tl-class',[['all','Tümü'],['A','A'],['B','B'],['C','C']],S.settings.tlClass)
+    +'<button type="button" class="chip" data-act="tl-proj" aria-pressed="'+!!S.settings.showProj+'">Öngörülen tekrarlar</button>'
+    +'</div>';
+  const legend='<div class="tl-legend"><span><i class="l-o"></i>Gecikmiş</span><span><i class="l-s"></i>Yaklaşıyor</span><span><i class="l-k"></i>Planlı</span><span><i class="l-p"></i>Öngörülen tekrar</span><span><i class="l-w"></i>Uyarı penceresi</span></div>';
+  if(!list.length)return controls+'<div class="card">'+empty('Gösterilecek makine yok',S.machines.length?'Bu sınıfta makine yok.':'Önce makine ve bakım planı ekle.')+'</div>';
+  return controls+legend+'<div class="card tl-card"><div class="tl" id="tl"><div class="tl-in" style="--W:'+W+'px">'
+    +'<div class="tl-head"><div class="tl-corner">Makine · önem sırası</div><div class="tl-scale">'+mon+wk+'<span class="tl-today-tag" style="left:'+todayX+'px">Bugün</span></div></div>'
+    +'<div class="tl-body"><div class="tl-grid" style="left:var(--lw);width:'+W+'px">'+grid+'<i class="g-today" style="left:'+todayX+'px"></i></div>'+rows+'</div>'
+    +'</div></div></div>';
+}
+
+/* =========================================================
+   Görünüm: Makineler
+   ========================================================= */
+function vMakineler(){
+  const E=enriched(),R=ranked();
+  const rows=R.map((m,i)=>{
+    const l=E.filter(x=>x.t.machineId===m.id).sort((a,b)=>a.i.left-b.i.left);
+    const nx=l[0];
+    const facs=FACTORS.map(f=>'<i title="'+f.t+': '+(m[f.k]||1)+'/5" style="height:'+(m[f.k]||1)*20+'%"></i>').join('');
+    return '<div class="mrow"><div class="big">'+(i+1)+'</div>'
+      +'<div class="m-name"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+(m.area?' · '+esc(m.area):'')+' · '+l.length+' plan</small></div>'
+      +'<div class="m-score">'+clsB(klass(m))+'<span class="facs" aria-hidden="true">'+facs+'</span><small>'+score(m)+'/20</small></div>'
+      +'<div class="m-next">'+(nx?pill(nx.i.st)+'<small>'+esc(nx.t.title)+' · '+fmtShort(nx.i.due)+'</small>':'<span class="faint">Henüz plan yok</span>')+'</div>'
+      +'<div class="m-act"><button class="btn sm" data-act="new-task" data-m="'+m.id+'">'+ic('plus')+'Plan</button><button class="btn sm" data-act="edit-machine" data-id="'+m.id+'">'+ic('edit')+'Düzenle</button></div></div>';
+  }).join('');
+  return '<div class="toolbar"><button class="btn primary" data-act="new-machine">'+ic('plus')+'Makine ekle</button></div>'
+    +'<div class="card howto">Sıralama dört faktörün toplamına göre yapılır: <b>güvenlik, üretime etki, onarım süresi, alternatifsizlik</b>. Her biri 1-5 puandır. Toplam <b>15 ve üzeri A</b>, <b>10-14 B</b>, altı <b>C</b> sınıfıdır. Uyarı süreleri sınıfa göre otomatik belirlenir.</div>'
+    +'<div class="card mlist">'+(rows||empty('Henüz makine yok','Makine ekleyerek başla. Her makine için önem puanı girersin.'))+'</div>';
+}
+
+/* =========================================================
+   Görünüm: Bakım planları
+   ========================================================= */
+function planFiltered(){
+  let E=enriched();
+  const q=trLower(UI.q.trim());
+  if(q)E=E.filter(x=>trLower(x.t.title+' '+x.m.name+' '+x.m.tag+' '+(x.t.owner||'')+' '+(x.t.cat||'')).includes(q));
+  if(UI.st!=='all')E=E.filter(x=>x.i.st===UI.st);
+  if(UI.m!=='all')E=E.filter(x=>x.t.machineId===UI.m);
+  if(UI.sort==='date')E.sort((a,b)=>a.i.left-b.i.left);
+  else if(UI.sort==='machine')E.sort((a,b)=>a.m.name.localeCompare(b.m.name,'tr')||a.i.left-b.i.left);
+  else E.sort(prio);
+  return E;
+}
+function pRow(x){
+  const t=x.t,m=x.m,i=x.i;
+  return '<div class="prow" data-act="open-task" data-id="'+t.id+'" tabindex="0">'
+    +'<div class="p-s">'+pill(i.st)+'</div>'
+    +'<div class="p-m"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+' · Sınıf '+klass(m)+'</small></div>'
+    +'<div class="p-t"><b>'+esc(t.title)+'</b><small>'+esc(t.cat||'')+(t.owner?' · '+esc(t.owner):'')+(t.hours?' · '+t.hours+' sa':'')+'</small></div>'
+    +'<div class="p-f">'+freq(t)+'<br><small>'+(t.mode==='after'?'Yapıldığı tarihten':'Sabit takvim')+'</small></div>'
+    +'<div class="p-d '+i.st+'"><b>'+dueText(i.left)+'</b><small>'+fmtDate(i.due)+'</small></div>'
+    +'<div class="p-act"><button class="btn sm done" data-act="done" data-id="'+t.id+'">'+ic('check')+'Yapıldı</button><button class="btn sm ghost" data-act="edit-task" data-id="'+t.id+'" aria-label="Planı düzenle">'+ic('edit')+'</button></div></div>';
+}
+function renderPlanList(){
+  const el=$('#planList');if(!el)return;
+  const E=planFiltered();
+  el.innerHTML=E.length?E.map(pRow).join(''):empty('Eşleşen plan yok',S.tasks.length?'Filtreleri değiştirip tekrar dene.':'Yeni plan ekleyerek başla.');
+}
+function vPlanlar(){
+  const all=enriched();
+  const cnt=k=>all.filter(x=>x.i.st===k).length;
+  const chip=(v,l,n)=>'<button type="button" class="chip" data-act="flt-st" data-v="'+v+'" aria-pressed="'+(UI.st===v)+'">'+l+' <i>'+n+'</i></button>';
+  return '<div class="toolbar">'
+    +'<label class="search">'+ic('search')+'<input type="search" id="fq" placeholder="Makine, plan veya sorumlu ara" value="'+esc(UI.q)+'" aria-label="Ara"></label>'
+    +'<div class="chips">'+chip('all','Tümü',all.length)+chip('overdue','Gecikmiş',cnt('overdue'))+chip('soon','Yaklaşan',cnt('soon'))+chip('ok','Planlı',cnt('ok'))+'</div>'
+    +'</div><div class="toolbar">'
+    +'<select id="fm" aria-label="Makine"><option value="all">Tüm makineler</option>'+ranked().map(m=>'<option value="'+m.id+'"'+(UI.m===m.id?' selected':'')+'>'+esc(m.tag+' · '+m.name)+'</option>').join('')+'</select>'
+    +'<select id="fs" aria-label="Sıralama"><option value="prio"'+(UI.sort==='prio'?' selected':'')+'>Sırala: Önem ve tarih</option><option value="date"'+(UI.sort==='date'?' selected':'')+'>Sırala: Yaklaşan tarih</option><option value="machine"'+(UI.sort==='machine'?' selected':'')+'>Sırala: Makine adı</option></select>'
+    +'</div><div class="card plist" id="planList"></div>';
+}
+
+/* =========================================================
+   Görünüm: Geçmiş
+   ========================================================= */
+function vGecmis(){
+  const H=S.history.slice().sort((a,b)=>a.done<b.done?1:a.done>b.done?-1:0);
+  const d90=H.filter(h=>diff(today(),parseD(h.done))<=90);
+  const late=d90.filter(h=>h.done>h.due);
+  const avg=late.length?Math.round(late.reduce((a,h)=>a+diff(parseD(h.done),parseD(h.due)),0)/late.length):0;
+  const pct=d90.length?Math.round((d90.length-late.length)/d90.length*100):null;
+  const rows=H.slice(0,300).map(h=>{
+    const l=diff(parseD(h.done),parseD(h.due));
+    return '<div class="hrow"><div><b>'+fmtShort(parseD(h.done))+'</b><small>'+parseD(h.done).getFullYear()+'</small></div>'
+      +'<div><b>'+esc(h.mname||'-')+'</b><small class="mono">'+esc(h.tag||'')+'</small></div>'
+      +'<div><b>'+esc(h.title)+'</b><small>Planlanan: '+fmtDate(parseD(h.due))+'</small></div>'
+      +'<div>'+(l<=0?'<span class="pill good">Zamanında</span>':'<span class="pill soon">'+l+' gün geç</span>')+'</div>'
+      +'<div><b>'+esc(h.by||'-')+'</b><small>'+esc(h.note||'')+'</small></div></div>';
+  }).join('');
+  return '<div class="hsum"><div class="card stat"><small>Son 90 günde tamamlanan</small><b>'+d90.length+'</b></div>'
+    +'<div class="card stat '+(pct==null?'':pct>=90?'good':pct>=75?'warn':'bad')+'"><small>Zamanında tamamlama</small><b>'+(pct==null?'-':'%'+pct)+'</b></div>'
+    +'<div class="card stat"><small>Geç kalanlarda ortalama gecikme</small><b>'+avg+' gün</b></div></div>'
+    +'<div class="card">'+(rows||empty('Henüz tamamlanmış bakım yok','Bir planda "Yapıldı" düğmesine bastığında kayıt buraya düşer.'))+'</div>';
+}
+
+/* =========================================================
+   Görünüm: Rehber (saha tecrübesi)
+   ========================================================= */
+function vRehber(){
+  const step=(a,b)=>'<li><div><b>'+a+'</b><span>'+b+'</span></div></li>';
+  return '<div class="guide">'
+  +'<section class="card"><h2>Bu uygulamayı nasıl kullanmalı</h2><p class="lead">İlk kurulum yarım saat sürer. Sonrasında haftada on dakika yeter.</p><ol class="steps">'
+    +step('Makineleri ekle ve puanla','Makineler sayfasında her makineye dört faktörden puan ver. Önem sıralaması ve uyarı süresi buradan çıkar.')
+    +step('Her makineye 2-5 plan gir','Önce üreticinin kılavuzundaki zorunlu bakımları, sonra kendi tecrübenden gelen kontrolleri yaz. Çok plan girip hiçbirini yapmamak, az plan girip hepsini yapmaktan kötüdür.')
+    +step('Uyarıları aç','Ayarlar sayfasından tarayıcı bildirimlerini aç ve takvim dosyasını telefonuna ekle. Uygulama kapalıyken seni uyaran takvimdir.')
+    +step('Haftada bir "Önce bunlara bak" listesini gözden geçir','Gecikmiş ve yaklaşanları sorumlulara dağıt, yapılanları işaretle, bulguları nota yaz.')
+  +'</ol></section>'
+  +'<section class="card"><h2>Makine önemi nasıl belirlenir</h2><p class="lead">Önem, makinenin ne kadar değerli olduğu değil, bozulduğunda ne kadar acıttığıdır. Dört soruya 1-5 puan ver, toplamı sınıfı belirler.</p>'
+    +'<div class="factors">'+FACTORS.map(f=>'<div><b>'+f.t+'</b><span>'+f.d+'</span></div>').join('')+'</div>'
+    +'<div class="tbl"><table><thead><tr><th>Sınıf</th><th>Puan</th><th>Uyarı</th><th>Uyum hedefi</th><th>Yaklaşım</th></tr></thead><tbody>'
+    +'<tr><td>'+clsB('A')+'</td><td>15-20</td><td>14-21 gün</td><td>%95 ve üzeri</td><td>Önleyici bakım ve durum izleme (titreşim, sıcaklık, basınç). Kritik yedek parça stokta tutulur.</td></tr>'
+    +'<tr><td>'+clsB('B')+'</td><td>10-14</td><td>7-10 gün</td><td>%90 ve üzeri</td><td>Takvimli önleyici bakım. Yedek parça ihtiyaç doğunca sipariş edilir.</td></tr>'
+    +'<tr><td>'+clsB('C')+'</td><td>4-9</td><td>3-5 gün</td><td>%80 ve üzeri</td><td>Basit rutin kontrol ve temizlik. Bozulunca onarmak çoğu zaman daha ucuzdur.</td></tr>'
+    +'</tbody></table></div>'
+    +'<p style="margin-top:12px">Uygulamanın varsayılan uyarı süreleri 14, 7 ve 3 gündür. Ayarlar sayfasından kendi fabrikana göre değiştirebilirsin.</p></section>'
+  +'<section class="card"><h2>Sabit takvim mi, yapıldığı tarihten mi?</h2><p class="lead">Her planda bu seçimi yaparsın. Yanlış seçim, planın zamanla gerçeğe uymamasına yol açar.</p>'
+    +'<ul class="rules"><li><b>Sabit takvim</b><span>Yağlama, muayene, kalibrasyon ve yasal kontroller için. Bir hafta geç yaptın diye bir sonraki tarih kaymaz. Kaçırılan dönemler atlanır, sıradaki tarih bugünden sonraki ilk tarih olur.</span></li>'
+    +'<li><b>Yapıldığı tarihten</b><span>Filtre, yağ ve sarf malzemesi değişimi için. Aşınma gerçek değişim tarihinden itibaren başlar. İki hafta geç değiştirdiysen yeni ömrü o günden say.</span></li></ul></section>'
+  +'<section class="card"><h2>Altın kurallar</h2><p class="lead">Fabrikalarda tekrar tekrar gördüğüm, işe yarayan alışkanlıklar.</p><ul class="rules">'
+    +TIPS.map(t=>'<li><b>'+esc(t.t)+'</b><span>'+esc(t.b)+'</span></li>').join('')+'</ul></section>'
+  +'<section class="card"><h2>PM uyum oranını nasıl okumalı</h2><p class="lead">Uyum oranı, zamanında tamamlanan bakımın planlanan bakıma oranıdır.</p>'
+    +'<p>Genel Bakış sayfasındaki oran son 90 günde tamamlananları ve hâlâ gecikmiş olanları baz alır. %90 üzeri sağlıklıdır. %75 altı, planın gerçekçi olmadığını ya da kaynağın yetmediğini gösterir. Oranı yükseltmek için önce gereksiz bakımları sil, sonra kalanlara kişi ata. Plansız arıza işlerinin toplam bakım içindeki payını da izle. Sağlıklı bir tesiste plansız iş payı beşte birin altına iner.</p></section>'
+  +'<section class="card"><h2>Sık yapılan hatalar</h2><ul class="rules">'
+    +'<li><b>Bütün planları ilk gün girip bir daha açmamak</b><span>Plan bir belgedir, abonelik değil. Her ay değişen koşullara göre güncelle.</span></li>'
+    +'<li><b>Uyarıları görmezden gelmek</b><span>Her gün on kırmızı uyarı gören ekip, ilk haftadan sonra bakmayı bırakır. Az ama doğru uyarı ver, uyarı süresini şişirme.</span></li>'
+    +'<li><b>Yalnızca takvime güvenmek</b><span>A sınıfı makinelerde takvimin yanına ölçüm ekle: titreşim, sıcaklık, yağ analizi. Takvim ortalamayı bilir, makine kendi durumunu bilir.</span></li>'
+    +'<li><b>Tamamlanan işi kayıt altına almamak</b><span>Kaydı olmayan bakım yapılmamış sayılır. Denetimde de arıza analizinde de tek kanıt kayıttır.</span></li></ul></section>'
+  +'</div>';
+}
+
+/* =========================================================
+   Görünüm: Ayarlar
+   ========================================================= */
+const inFrame=()=>{try{return window.self!==window.top;}catch(e){return true;}};
+function notifState(){
+  if(!('Notification' in window))return 'unsupported';
+  return Notification.permission;
+}
+function vAyarlar(){
+  const ns=notifState(),on=S.settings.notify&&ns==='granted';
+  const nTxt=ns==='unsupported'?'Bu tarayıcı bildirimleri desteklemiyor.'
+    :ns==='denied'?'Tarayıcı izni reddedilmiş. Adres çubuğundaki site ayarlarından izin verebilirsin.'
+    :on?'<span class="ok-txt">Açık.</span> Uygulama açıkken günde bir kez, gecikmiş ve yaklaşan bakımlar için bildirim gelir.'
+    :'Kapalı.';
+  const framed=inFrame();
+  const lead=['A','B','C'].map(k=>'<label class="fld"><span>Sınıf '+k+' uyarı (gün)</span><input type="number" min="0" max="365" data-lead="'+k+'" value="'+S.settings.lead[k]+'"></label>').join('');
+  return '<div class="set">'
+  +'<section class="card"><h2>Uyarı süreleri</h2><p class="sub">Bir bakıma kaç gün kala "Yaklaşıyor" durumuna geçsin? Her planda ayrıca kendi süreni girebilirsin.</p><div class="row3">'+lead+'</div></section>'
+  +'<section class="card"><h2>Bildirim ve takvim</h2><p class="sub">'+nTxt+'</p><div class="btns">'
+    +'<button class="btn" data-act="notify-toggle">'+ic('bell')+(on?'Bildirimleri kapat':'Bildirimleri aç')+'</button>'
+    +(on?'<button class="btn" data-act="notify-test">Test bildirimi gönder</button>':'')
+    +'<button class="btn" data-act="export-ics">'+ic('cal')+'Takvime ekle (.ics)</button></div>'
+    +'<p class="note">Bildirimler yalnızca uygulama bir sekmede açıkken ya da ana ekrana eklenmişken çalışır, çünkü bu sürümde sunucu yoktur. Uygulama kapalıyken uyarı almanın güvenilir yolu takvim dosyasıdır. Dosyayı Google Takvim, Outlook veya telefon takvimine aktarırsan her bakım için uyarı süresinden önce ve bakım günü sabahı hatırlatma gelir. Planları değiştirdikten sonra dosyayı yeniden aktar.</p></section>'
+  +'<section class="card"><h2>Görünüm</h2><p class="sub">Varsayılan olarak cihazının tema ayarını izler.</p>'+seg('theme',[['auto','Otomatik'],['light','Açık'],['dark','Koyu']],S.settings.theme)+'</section>'
+  +'<section class="card"><h2>Veri</h2><p class="sub">Veriler yalnızca bu tarayıcıda saklanır. Hesap ve sunucu yoktur. Başka bir cihazda açmak için yedek dosyası ya da paylaşım bağlantısı kullan.</p><div class="btns">'
+    +'<button class="btn" data-act="export-json">'+ic('download')+'Yedekle (.json)</button>'
+    +'<button class="btn" data-act="import-json">'+ic('upload')+'Yedekten yükle</button>'
+    +(framed?'':'<button class="btn" data-act="share-link">'+ic('link')+'Paylaşım bağlantısı kopyala</button>')
+    +'<input type="file" id="impFile" accept=".json,application/json" hidden></div>'
+    +'<div class="btns" style="margin-top:8px"><button class="btn" data-act="load-demo">Örnek veriyi yükle</button><button class="btn" data-act="reset-all">Tüm verileri sil</button></div>'
+    +'<p class="note">'+(framed?'Paylaşım bağlantısı yalnızca yayınlanmış sitede kullanılabilir. ':'Paylaşım bağlantısı, tüm kayıtları adresin içine gömer. Bağlantıyı açan kişi veriyi kendi tarayıcısına yükleyebilir. Bağlantıyı yalnızca güvendiğin kişilerle paylaş. ')+'Ortak ve canlı bir veritabanı gerekiyorsa küçük bir ücretsiz sunucu katmanı (ör. Google E-Tablolar veya Supabase) eklenebilir.</p></section>'
+  +'</div>';
+}
+
+/* =========================================================
+   Kabuk: yönlendirme, çizim
+   ========================================================= */
+const VIEWS={
+  genel:{title:'Genel Bakış',sub:()=>fmtLong(today()),r:vGenel},
+  zaman:{title:'Zaman Çizelgesi',sub:()=>'Makineler önem sırasına göre dizili, en kritik olan en üstte',r:vZaman,after:()=>{
+    const el=$('#tl');
+    if(el&&window.innerWidth<860)el.scrollLeft=11*(ZOOM[S.settings.tlZoom]||ZOOM.ay3).dayW;
+  }},
+  makineler:{title:'Makineler',sub:()=>S.machines.length+' makine · önem puanına göre sıralı',r:vMakineler},
+  planlar:{title:'Bakım Planları',sub:()=>S.tasks.length+' plan',r:vPlanlar,after:renderPlanList},
+  gecmis:{title:'Geçmiş',sub:()=>'Tamamlanan bakımlar',r:vGecmis},
+  rehber:{title:'Rehber',sub:()=>'Planlı bakım takibinde saha tecrübesi',r:vRehber},
+  ayarlar:{title:'Ayarlar',sub:()=>'Uyarılar, takvim ve veri',r:vAyarlar}
+};
+const NAV=[['genel','Genel Bakış','Genel','grid'],['zaman','Zaman Çizelgesi','Zaman','gantt'],['makineler','Makineler','Makine','cog'],['planlar','Bakım Planları','Planlar','list'],['gecmis','Geçmiş','Geçmiş','clock'],['rehber','Rehber','Rehber','book'],['ayarlar','Ayarlar','Ayarlar','sliders']];
+function render(){
+  const v=VIEWS[route]||VIEWS.genel;
+  $('#pageTitle').textContent=v.title;
+  $('#pageSub').textContent=v.sub();
+  $('#view').innerHTML=v.r();
+  if(v.after)v.after();
+  chrome();
+}
+function chrome(){
+  const A=alertItems();
+  const over=A.filter(x=>x.i.st==='overdue').length;
+  const badge=A.length?'<span class="n'+(over?' bad':'')+'">'+A.length+'</span>':'';
+  $('#nav').innerHTML=NAV.map(n=>'<button type="button" data-act="go" data-r="'+n[0]+'"'+(route===n[0]?' aria-current="page"':'')+'>'+ic(n[3])+n[1]+(n[0]==='planlar'?badge:'')+'</button>').join('');
+  $('#tabbar').innerHTML=NAV.map(n=>'<button type="button" data-act="go" data-r="'+n[0]+'"'+(route===n[0]?' aria-current="page"':'')+'>'+ic(n[3])+'<span>'+n[2]+'</span>'+(n[0]==='planlar'&&A.length?'<span class="n">'+A.length+'</span>':'')+'</button>').join('');
+  const b=$('#bellBadge');
+  b.hidden=!A.length;b.textContent=A.length;b.className='b'+(over?'':' warn');
+  document.title=(A.length?'('+A.length+') ':'')+'Planlı Bakım Takvimi';
+  $('#sideFoot').innerHTML=memOnly
+    ?'<b>Kayıt yapılamıyor.</b> Tarayıcı depolamayı engelliyor. Yedeklemeden sayfayı kapatma.'
+    :'<b>Veriler bu cihazda.</b> Hesap ve sunucu yok. Düzenli yedek almayı unutma.<br><button class="btn sm" style="margin-top:8px" data-act="export-json">Yedekle</button>';
+}
+function nav(r){
+  if(!VIEWS[r])return;
+  route=r;
+  $('#pop').hidden=true;
+  try{history.replaceState(null,'','#'+r);}catch(e){}
+  render();
+  window.scrollTo(0,0);
+}
+const origTheme=document.documentElement.getAttribute('data-theme');
+function applyTheme(){
+  const t=S.settings.theme,r=document.documentElement;
+  if(t==='light'||t==='dark')r.setAttribute('data-theme',t);
+  else if(origTheme)r.setAttribute('data-theme',origTheme);
+  else r.removeAttribute('data-theme');
+}
+
+/* =========================================================
+   Pencere, toast, açılır uyarı paneli
+   ========================================================= */
+const dlg=$('#dlg');
+function openDlg(html,onSubmit,setup){
+  dlg.innerHTML=html;
+  if(!dlg.open){try{dlg.showModal();}catch(e){dlg.setAttribute('open','');}}
+  const f=$('form',dlg);
+  if(f&&onSubmit)f.addEventListener('submit',e=>{e.preventDefault();if(onSubmit(new FormData(f),f)!==false)closeDlg();});
+  if(setup)setup(f);
+  const first=$('input:not([type=hidden]),select,textarea',dlg);
+  if(first&&matchMedia('(pointer:fine)').matches)first.focus();
+}
+function closeDlg(){
+  if(dlg.open){try{dlg.close();}catch(e){dlg.removeAttribute('open');}}
+  dlg.innerHTML='';
+}
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeDlg();});
+dlg.addEventListener('cancel',()=>{setTimeout(()=>{dlg.innerHTML='';},0);});
+let toastT=0;
+function toast(msg){
+  const t=$('#toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3400);
+}
+function ask(title,msg,ok){
+  return new Promise(res=>{
+    openDlg('<div class="dlg"><div class="dlg-h"><div><h2>'+esc(title)+'</h2></div></div><div class="dlg-b"><p class="muted">'+esc(msg)+'</p></div><div class="dlg-f"><button class="btn" type="button" id="askNo">Vazgeç</button><button class="btn danger" type="button" id="askYes">'+esc(ok||'Sil')+'</button></div></div>');
+    $('#askYes').onclick=()=>{closeDlg();res(true);};
+    $('#askNo').onclick=()=>{closeDlg();res(false);};
+  });
+}
+const dlgShell=(title,sub,body,foot,formId)=>'<form class="dlg" id="'+(formId||'frm')+'" autocomplete="off"><div class="dlg-h"><div><h2>'+title+'</h2>'+(sub?'<p>'+sub+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="close" aria-label="Kapat">'+ic('x')+'</button></div><div class="dlg-b">'+body+'</div><div class="dlg-f">'+foot+'</div></form>';
+const fld=(label,inner,hint)=>'<label class="fld"><span>'+label+'</span>'+inner+(hint?'<em>'+hint+'</em>':'')+'</label>';
+function togglePop(){
+  const p=$('#pop');
+  if(!p.hidden){p.hidden=true;return;}
+  const A=alertItems();
+  p.innerHTML='<div class="pop-h"><b>Uyarılar ('+A.length+')</b><button type="button" class="btn sm ghost" data-act="pop-close" aria-label="Kapat">'+ic('x')+'</button></div>'
+    +(A.length?A.slice(0,8).map(x=>'<div class="it" data-act="open-task" data-id="'+x.t.id+'" tabindex="0"><span class="dot '+x.i.st+'"></span><div><b>'+esc(x.t.title)+'</b><small>'+esc(x.m.tag)+' · '+dueText(x.i.left)+'</small></div><button class="btn sm done" data-act="done" data-id="'+x.t.id+'">'+ic('check')+'Yapıldı</button></div>').join('')
+      :empty('Uyarı yok','Yaklaşan ya da gecikmiş bakım bulunmuyor.'))
+    +'<div class="pop-f"><button class="btn sm" data-act="go" data-r="planlar">Tüm planları gör</button></div>';
+  p.hidden=false;
+}
+
+/* =========================================================
+   Formlar
+   ========================================================= */
+function machineForm(id){
+  const m=id?mById(id):null;
+  if(id&&!m)return;
+  const d=m||{tag:'',name:'',area:'',safety:3,production:3,repair:3,backup:3,notes:''};
+  const sels=FACTORS.map(f=>fld(f.t,'<select name="'+f.k+'">'+f.o.map((o,i)=>'<option value="'+(i+1)+'"'+((+d[f.k]||3)===i+1?' selected':'')+'>'+(i+1)+' · '+o+'</option>').join('')+'</select>',f.d)).join('');
+  const body='<div class="row2">'+fld('Makine etiketi','<input type="text" name="tag" required maxlength="20" value="'+esc(d.tag)+'" placeholder="HPR-01">')+fld('Makine adı','<input type="text" name="name" required maxlength="60" value="'+esc(d.name)+'" placeholder="Hidrolik Pres 400 Ton">')+'</div>'
+    +fld('Bölüm veya konum','<input type="text" name="area" maxlength="60" value="'+esc(d.area||'')+'" placeholder="Pres Atölyesi">')
+    +'<div><h3>Önem analizi</h3><div class="row2">'+sels+'</div></div>'
+    +'<div class="scoreprev"><b id="spScore"></b><span id="spTxt"></span></div>'
+    +fld('Not','<textarea name="notes" maxlength="400" placeholder="Seri no, üretici, yedek parça tedarikçisi...">'+esc(d.notes||'')+'</textarea>');
+  const foot=(m?'<button type="button" class="btn sp" data-act="del-machine" data-id="'+m.id+'">'+ic('trash')+'Sil</button>':'')+'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">Kaydet</button>';
+  openDlg(dlgShell(m?'Makineyi düzenle':'Makine ekle','Dört faktörün toplamı önem sınıfını belirler.',body,foot),fd=>{
+    const obj={tag:String(fd.get('tag')).trim(),name:String(fd.get('name')).trim(),area:String(fd.get('area')).trim(),notes:String(fd.get('notes')).trim()};
+    FACTORS.forEach(f=>{obj[f.k]=Math.min(5,Math.max(1,+fd.get(f.k)||3));});
+    if(!obj.tag||!obj.name)return false;
+    if(m)Object.assign(m,obj);else S.machines.push(Object.assign({id:uid()},obj));
+    save();render();toast(m?'Makine güncellendi':'Makine eklendi');
+  },f=>{
+    const upd=()=>{
+      const s=FACTORS.reduce((a,x)=>a+(+f.elements[x.k].value||1),0);
+      const k=s>=15?'A':s>=10?'B':'C';
+      $('#spScore').textContent=s+'/20';
+      $('#spTxt').innerHTML='Sınıf '+clsB(k)+' · uyarı '+S.settings.lead[k]+' gün önceden';
+    };
+    f.addEventListener('input',upd);upd();
+  });
+}
+function taskForm(id,presetM){
+  if(!S.machines.length){toast('Önce bir makine ekle.');machineForm();return;}
+  const t=id?S.tasks.find(x=>x.id===id):null;
+  if(id&&!t)return;
+  const d=t||{machineId:presetM||ranked()[0].id,title:'',cat:'Kontrol ve muayene',every:1,unit:'ay',mode:'fixed',due:iso(addDays(today(),7)),lead:'',owner:'',hours:1,notes:''};
+  const cats=CATS.indexOf(d.cat)<0&&d.cat?CATS.concat([d.cat]):CATS;
+  const mo=ranked().map(m=>'<option value="'+m.id+'"'+(m.id===d.machineId?' selected':'')+'>#'+rankOf(m.id)+' · '+esc(m.tag)+' · '+esc(m.name)+'</option>').join('');
+  const co=cats.map(c=>'<option'+(c===d.cat?' selected':'')+'>'+esc(c)+'</option>').join('');
+  const uo=Object.keys(UNIT).map(u=>'<option value="'+u+'"'+(d.unit===u?' selected':'')+'>'+UNIT[u]+'</option>').join('');
+  const body=fld('Makine','<select name="machineId" id="tfM">'+mo+'</select>')
+    +fld('Bakım işi','<input type="text" name="title" required maxlength="100" list="titleSug" value="'+esc(d.title)+'" placeholder="Yağ seviyesi ve sızıntı kontrolü"><datalist id="titleSug">'+TITLE_SUG.map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>','Ölçülebilir yaz: ne kontrol edilecek, hangi değer beklenir?')
+    +'<div class="row2">'+fld('Kategori','<select name="cat">'+co+'</select>')+fld('Takvim türü','<select name="mode"><option value="fixed"'+(d.mode!=='after'?' selected':'')+'>Sabit takvim</option><option value="after"'+(d.mode==='after'?' selected':'')+'>Yapıldığı tarihten</option></select>')+'</div>'
+    +'<div class="row3">'+fld('Her','<input type="number" name="every" min="1" max="999" required value="'+everyOf(d)+'">')+fld('Birim','<select name="unit">'+uo+'</select>')+fld('Sonraki bakım','<input type="date" name="due" required value="'+esc(d.due)+'">')+'</div>'
+    +'<div class="row3">'+fld('Uyarı (gün önce)','<input type="number" name="lead" min="0" max="365" value="'+(d.lead==null?'':esc(d.lead))+'" placeholder="Otomatik">','<span id="leadHint"></span>')+fld('Sorumlu','<input type="text" name="owner" maxlength="40" value="'+esc(d.owner||'')+'" placeholder="Ad Soyad">')+fld('Süre (saat)','<input type="number" name="hours" min="0" step="0.5" value="'+esc(d.hours==null?'':d.hours)+'">')+'</div>'
+    +fld('Not','<textarea name="notes" maxlength="400" placeholder="Kullanılacak malzeme, güvenlik uyarısı, kontrol listesi...">'+esc(d.notes||'')+'</textarea>');
+  const foot=(t?'<button type="button" class="btn sp" data-act="del-task" data-id="'+t.id+'">'+ic('trash')+'Sil</button>':'')+'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">Kaydet</button>';
+  openDlg(dlgShell(t?'Planı düzenle':'Yeni bakım planı','Sıklık dolunca sonraki tarih otomatik hesaplanır.',body,foot),fd=>{
+    const obj={machineId:fd.get('machineId'),title:String(fd.get('title')).trim(),cat:fd.get('cat'),every:Math.max(1,parseInt(fd.get('every'),10)||1),unit:fd.get('unit'),mode:fd.get('mode'),due:fd.get('due'),lead:fd.get('lead')===''?null:Math.max(0,parseInt(fd.get('lead'),10)||0),owner:String(fd.get('owner')).trim(),hours:parseFloat(String(fd.get('hours')).replace(',','.'))||0,notes:String(fd.get('notes')).trim()};
+    if(!obj.title||!obj.due)return false;
+    obj.day=parseD(obj.due).getDate();
+    if(t)Object.assign(t,obj);else S.tasks.push(Object.assign({id:uid()},obj));
+    save();render();toast(t?'Plan güncellendi':'Plan eklendi');
+  },f=>{
+    const hint=()=>{const m=mById(f.elements.machineId.value);const k=m?klass(m):'C';$('#leadHint').textContent='Boşsa sınıf '+k+' için '+S.settings.lead[k]+' gün önce';};
+    f.elements.machineId.addEventListener('change',hint);hint();
+  });
+}
+function doneForm(id){
+  const t=S.tasks.find(x=>x.id===id);
+  if(!t)return;
+  const m=mById(t.machineId);
+  const body='<div class="row2">'+fld('Yapıldığı tarih','<input type="date" name="done" required max="'+iso(today())+'" value="'+iso(today())+'">')+fld('Yapan kişi','<input type="text" name="by" maxlength="40" value="'+esc(t.owner||'')+'" placeholder="Ad Soyad">')+'</div>'
+    +fld('Bulgu ve not','<textarea name="note" maxlength="400" placeholder="Ne bulundu, ne değişti? Tekrarlayan bir sorun varsa yaz."></textarea>')
+    +'<div class="scoreprev"><span id="dnext"></span></div>';
+  openDlg(dlgShell('Bakımı tamamla',esc(m?m.tag+' · ':'')+esc(t.title),body,'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">'+ic('check')+'Yapıldı olarak kaydet</button>'),fd=>{
+    const nd=complete(id,fd.get('done'),String(fd.get('by')).trim(),String(fd.get('note')).trim());
+    render();toast('Kaydedildi. Sonraki bakım: '+fmtDate(nd));
+  },f=>{
+    const upd=()=>{
+      const v=f.elements.done.value;if(!v)return;
+      const dn=parseD(v),nd=nextDue(t,dn),late=diff(dn,parseD(t.due));
+      $('#dnext').innerHTML='Sonraki bakım: <b>'+fmtDate(nd)+'</b>'+(late>0?' · bu bakım <b>'+late+' gün geç</b> yapılmış olarak kaydedilecek':'');
+    };
+    f.addEventListener('input',upd);upd();
+  });
+}
+function taskDetail(id){
+  const t=S.tasks.find(x=>x.id===id);
+  if(!t)return;
+  const m=mById(t.machineId),i=info(t);
+  if(!m)return;
+  const hist=S.history.filter(h=>h.taskId===id).sort((a,b)=>a.done<b.done?1:-1).slice(0,5);
+  const every=everyOf(t);
+  const next=[1,2,3].map(k=>shift(i.due,every*k,t.unit,anchorOf(t)));
+  const custom=t.lead!==null&&t.lead!==undefined&&t.lead!=='';
+  const body='<dl class="kv">'
+    +'<dt>Durum</dt><dd>'+pill(i.st)+' <span class="muted">'+dueText(i.left)+'</span></dd>'
+    +'<dt>Sonraki bakım</dt><dd><b>'+fmtLong(i.due)+'</b></dd>'
+    +'<dt>Makine</dt><dd>'+clsB(klass(m))+' #'+rankOf(m.id)+' · '+esc(m.name)+' <span class="faint mono">'+esc(m.tag)+'</span></dd>'
+    +'<dt>Sıklık</dt><dd>'+freq(t)+' · '+(t.mode==='after'?'yapıldığı tarihten':'sabit takvim')+'</dd>'
+    +'<dt>Uyarı</dt><dd>'+i.lead+' gün önce'+(custom?'':' <span class="faint">(sınıf '+klass(m)+' varsayılanı)</span>')+'</dd>'
+    +'<dt>Sorumlu</dt><dd>'+esc(t.owner||'-')+'</dd>'
+    +'<dt>Süre</dt><dd>'+(t.hours?t.hours+' saat':'-')+'</dd>'
+    +'<dt>Kategori</dt><dd>'+esc(t.cat||'-')+'</dd>'
+    +(t.notes?'<dt>Not</dt><dd>'+esc(t.notes)+'</dd>':'')+'</dl>'
+    +'<div><h3>Sonraki tekrarlar (öngörülen)</h3><ul class="mini">'+next.map(d=>'<li><span>'+fmtLong(d)+'</span></li>').join('')+'</ul></div>'
+    +'<div><h3>Son kayıtlar</h3>'+(hist.length?'<ul class="mini">'+hist.map(h=>'<li><span>'+fmtDate(parseD(h.done))+(h.by?' · '+esc(h.by):'')+(h.note?'<br><small>'+esc(h.note)+'</small>':'')+'</span>'+(h.done>h.due?'<span class="pill soon">'+diff(parseD(h.done),parseD(h.due))+' gün geç</span>':'<span class="pill good">Zamanında</span>')+'</li>').join('')+'</ul>':'<p class="faint">Bu plan için henüz kayıt yok.</p>')+'</div>';
+  const foot='<button type="button" class="btn sp" data-act="del-task" data-id="'+t.id+'">'+ic('trash')+'Sil</button><button type="button" class="btn" data-act="edit-task" data-id="'+t.id+'">'+ic('edit')+'Düzenle</button><button type="button" class="btn primary" data-act="done" data-id="'+t.id+'">'+ic('check')+'Yapıldı</button>';
+  openDlg(dlgShell(esc(t.title),esc(m.tag)+' · '+esc(m.name),body,foot,'detail'));
+}
+
+/* =========================================================
+   Veri: silme, yedek, içe aktarma, paylaşım, takvim
+   ========================================================= */
+async function deleteTask(id){
+  const t=S.tasks.find(x=>x.id===id);
+  if(!t)return;
+  if(!(await ask('Plan silinsin mi?','"'+t.title+'" planı silinecek. Geçmiş kayıtları korunur.')))return;
+  S.tasks=S.tasks.filter(x=>x.id!==id);
+  save();render();toast('Plan silindi');
+}
+async function deleteMachine(id){
+  const m=mById(id);
+  if(!m)return;
+  const n=S.tasks.filter(x=>x.machineId===id).length;
+  if(!(await ask('Makine silinsin mi?','"'+m.name+'" ve bağlı '+n+' bakım planı silinecek. Geçmiş kayıtları korunur.')))return;
+  S.machines=S.machines.filter(x=>x.id!==id);
+  S.tasks=S.tasks.filter(x=>x.machineId!==id);
+  save();render();toast('Makine silindi');
+}
+function download(name,mime,text){
+  try{
+    const blob=new Blob([text],{type:mime+';charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }catch(e){}
+  if(inFrame())showText(name,text);else toast(name+' indirildi');
+}
+function copyText(text){
+  const p=(navigator.clipboard&&navigator.clipboard.writeText)?navigator.clipboard.writeText(text):Promise.reject(new Error('yok'));
+  return p.then(()=>true).catch(()=>false);
+}
+function showText(name,text){
+  openDlg('<div class="dlg"><div class="dlg-h"><div><h2>'+esc(name)+'</h2><p>Bu önizlemede dosya indirilemiyor. Metni kopyalayıp bir dosyaya yapıştırabilirsin.</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Kapat">'+ic('x')+'</button></div><div class="dlg-b"><textarea class="code" id="txtOut" readonly></textarea></div><div class="dlg-f"><button type="button" class="btn" data-act="close">Kapat</button><button type="button" class="btn primary" data-act="copy-text">Kopyala</button></div></div>');
+  $('#txtOut').value=text;
+}
+const exportObj=()=>({app:'planli-bakim',version:1,exported:iso(today()),machines:S.machines,tasks:S.tasks,history:S.history,settings:{lead:S.settings.lead}});
+function sanitize(o){
+  if(!o||!Array.isArray(o.machines)||!Array.isArray(o.tasks))throw new Error('format');
+  const re=/^\d{4}-\d{2}-\d{2}$/;
+  const machines=o.machines.filter(m=>m&&m.id&&m.tag&&m.name).map(m=>({id:String(m.id),tag:String(m.tag),name:String(m.name),area:String(m.area||''),safety:Math.min(5,Math.max(1,+m.safety||3)),production:Math.min(5,Math.max(1,+m.production||3)),repair:Math.min(5,Math.max(1,+m.repair||3)),backup:Math.min(5,Math.max(1,+m.backup||3)),notes:String(m.notes||'')}));
+  const ids=new Set(machines.map(m=>m.id));
+  const tasks=o.tasks.filter(t=>t&&t.id&&t.title&&ids.has(t.machineId)&&re.test(String(t.due))).map(t=>({id:String(t.id),machineId:t.machineId,title:String(t.title),cat:String(t.cat||''),every:Math.max(1,parseInt(t.every,10)||1),unit:UNIT[t.unit]?t.unit:'ay',mode:t.mode==='after'?'after':'fixed',due:String(t.due),day:Math.min(31,Math.max(0,parseInt(t.day,10)||0)),lead:(t.lead===null||t.lead===undefined||t.lead==='')?null:Math.max(0,+t.lead||0),owner:String(t.owner||''),hours:+t.hours||0,notes:String(t.notes||'')}));
+  const history=(Array.isArray(o.history)?o.history:[]).filter(h=>h&&re.test(String(h.done))&&re.test(String(h.due))&&h.title).map(h=>({id:String(h.id||uid()),taskId:String(h.taskId||''),machineId:String(h.machineId||''),tag:String(h.tag||''),mname:String(h.mname||''),title:String(h.title),due:String(h.due),done:String(h.done),by:String(h.by||''),note:String(h.note||'')}));
+  return {machines,tasks,history,lead:o.settings&&o.settings.lead};
+}
+function applyData(o){
+  const c=sanitize(o);
+  const keep=S.settings;
+  S=normalize({demo:false,machines:c.machines,tasks:c.tasks,history:c.history,settings:Object.assign({},keep,{lead:Object.assign({},keep.lead,c.lead||{})})});
+  save();render();
+}
+function readImport(file){
+  const r=new FileReader();
+  r.onload=async()=>{
+    try{
+      const o=JSON.parse(r.result);
+      const c=sanitize(o);
+      if(await ask('Yedek yüklensin mi?',c.machines.length+' makine ve '+c.tasks.length+' plan yüklenecek. Mevcut verinin yerine geçer.','Yükle')){applyData(o);toast('Yedek yüklendi');}
+    }catch(e){toast('Dosya okunamadı. Bu uygulamanın .json yedeği olmalı.');}
+  };
+  r.readAsText(file);
+}
+const b64u=bytes=>{let s='';bytes.forEach(b=>{s+=String.fromCharCode(b);});return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+const unb64u=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;};
+async function encodeShare(obj){
+  let bytes=new TextEncoder().encode(JSON.stringify(obj)),tag='r';
+  if('CompressionStream' in window){
+    const cs=new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'));
+    bytes=new Uint8Array(await new Response(cs).arrayBuffer());tag='g';
+  }
+  return tag+b64u(bytes);
+}
+async function decodeShare(str){
+  let bytes=unb64u(str.slice(1));
+  if(str[0]==='g'){
+    const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    bytes=new Uint8Array(await new Response(ds).arrayBuffer());
+  }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function shareLink(){
+  try{
+    const o=exportObj();o.history=o.history.slice(0,60);
+    const url=location.href.split('#')[0]+'#d='+await encodeShare(o);
+    const ok=await copyText(url);
+    if(ok)toast('Bağlantı kopyalandı ('+Math.ceil(url.length/1000)+' KB)');else showText('Paylaşım bağlantısı',url);
+  }catch(e){toast('Bağlantı oluşturulamadı.');}
+}
+async function importFromHash(s){
+  try{
+    const o=await decodeShare(s);
+    const c=sanitize(o);
+    try{history.replaceState(null,'',location.href.split('#')[0]);}catch(e){}
+    if(await ask('Paylaşılan veri yüklensin mi?','Bağlantı '+c.machines.length+' makine ve '+c.tasks.length+' plan içeriyor. Mevcut verinin yerine geçer. İstersen önce Ayarlar sayfasından yedek al.','Yükle')){applyData(o);route='genel';render();toast('Veri yüklendi');}
+  }catch(e){toast('Paylaşım bağlantısı okunamadı.');}
+}
+const icsEsc=s=>String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+const fold=l=>{if(l.length<=70)return l;let o=l.slice(0,70);for(let i=70;i<l.length;i+=69)o+='\r\n '+l.slice(i,i+69);return o;};
+function buildICS(){
+  const now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Planli Bakim Takvimi//TR','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Planlı Bakım'];
+  const horizon=addDays(today(),365);
+  enriched().forEach(x=>{
+    const t=x.t,m=x.m,every=everyOf(t);
+    const approx=t.unit==='gun'?every:t.unit==='hafta'?7*every:t.unit==='ay'?30*every:365*every;
+    const dates=[x.i.due];
+    if(approx>=7){for(let k=1;k<400;k++){const dt=shift(x.i.due,every*k,t.unit,anchorOf(t));if(dt>horizon)break;dates.push(dt);}}
+    dates.forEach(dt=>{
+      const ds=iso(dt).replace(/-/g,''),de=iso(addDays(dt,1)).replace(/-/g,'');
+      L.push('BEGIN:VEVENT','UID:'+t.id+'-'+ds+'@planli-bakim','DTSTAMP:'+now,'DTSTART;VALUE=DATE:'+ds,'DTEND;VALUE=DATE:'+de,
+        'SUMMARY:'+icsEsc('['+klass(m)+'] '+m.tag+' · '+t.title),
+        'DESCRIPTION:'+icsEsc(m.name+'\n'+(t.cat||'')+(t.owner?'\nSorumlu: '+t.owner:'')+(t.hours?'\nSüre: '+t.hours+' saat':'')+(t.notes?'\n'+t.notes:'')),
+        'CATEGORIES:Planlı bakım');
+      if(x.i.lead>=1)L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc('Bakım yaklaşıyor: '+m.tag+' '+t.title),'TRIGGER:-P'+(x.i.lead-1)+'DT16H','END:VALARM');
+      L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc('Bugün bakım: '+m.tag+' '+t.title),'TRIGGER:PT8H','END:VALARM','END:VEVENT');
+    });
+  });
+  L.push('END:VCALENDAR');
+  return L.map(fold).join('\r\n')+'\r\n';
+}
+
+/* =========================================================
+   Bildirimler
+   ========================================================= */
+async function showNotif(title,body,tag){
+  try{
+    if(!('Notification' in window)||Notification.permission!=='granted')return false;
+    const reg=('serviceWorker' in navigator)?await navigator.serviceWorker.getRegistration():null;
+    if(reg&&reg.showNotification){await reg.showNotification(title,{body:body,tag:tag,icon:'icon.svg',badge:'icon.svg'});return true;}
+    new Notification(title,{body:body,tag:tag,icon:'icon.svg'});
+    return true;
+  }catch(e){return false;}
+}
+function checkNotify(force){
+  try{
+    if(!S.settings.notify||notifState()!=='granted')return;
+    const ts=iso(today());
+    const A=alertItems().filter(x=>force||S.settings.lastNotify[x.t.id]!==ts);
+    if(!A.length)return;
+    const o=A.filter(x=>x.i.st==='overdue').length,s=A.length-o;
+    const title='Planlı Bakım: '+(o?o+' gecikmiş':'')+(o&&s?', ':'')+(s?s+' yaklaşan':'');
+    const body=A.slice(0,3).map(x=>x.m.tag+' · '+x.t.title+' ('+dueText(x.i.left)+')').join('\n')+(A.length>3?'\n+'+(A.length-3)+' bakım daha':'');
+    showNotif(title,body,'pb-daily').then(ok=>{if(ok&&!force){A.forEach(x=>{S.settings.lastNotify[x.t.id]=ts;});save();}});
+  }catch(e){}
+}
+async function notifyToggle(){
+  if(S.settings.notify){S.settings.notify=false;save();render();toast('Bildirimler kapatıldı');return;}
+  if(notifState()==='unsupported'){toast('Bu tarayıcı bildirimleri desteklemiyor.');return;}
+  let p=Notification.permission;
+  try{if(p==='default')p=await Notification.requestPermission();}catch(e){p='denied';}
+  S.settings.notify=p==='granted';save();render();
+  if(p==='granted'){toast('Bildirimler açıldı');checkNotify(true);}else toast('Bildirim izni verilmedi.');
+}
+
+/* =========================================================
+   Olaylar
+   ========================================================= */
+const dayOfYear=()=>{const d=today();return Math.floor((d-new Date(d.getFullYear(),0,0))/DAY);};
+const H={
+  go:el=>nav(el.dataset.r),
+  close:()=>closeDlg(),
+  bell:()=>togglePop(),
+  'pop-close':()=>{$('#pop').hidden=true;},
+  'new-task':el=>taskForm(null,el.dataset.m),
+  'edit-task':el=>taskForm(el.dataset.id),
+  'open-task':el=>taskDetail(el.dataset.id),
+  done:el=>doneForm(el.dataset.id),
+  'new-machine':()=>machineForm(),
+  'edit-machine':el=>machineForm(el.dataset.id),
+  'del-task':el=>deleteTask(el.dataset.id),
+  'del-machine':el=>deleteMachine(el.dataset.id),
+  'tl-zoom':el=>{S.settings.tlZoom=el.dataset.v;save();render();},
+  'tl-class':el=>{S.settings.tlClass=el.dataset.v;save();render();},
+  'tl-proj':()=>{S.settings.showProj=!S.settings.showProj;save();render();},
+  'flt-st':el=>{UI.st=el.dataset.v;render();},
+  'tip-next':()=>{UI.tip=(UI.tip==null?dayOfYear():UI.tip)+1;render();},
+  theme:el=>{S.settings.theme=el.dataset.v;save();applyTheme();render();},
+  'clear-demo':async()=>{if(await ask('Örnek veri temizlensin mi?','Örnek makineler, planlar ve geçmiş silinir. Ayarların korunur.','Temizle')){S=normalize({demo:false,settings:S.settings});save();render();toast('Örnek veri temizlendi. Makine ekleyerek başlayabilirsin.');}},
+  'load-demo':async()=>{if(await ask('Örnek veri yüklensin mi?','Mevcut tüm verinin yerine örnek veri gelir.','Yükle')){const d=demo();d.settings=S.settings;S=normalize(d);save();render();toast('Örnek veri yüklendi');}},
+  'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings});save();render();toast('Tüm veriler silindi');}},
+  'export-json':()=>download('planli-bakim-yedek-'+iso(today())+'.json','application/json',JSON.stringify(exportObj(),null,2)),
+  'import-json':()=>{const f=$('#impFile');if(f)f.click();else{nav('ayarlar');}},
+  'export-ics':()=>download('planli-bakim.ics','text/calendar',buildICS()),
+  'share-link':()=>shareLink(),
+  'notify-toggle':()=>notifyToggle(),
+  'notify-test':()=>{showNotif('Planlı Bakım','Test bildirimi: uyarılar bu cihazda çalışıyor.','pb-test').then(ok=>toast(ok?'Test bildirimi gönderildi':'Bildirim gönderilemedi'));},
+  'copy-text':async()=>{const t=$('#txtOut');if(!t)return;const ok=await copyText(t.value);if(ok)toast('Kopyalandı');else{t.focus();t.select();toast('Metni seçtim, Ctrl+C ile kopyala.');}}
+};
+document.addEventListener('click',e=>{
+  const pop=$('#pop');
+  if(!pop.hidden&&!e.target.closest('#pop')&&!e.target.closest('#bellBtn'))pop.hidden=true;
+  const el=e.target.closest('[data-act]');
+  if(!el||el.closest('dialog')&&el.closest('dialog')!==dlg)return;
+  const h=H[el.dataset.act];
+  if(!h)return;
+  if(el.dataset.act!=='bell'&&el.dataset.act!=='pop-close')pop.hidden=true;
+  h(el,e);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){const p=$('#pop');if(!p.hidden)p.hidden=true;}
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-act][tabindex]')){e.preventDefault();e.target.click();}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='fq'){UI.q=e.target.value;renderPlanList();}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='fm'){UI.m=t.value;renderPlanList();}
+  else if(t.id==='fs'){UI.sort=t.value;renderPlanList();}
+  else if(t.dataset&&t.dataset.lead){
+    const v=Math.min(365,Math.max(0,parseInt(t.value,10)||0));
+    S.settings.lead[t.dataset.lead]=v;t.value=v;save();chrome();toast('Uyarı süresi kaydedildi');
+  }else if(t.id==='impFile'&&t.files&&t.files[0]){readImport(t.files[0]);t.value='';}
+});
+window.addEventListener('hashchange',()=>{
+  const h=location.hash.slice(1);
+  if(VIEWS[h]&&h!==route){route=h;render();}
+});
+
+/* =========================================================
+   Başlangıç
+   ========================================================= */
+function boot(){
+  load();applyTheme();
+  const h=location.hash.slice(1);
+  if(VIEWS[h])route=h;
+  render();
+  if(h.indexOf('d=')===0)importFromHash(h.slice(2));
+  if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+    try{navigator.serviceWorker.register('sw.js').catch(()=>{});}catch(e){}
+  }
+  setTimeout(()=>checkNotify(),1500);
+  setInterval(()=>checkNotify(),30*60*1000);
+  let last=iso(today());
+  setInterval(()=>{const n=iso(today());if(n!==last){last=n;render();checkNotify();}},60000);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)return;
+    last=iso(today());render();checkNotify();
+  });
+}
+boot();
+})();
+</script>
+</body>
+</html>
