@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0e14">
+<meta name="theme-color" content="#101722">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -16,15 +16,15 @@
    Renk: koyu lacivert zemin, Rebul markasından turuncu vurgu, mavi ikincil. Durum renkleri (kırmızı, sarı, mavi, yeşil) vurgudan ayrı tutulur.
    Yazı: IBM Plex Sans (metin), IBM Plex Mono (sayılar ve etiketler). */
 :root{
-  --bg:#0a0e14; --surface:#121923; --surface-2:#18212d; --surface-3:#222e3d; --line:#222d3b; --line-2:#1a2431;
-  --ink:#eef2f7; --ink-2:#aab7c6; --ink-3:#7589a0;
+  --bg:#18212e; --surface:#212c3c; --surface-2:#293648; --surface-3:#34445a; --line:#334359; --line-2:#2a384b;
+  --ink:#f1f5fa; --ink-2:#bac7d6; --ink-3:#8c9fb5;
   --accent:#ff7a1a; --accent-ink:#1c0d00; --accent-soft:rgba(255,122,26,.14); --accent-line:rgba(255,122,26,.42);
   --blue:#3b8bff; --cyan:#27c8e0;
   --bad:#ff5d52; --bad-ink:#2a0805; --bad-soft:rgba(255,93,82,.15);
   --warn:#ffc53d; --warn-ink:#2b1f00; --warn-soft:rgba(255,197,61,.15);
   --good:#34d399; --good-soft:rgba(52,211,153,.15);
   --plan:#5b9bff; --plan-ink:#07162d; --plan-soft:rgba(91,155,255,.16);
-  --side-bg:#07090d; --side-line:#161e29; --side-ink:#a7b4c3; --side-ink-3:#6f8196; --side-hover:#0f151d;
+  --side-bg:#101722; --side-line:#1e2a3a; --side-ink:#b2bfce; --side-ink-3:#7f92a8; --side-hover:#1a2431;
   --shadow:0 14px 44px rgba(0,0,0,.55);
   --font:'IBM Plex Sans',system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
@@ -78,7 +78,7 @@ b,strong{font-weight:600}
 .app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
 .side{position:sticky;top:0;height:100vh;padding:18px 14px 14px;background:var(--side-bg);border-right:1px solid var(--side-line);color:var(--side-ink);display:flex;flex-direction:column;gap:18px;overflow-y:auto}
 .brand{display:flex;flex-direction:column;gap:9px}
-.brand-tile{display:grid;place-items:center;height:80px;border-radius:12px;background:#000;border:1px solid #1b2531}
+.brand-tile{display:grid;place-items:center;height:80px;border-radius:12px;background:#000;border:1px solid #2a384b}
 .brand-tile img{width:88px;height:auto;display:block}
 .brand-cap{padding:0 4px;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--side-ink-3)}
 .nav{display:flex;flex-direction:column;gap:3px}
@@ -93,7 +93,7 @@ b,strong{font-weight:600}
 .st-h{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--side-ink-3)}
 .st-v{display:flex;align-items:baseline;gap:7px;margin:6px 0 10px;font:600 24px var(--mono);color:#fff;letter-spacing:-.02em}
 .st-v small{font:500 11px var(--font);color:var(--side-ink-3);letter-spacing:0}
-.st-bar{position:relative;height:7px;border-radius:99px;background:#1b2531}
+.st-bar{position:relative;height:7px;border-radius:99px;background:#2c3a4f}
 .st-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#ffb066)}
 .st-bar b{position:absolute;top:-3px;width:2px;height:13px;margin-left:-1px;border-radius:1px;background:#fff;opacity:.75}
 .st-s{margin-top:8px;font-size:11px;color:var(--side-ink-3)}
@@ -434,6 +434,37 @@ dialog::backdrop{background:rgba(8,15,22,.55)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 textarea.code{height:220px;font:12px/1.5 var(--mono)}
 
+/* ---- Ayarlar: tanımlar ---- */
+.set{max-width:920px}
+.stabs{display:flex;gap:4px;overflow-x:auto;padding:4px;border-radius:10px;background:var(--surface);border:1px solid var(--line);scrollbar-width:none}
+.stabs::-webkit-scrollbar{display:none}
+.stabs button{flex:none;height:34px;padding:0 14px;border:0;border-radius:7px;background:none;color:var(--ink-2);font-weight:600;font-size:12.5px;white-space:nowrap}
+.stabs button:hover{color:var(--ink)}
+.stabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.deflist{display:grid}
+.defrow{display:grid;grid-template-columns:minmax(0,1fr) 178px 84px 34px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2)}
+.defrow:last-child{border-bottom:0}
+.defrow.s{grid-template-columns:minmax(0,1fr) 84px 34px}
+.defrow.m{grid-template-columns:26px minmax(0,1fr) 200px 92px auto}
+.defrow.cl{grid-template-columns:26px minmax(0,1fr) 170px 150px;align-items:end}
+.defrow .cnt{font:500 12px var(--mono);color:var(--ink-3);text-align:right;white-space:nowrap}
+.defrow .rk{font:600 12px var(--mono);color:var(--ink-3)}
+.defrow .mn{min-width:0}
+.defrow .mn b,.defrow .mn small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.defrow .mn small{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.defrow.cl .cls{align-self:center;margin-bottom:6px}
+.cls-wrap{display:flex;align-items:center;gap:8px;font:500 12px var(--mono);color:var(--ink-2)}
+.defadd{display:flex;gap:8px;margin-top:14px}
+.defadd input{flex:1}
+.icon-btn.sm{width:34px;height:34px}
+.mini-fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.mini-fld>span{font-size:10.5px;font-weight:600;letter-spacing:.04em;color:var(--ink-3)}
+.mini-fld .ro{display:flex;align-items:center;height:38px;padding:0 11px;border-radius:8px;border:1px dashed var(--line);color:var(--ink-3);font-size:12.5px}
+.fcard{display:grid;gap:9px;padding:14px;margin-bottom:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.fc-top{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:center}
+.fc-n{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 12px var(--mono)}
+.lvls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+
 /* ---- Ortak düzeltmeler ---- */
 .card-h h2{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .toast{background:var(--ink);color:var(--bg)}
@@ -508,6 +539,21 @@ select option{background:var(--surface);color:var(--ink)}
   .toast{bottom:84px}
   .pop{right:16px;top:60px}
   .set section{padding:18px}
+  .defrow{grid-template-columns:minmax(0,1fr) 34px;gap:8px 10px}
+  .defrow>input{grid-column:1}
+  .defrow>.icon-btn{grid-column:2;grid-row:1}
+  .defrow>select{grid-column:1/-1}
+  .defrow>.cnt{display:none}
+  .defrow.s{grid-template-columns:minmax(0,1fr) 34px}
+  .defrow.m{grid-template-columns:26px minmax(0,1fr) auto}
+  .defrow.m>select{grid-column:1/-1;grid-row:2}
+  .defrow.m>.cls-wrap{grid-column:3;grid-row:1}
+  .defrow.m>.btn{grid-column:1/-1;justify-self:start}
+  .defrow.cl{grid-template-columns:26px minmax(0,1fr) minmax(0,1fr)}
+  .defrow.cl>.mini-fld:nth-child(2){grid-column:2/-1}
+  .defrow.cl>.mini-fld:nth-child(3){grid-column:2}
+  .defrow.cl>.mini-fld:nth-child(4){grid-column:3}
+  .lvls{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:480px){
   .kv{grid-template-columns:96px minmax(0,1fr)}
@@ -661,6 +707,7 @@ const FACTORS=[
   {k:'repair',   t:'Onarım süresi',      d:'Yedek parça ve onarım ne kadar sürer?',          o:['Aynı gün','1-2 gün','Hafta içi','Haftalar','Aylar (parça ithal)']},
   {k:'backup',   t:'Alternatifsizlik',   d:'Yerine geçecek makine ya da yedek var mı?',      o:['Yedeği hazır','Elle telafi edilir','Kısmi alternatif','Zor alternatif','Alternatifi yok']}
 ];
+const FACTORS_DEFAULT=JSON.parse(JSON.stringify(FACTORS));
 const TIPS=[
   {t:'Her makineyi A sınıfı yapma',b:'A sınıfı makineler toplamın yaklaşık beşte biri olmalı. Hepsi kritikse hiçbiri kritik değildir. Ekip öncelik veremez ve gecikmeler kontrolsüz birikir.'},
   {t:'Uyarı süresi, işin hazırlık süresi kadar olmalı',b:'Yedek parça temini, iş emri hazırlığı ve duruş izni toplamı kadar önceden uyarı al. Parçası ithal gelen bir makinede 3 gün önceden gelen uyarı, geç kalmış uyarıdır.'},
@@ -683,14 +730,40 @@ const UI={q:'',st:'all',m:'all',sort:'prio',period:90,area:'all',cls:'all'};
 let route='genel';
 
 const defaults=()=>({lead:{A:14,B:7,C:3},theme:'dark',target:90,ui:2,notify:false,lastNotify:{},tlZoom:'ay3',tlClass:'all',showProj:true});
+/* Tanımlar: hatlar, önem sınıfı eşikleri ve adları, önem faktörleri, bakım türleri, sorumlular. */
+function normalizeDefs(d,machines,tasks){
+  d=d||{};
+  const uniq=a=>Array.from(new Set(a.filter(Boolean)));
+  const lines=(Array.isArray(d.lines)?d.lines:[]).filter(l=>l&&l.name).map(l=>({name:String(l.name),imp:Math.min(5,Math.max(1,Math.round(+l.imp)||3))}));
+  uniq(machines.map(m=>m.area)).forEach(a=>{if(!lines.some(l=>l.name===a))lines.push({name:a,imp:3});});
+  lines.sort((a,b)=>b.imp-a.imp||a.name.localeCompare(b.name,'tr'));
+  const cats=Array.isArray(d.cats)&&d.cats.length?d.cats.map(String):CATS.slice();
+  uniq(tasks.map(t=>t.cat)).forEach(c=>{if(cats.indexOf(c)<0)cats.push(c);});
+  const owners=Array.isArray(d.owners)?d.owners.map(String):[];
+  uniq(tasks.map(t=>t.owner)).forEach(o=>{if(owners.indexOf(o)<0)owners.push(o);});
+  const factors=FACTORS_DEFAULT.map(f=>{
+    const s=Array.isArray(d.factors)?d.factors.find(x=>x&&x.k===f.k):null;
+    return {k:f.k,t:s&&s.t?String(s.t):f.t,d:s&&s.d?String(s.d):f.d,o:f.o.map((x,j)=>s&&Array.isArray(s.o)&&s.o[j]?String(s.o[j]):x)};
+  });
+  const cut=Object.assign({A:15,B:10},d.cut||{});
+  cut.A=Math.min(20,Math.max(6,Math.round(+cut.A)||15));
+  cut.B=Math.min(cut.A-1,Math.max(5,Math.round(+cut.B)||10));
+  const clsName=Object.assign({A:'Kritik',B:'Önemli',C:'Normal'},d.clsName||{});
+  return {lines:lines,cats:cats,owners:owners,factors:factors,cut:cut,clsName:clsName};
+}
+function applyDefs(){
+  S.defs.factors.forEach((f,i)=>{if(FACTORS[i])Object.assign(FACTORS[i],{t:f.t,d:f.d,o:f.o.slice()});});
+}
 function normalize(o){
   o=o||{};
   const s=Object.assign(defaults(),o.settings||{});
   s.lead=Object.assign({A:14,B:7,C:3},s.lead||{});
   s.lastNotify=s.lastNotify||{};
-  return {v:1,demo:!!o.demo,machines:Array.isArray(o.machines)?o.machines:[],tasks:Array.isArray(o.tasks)?o.tasks:[],history:Array.isArray(o.history)?o.history:[],settings:s};
+  const machines=Array.isArray(o.machines)?o.machines:[],tasks=Array.isArray(o.tasks)?o.tasks:[];
+  return {v:1,demo:!!o.demo,machines:machines,tasks:tasks,history:Array.isArray(o.history)?o.history:[],settings:s,defs:normalizeDefs(o.defs,machines,tasks)};
 }
 function save(){
+  applyDefs();
   try{localStorage.setItem(KEY,JSON.stringify(S));memOnly=false;}catch(e){memOnly=true;}
 }
 function load(){
@@ -705,6 +778,7 @@ function load(){
     }catch(e){S=null;}
   }
   if(!S){S=normalize(demo());save();}
+  applyDefs();
 }
 
 /* =========================================================
@@ -712,8 +786,9 @@ function load(){
    ========================================================= */
 const mById=id=>S.machines.find(m=>m.id===id);
 const score=m=>(+m.safety||1)+(+m.production||1)+(+m.repair||1)+(+m.backup||1);
-const klass=m=>{const s=score(m);return s>=15?'A':s>=10?'B':'C';};
-const ranked=()=>S.machines.slice().sort((a,b)=>score(b)-score(a)||a.name.localeCompare(b.name,'tr'));
+const klass=m=>{const s=score(m),c=S.defs.cut;return s>=c.A?'A':s>=c.B?'B':'C';};
+const lineImp=name=>{const l=S.defs.lines.find(x=>x.name===name);return l?l.imp:3;};
+const ranked=()=>S.machines.slice().sort((a,b)=>score(b)-score(a)||lineImp(b.area)-lineImp(a.area)||a.name.localeCompare(b.name,'tr'));
 const rankOf=id=>ranked().findIndex(m=>m.id===id)+1;
 const everyOf=t=>Math.max(1,Math.floor(Number(t.every))||1);
 function leadOf(t){
@@ -742,6 +817,7 @@ function nextDue(t,doneD){
   while(nd<=doneD&&n<1000){n++;nd=shift(due,every*n,t.unit,anchorOf(t));}
   return nd;
 }
+const ensureOwner=n=>{if(n&&S.defs.owners.indexOf(n)<0)S.defs.owners.push(n);};
 function complete(taskId,doneISO,by,note){
   const t=S.tasks.find(x=>x.id===taskId);
   if(!t)return null;
@@ -749,7 +825,7 @@ function complete(taskId,doneISO,by,note){
   S.history.unshift({id:uid(),taskId:t.id,machineId:t.machineId,tag:m?m.tag:'',mname:m?m.name:'',title:t.title,due:t.due,done:doneISO,by:by||'',note:note||''});
   const nd=nextDue(t,parseD(doneISO));
   t.due=iso(nd);
-  if(by)t.owner=by;
+  if(by){t.owner=by;ensureOwner(by);}
   save();
   return nd;
 }
@@ -832,7 +908,8 @@ function demo(){
     }
   });
   hist.sort((a,b)=>a.done<b.done?1:-1);
-  return {demo:true,machines:mk,tasks,history:hist};
+  const lines=[['Pres Atölyesi',5],['Talaşlı İmalat',4],['Yardımcı Tesisler',4],['Elektrik Odası',4],['Montaj Hattı',4],['Plastik Hattı',3],['Depo',2],['Sevkiyat',2],['Hazırlık',2]].map(x=>({name:x[0],imp:x[1]}));
+  return {demo:true,machines:mk,tasks,history:hist,defs:{lines:lines}};
 }
 
 /* =========================================================
@@ -918,7 +995,7 @@ function filtersHtml(){
   const areas=Array.from(new Set(S.machines.map(m=>m.area||'Diğer'))).sort((a,b)=>a.localeCompare(b,'tr'));
   const sel=(id,lab,opts,cur)=>'<label class="sel"><span>'+lab+'</span><select id="'+id+'" aria-label="'+lab+'">'+opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(cur)===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select></label>';
   return sel('fPeriod','Dönem',[[30,'Son 30 gün'],[90,'Son 90 gün'],[180,'Son 180 gün'],[365,'Son 1 yıl']],UI.period)
-    +sel('fArea','Bölüm',[['all','Tümü']].concat(areas.map(a=>[a,a])),UI.area)
+    +sel('fArea','Hat',[['all','Tümü']].concat(areas.map(a=>[a,a])),UI.area)
     +sel('fCls','Sınıf',[['all','Tümü'],['A','A'],['B','B'],['C','C']],UI.cls);
 }
 function dashCtx(){
@@ -970,7 +1047,7 @@ function vGenel(){
   E.forEach(e=>{const a=c.area(e.m);(by[a]=by[a]||{o:0,s:0,k:0})[e.i.st==='overdue'?'o':e.i.st==='soon'?'s':'k']++;});
   const arows=Object.keys(by).map(a=>({a:a,o:by[a].o,s:by[a].s,k:by[a].k,t:by[a].o+by[a].s+by[a].k})).sort((x,y)=>(y.o+y.s)-(x.o+x.s)||y.t-x.t);
   const amx=Math.max.apply(null,arows.map(r=>r.t).concat([1]));
-  const pArea='<section class="panel"><div class="panel-h"><h3>Bölüme göre bakım yükü</h3><span class="tg">Gecikmiş '+c.over.length+'</span></div>'
+  const pArea='<section class="panel"><div class="panel-h"><h3>Hatta göre bakım yükü</h3><span class="tg">Gecikmiş '+c.over.length+'</span></div>'
     +(arows.length?'<div class="hb">'+arows.slice(0,6).map(r=>'<div class="hb-row"><span class="nm" title="'+esc(r.a)+'">'+esc(r.a)+'</span><div class="hb-track"><div class="hb-fill" style="width:'+(r.t/amx*100).toFixed(1)+'%">'+(r.o?'<i class="o" style="flex:'+r.o+'"></i>':'')+(r.s?'<i class="s" style="flex:'+r.s+'"></i>':'')+(r.k?'<i class="k" style="flex:'+r.k+'"></i>':'')+'</div></div><b>'+r.t+'</b></div>').join('')+'</div>':empty('Plan yok','Bu süzgeçte bakım planı bulunmuyor.'))
     +'<div class="lg"><span><i style="background:var(--bad)"></i>Gecikmiş</span><span><i style="background:var(--warn)"></i>Yaklaşan</span><span><i style="background:var(--plan)"></i>Planlı</span></div></section>';
   /* --- Kategori payı --- */
@@ -1036,7 +1113,7 @@ function vGenel(){
   const hot=arows.slice().sort((a,b)=>(b.o+b.s)-(a.o+a.s)||b.t-a.t)[0];
   const f1=fcard('wrench','Bu hafta planlı',wkTasks.length+' iş',nfH(wkHrs)+' saat · önümüzdeki 7 gün');
   const f2=fcard('flame','En çok geciken',worstE?esc(worstE.m.tag)+' · '+(-worstE.i.left)+' gün':'Yok',worstE?esc(worstE.t.title):'Gecikmiş bakım bulunmuyor');
-  const f3=fcard('building','En yoğun bölüm',hot?esc(hot.a):'-',hot?hot.o+' gecikmiş · '+hot.s+' yaklaşan · '+hot.t+' plan':'');
+  const f3=fcard('building','En yoğun hat',hot?esc(hot.a):'-',hot?hot.o+' gecikmiş · '+hot.s+' yaklaşan · '+hot.t+' plan':'');
   const nOn=S.settings.notify&&notifState()==='granted';
   const f4=fcard('bell','Hatırlatma',nOn?'Bildirim açık':'Bildirim kapalı','<button data-act="export-ics">Takvim dosyası (.ics)</button> · <button data-act="go" data-r="ayarlar">Ayarlar</button>');
   return demoNote+'<div class="dash"><section class="kpis">'+kpis+'</section><section class="grid-3">'+pArea+pCat+pMon+'</section><section class="grid-3b">'+pTbl+pLine+pAl+'</section><section class="grid-4">'+f1+f2+f3+f4+'</section></div>';
@@ -1138,7 +1215,7 @@ function vMakineler(){
       +'<div class="m-act"><button class="btn sm" data-act="new-task" data-m="'+m.id+'">'+ic('plus')+'Plan</button><button class="btn sm" data-act="edit-machine" data-id="'+m.id+'">'+ic('edit')+'Düzenle</button></div></div>';
   }).join('');
   return '<div class="toolbar"><button class="btn primary" data-act="new-machine">'+ic('plus')+'Makine ekle</button></div>'
-    +'<div class="card howto">Sıralama dört faktörün toplamına göre yapılır: <b>güvenlik, üretime etki, onarım süresi, alternatifsizlik</b>. Her biri 1-5 puandır. Toplam <b>15 ve üzeri A</b>, <b>10-14 B</b>, altı <b>C</b> sınıfıdır. Uyarı süreleri sınıfa göre otomatik belirlenir.</div>'
+    +'<div class="card howto">Sıralama dört faktörün toplamına göre yapılır: <b>güvenlik, üretime etki, onarım süresi, alternatifsizlik</b>. Her biri 1-5 puandır. Toplam <b>'+S.defs.cut.A+' ve üzeri A</b>, <b>'+S.defs.cut.B+'-'+(S.defs.cut.A-1)+' B</b>, altı <b>C</b> sınıfıdır. Eşikleri, hatları ve faktörleri Ayarlar sayfasından değiştirebilirsin. Uyarı süreleri sınıfa göre otomatik belirlenir.</div>'
     +'<div class="card mlist">'+(rows||empty('Henüz makine yok','Makine ekleyerek başla. Her makine için önem puanı girersin.'))+'</div>';
 }
 
@@ -1222,9 +1299,9 @@ function vRehber(){
   +'<section class="card"><h2>Makine önemi nasıl belirlenir</h2><p class="lead">Önem, makinenin ne kadar değerli olduğu değil, bozulduğunda ne kadar acıttığıdır. Dört soruya 1-5 puan ver, toplamı sınıfı belirler.</p>'
     +'<div class="factors">'+FACTORS.map(f=>'<div><b>'+f.t+'</b><span>'+f.d+'</span></div>').join('')+'</div>'
     +'<div class="tbl"><table><thead><tr><th>Sınıf</th><th>Puan</th><th>Uyarı</th><th>Uyum hedefi</th><th>Yaklaşım</th></tr></thead><tbody>'
-    +'<tr><td>'+clsB('A')+'</td><td>15-20</td><td>14-21 gün</td><td>%95 ve üzeri</td><td>Önleyici bakım ve durum izleme (titreşim, sıcaklık, basınç). Kritik yedek parça stokta tutulur.</td></tr>'
-    +'<tr><td>'+clsB('B')+'</td><td>10-14</td><td>7-10 gün</td><td>%90 ve üzeri</td><td>Takvimli önleyici bakım. Yedek parça ihtiyaç doğunca sipariş edilir.</td></tr>'
-    +'<tr><td>'+clsB('C')+'</td><td>4-9</td><td>3-5 gün</td><td>%80 ve üzeri</td><td>Basit rutin kontrol ve temizlik. Bozulunca onarmak çoğu zaman daha ucuzdur.</td></tr>'
+    +'<tr><td>'+clsB('A')+'</td><td>'+S.defs.cut.A+'-20</td><td>14-21 gün</td><td>%95 ve üzeri</td><td>Önleyici bakım ve durum izleme (titreşim, sıcaklık, basınç). Kritik yedek parça stokta tutulur.</td></tr>'
+    +'<tr><td>'+clsB('B')+'</td><td>'+S.defs.cut.B+'-'+(S.defs.cut.A-1)+'</td><td>7-10 gün</td><td>%90 ve üzeri</td><td>Takvimli önleyici bakım. Yedek parça ihtiyaç doğunca sipariş edilir.</td></tr>'
+    +'<tr><td>'+clsB('C')+'</td><td>4-'+(S.defs.cut.B-1)+'</td><td>3-5 gün</td><td>%80 ve üzeri</td><td>Basit rutin kontrol ve temizlik. Bozulunca onarmak çoğu zaman daha ucuzdur.</td></tr>'
     +'</tbody></table></div>'
     +'<p style="margin-top:12px">Uygulamanın varsayılan uyarı süreleri 14, 7 ve 3 gündür. Ayarlar sayfasından kendi fabrikana göre değiştirebilirsin.</p></section>'
   +'<section class="card"><h2>Sabit takvim mi, yapıldığı tarihten mi?</h2><p class="lead">Her planda bu seçimi yaparsın. Yanlış seçim, planın zamanla gerçeğe uymamasına yol açar.</p>'
@@ -1250,31 +1327,151 @@ function notifState(){
   if(!('Notification' in window))return 'unsupported';
   return Notification.permission;
 }
+const STABS=[['hatlar','Hatlar'],['makineler','Makineler'],['onem','Önem sınıfları'],['turler','Bakım türleri'],['kisiler','Sorumlular'],['genel','Bildirim ve görünüm'],['veri','Veri']];
 function vAyarlar(){
+  const tab=UI.stab||'hatlar';
+  const tabs='<div class="stabs" role="tablist" aria-label="Ayar bölümleri">'+STABS.map(t=>'<button type="button" role="tab" data-act="set-tab" data-v="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+t[1]+'</button>').join('')+'</div>';
+  const fn={hatlar:sHatlar,makineler:sMakineler,onem:sOnem,turler:sTurler,kisiler:sKisiler,genel:sGenel,veri:sVeri}[tab]||sHatlar;
+  return '<div class="set">'+tabs+fn()+'</div>';
+}
+const addRow=(k,ph)=>'<div class="defadd"><input type="text" id="new_'+k+'" maxlength="50" placeholder="'+esc(ph)+'" aria-label="'+esc(ph)+'"><button type="button" class="btn primary" data-act="def-add" data-k="'+k+'">'+ic('plus')+'Ekle</button></div>';
+const delBtn=(k,i,lab)=>'<button type="button" class="icon-btn sm" data-act="def-del" data-k="'+k+'" data-i="'+i+'" aria-label="'+esc(lab)+'">'+ic('trash')+'</button>';
+function sHatlar(){
+  const rows=S.defs.lines.map((l,i)=>{
+    const n=S.machines.filter(m=>(m.area||'')===l.name).length;
+    return '<div class="defrow"><input type="text" value="'+esc(l.name)+'" maxlength="50" data-def="line" data-i="'+i+'" data-f="name" aria-label="Hat adı">'
+      +'<select data-def="line" data-i="'+i+'" data-f="imp" aria-label="Hat önemi">'+[5,4,3,2,1].map(v=>'<option value="'+v+'"'+(l.imp===v?' selected':'')+'>Önem '+v+(v===5?' · en yüksek':v===1?' · en düşük':'')+'</option>').join('')+'</select>'
+      +'<span class="cnt">'+n+' makine</span>'+delBtn('line',i,'Hattı sil')+'</div>';
+  }).join('');
+  return '<section class="card"><h2>Hatlar ve bölümler</h2><p class="sub">Üretim hatlarını ve bölümleri burada tanımla. Makineler bu listeden bir hatta bağlanır, pano ve süzgeçler de bu hatları kullanır. Hat önemi, aynı önem puanına sahip makineleri sıralarken ve aynı puanlı makineler arasında hangisinin üstte olacağını belirlerken devreye girer.</p>'
+    +'<div class="deflist">'+(rows||'<p class="faint" style="padding:6px 0">Henüz hat tanımlı değil. Aşağıdan ilk hattı ekle.</p>')+'</div>'
+    +addRow('line','Yeni hat veya bölüm adı (ör. Montaj Hattı 2)')+'</section>';
+}
+function sMakineler(){
+  const rows=ranked().map((m,i)=>'<div class="defrow m"><span class="rk">'+(i+1)+'</span><div class="mn"><b>'+esc(m.name)+'</b><small>'+esc(m.tag)+'</small></div>'
+    +'<select data-def="machine-line" data-id="'+m.id+'" aria-label="'+esc(m.name)+' hattı"><option value="">Hat atanmamış</option>'+lineOpts(m.area||'')+'</select>'
+    +'<span class="cls-wrap">'+clsB(klass(m))+score(m)+'/20</span>'
+    +'<button type="button" class="btn sm" data-act="edit-machine" data-id="'+m.id+'">'+ic('edit')+'Düzenle</button></div>').join('');
+  return '<section class="card"><h2>Makineler</h2><p class="sub">Makineleri ekle, hatlara bağla ve önem puanlarını düzenle. Sıra; önem puanına, eşit puanda ise hat önemine göre kendiliğinden belirlenir.</p>'
+    +'<div class="btns" style="margin-bottom:10px"><button type="button" class="btn primary" data-act="new-machine">'+ic('plus')+'Makine ekle</button></div>'
+    +'<div class="deflist">'+(rows||'<p class="faint" style="padding:6px 0">Henüz makine yok.</p>')+'</div></section>';
+}
+function sOnem(){
+  const c=S.defs.cut,nm=S.defs.clsName,ld=S.settings.lead;
+  const rng={A:c.A+'-20',B:c.B+'-'+(c.A-1),C:'4-'+(c.B-1)};
+  const cls=['A','B','C'].map(k=>'<div class="defrow cl"><span class="cls '+k+'">'+k+'</span>'
+    +'<label class="mini-fld"><span>Ad</span><input type="text" data-def="clsname" data-k="'+k+'" value="'+esc(nm[k])+'" maxlength="20"></label>'
+    +(k==='C'?'<div class="mini-fld"><span>Puan aralığı</span><div class="ro">'+rng.C+' · kalanlar</div></div>'
+      :'<label class="mini-fld"><span>En az puan · '+rng[k]+'</span><input type="number" min="'+(k==='A'?6:5)+'" max="20" data-def="cut" data-k="'+k+'" value="'+c[k]+'"></label>')
+    +'<label class="mini-fld"><span>Uyarı (gün önce)</span><input type="number" min="0" max="365" data-lead="'+k+'" value="'+ld[k]+'"></label></div>').join('');
+  const fac=S.defs.factors.map((f,i)=>'<div class="fcard"><div class="fc-top"><span class="fc-n">'+(i+1)+'</span><input type="text" data-def="fac" data-i="'+i+'" data-f="t" value="'+esc(f.t)+'" maxlength="40" aria-label="Faktör adı"></div>'
+    +'<input type="text" data-def="fac" data-i="'+i+'" data-f="d" value="'+esc(f.d)+'" maxlength="100" aria-label="Faktör sorusu">'
+    +'<div class="lvls">'+f.o.map((o,j)=>'<label class="mini-fld"><span>'+(j+1)+' puan</span><input type="text" data-def="fac" data-i="'+i+'" data-f="o" data-j="'+j+'" value="'+esc(o)+'" maxlength="40"></label>').join('')+'</div></div>').join('');
+  return '<section class="card"><h2>Önem sınıfları</h2><p class="sub">Dört faktörün toplamı (en çok 20 puan) makinenin sınıfını belirler. Eşikleri, sınıf adlarını ve her sınıfın uyarı süresini buradan değiştir. Eşiği değiştirince makinelerin sınıfı, sıralama ve panolar anında güncellenir.</p>'
+    +cls+'<div class="btns" style="margin-top:12px"><button type="button" class="btn" data-act="def-reset-cut">Varsayılan eşiklere dön (15 ve 10)</button></div></section>'
+    +'<section class="card"><h2>Önem faktörleri</h2><p class="sub">Makine formundaki dört puanlama sorusu. Faktör adını, sorusunu ve her puanın karşılığını kendi tesisine göre yaz. Puan anlamı: 1 en düşük, 5 en yüksek etki.</p>'
+    +fac+'<div class="btns"><button type="button" class="btn" data-act="def-reset-fac">Varsayılan faktörlere dön</button></div></section>';
+}
+function sListe(kind,items,usedFn,title,sub,ph,unit){
+  const rows=items.map((n,i)=>'<div class="defrow s"><input type="text" value="'+esc(n)+'" maxlength="50" data-def="'+kind+'" data-i="'+i+'" data-f="name" aria-label="Ad">'
+    +'<span class="cnt">'+usedFn(n)+' '+unit+'</span>'+delBtn(kind,i,'Sil')+'</div>').join('');
+  return '<section class="card"><h2>'+title+'</h2><p class="sub">'+sub+'</p><div class="deflist">'+(rows||'<p class="faint" style="padding:6px 0">Liste boş.</p>')+'</div>'+addRow(kind,ph)+'</section>';
+}
+function sTurler(){
+  return sListe('cat',S.defs.cats,n=>S.tasks.filter(t=>(t.cat||'')===n).length,'Bakım türleri','Bakım planı formundaki kategori listesi. Adı değiştirirsen o türdeki tüm planlar güncellenir. Panodaki "Bakım türü payı" grafiği bu türleri kullanır.','Yeni bakım türü (ör. Titreşim analizi)','plan');
+}
+function sKisiler(){
+  return sListe('owner',S.defs.owners,n=>S.tasks.filter(t=>(t.owner||'')===n).length,'Sorumlular','Plan ve tamamlama formlarında öneri olarak çıkan kişi ve ekip listesi. Formda listede olmayan bir ad yazarsan otomatik eklenir. Adı değiştirirsen planlardaki ad da güncellenir.','Yeni kişi veya ekip adı','plan');
+}
+function sGenel(){
   const ns=notifState(),on=S.settings.notify&&ns==='granted';
   const nTxt=ns==='unsupported'?'Bu tarayıcı bildirimleri desteklemiyor.'
     :ns==='denied'?'Tarayıcı izni reddedilmiş. Adres çubuğundaki site ayarlarından izin verebilirsin.'
     :on?'<span class="ok-txt">Açık.</span> Uygulama açıkken günde bir kez, gecikmiş ve yaklaşan bakımlar için bildirim gelir.'
     :'Kapalı.';
-  const framed=inFrame();
-  const lead=['A','B','C'].map(k=>'<label class="fld"><span>Sınıf '+k+' uyarı (gün)</span><input type="number" min="0" max="365" data-lead="'+k+'" value="'+S.settings.lead[k]+'"></label>').join('');
-  return '<div class="set">'
-  +'<section class="card"><h2>Uyarı süreleri ve hedef</h2><p class="sub">Bir bakıma kaç gün kala "Yaklaşıyor" durumuna geçsin? Her planda ayrıca kendi süreni girebilirsin. PM uyum hedefi, pano ve yan çubuktaki ilerleme göstergesini belirler.</p><div class="row3">'+lead+'</div>'
-    +'<div class="row3" style="margin-top:12px"><label class="fld"><span>PM uyum hedefi (%)</span><input type="number" min="50" max="100" data-target="1" value="'+S.settings.target+'"></label></div></section>'
-  +'<section class="card"><h2>Bildirim ve takvim</h2><p class="sub">'+nTxt+'</p><div class="btns">'
-    +'<button class="btn" data-act="notify-toggle">'+ic('bell')+(on?'Bildirimleri kapat':'Bildirimleri aç')+'</button>'
-    +(on?'<button class="btn" data-act="notify-test">Test bildirimi gönder</button>':'')
-    +'<button class="btn" data-act="export-ics">'+ic('cal')+'Takvime ekle (.ics)</button></div>'
+  return '<section class="card"><h2>Hedef</h2><p class="sub">PM uyum hedefi, panodaki ring renklerini ve yan çubuktaki ilerleme göstergesini belirler.</p><div class="row3"><label class="fld"><span>PM uyum hedefi (%)</span><input type="number" min="50" max="100" data-target="1" value="'+S.settings.target+'"></label></div></section>'
+    +'<section class="card"><h2>Bildirim ve takvim</h2><p class="sub">'+nTxt+'</p><div class="btns">'
+    +'<button type="button" class="btn" data-act="notify-toggle">'+ic('bell')+(on?'Bildirimleri kapat':'Bildirimleri aç')+'</button>'
+    +(on?'<button type="button" class="btn" data-act="notify-test">Test bildirimi gönder</button>':'')
+    +'<button type="button" class="btn" data-act="export-ics">'+ic('cal')+'Takvime ekle (.ics)</button></div>'
     +'<p class="note">Bildirimler yalnızca uygulama bir sekmede açıkken ya da ana ekrana eklenmişken çalışır, çünkü bu sürümde sunucu yoktur. Uygulama kapalıyken uyarı almanın güvenilir yolu takvim dosyasıdır. Dosyayı Google Takvim, Outlook veya telefon takvimine aktarırsan her bakım için uyarı süresinden önce ve bakım günü sabahı hatırlatma gelir. Planları değiştirdikten sonra dosyayı yeniden aktar.</p></section>'
-  +'<section class="card"><h2>Görünüm</h2><p class="sub">Varsayılan görünüm koyu temadır. "Sistem" seçeneği cihazının tema ayarını izler.</p>'+seg('theme',[['dark','Koyu'],['light','Açık'],['auto','Sistem']],S.settings.theme)+'</section>'
-  +'<section class="card"><h2>Veri</h2><p class="sub">Veriler yalnızca bu tarayıcıda saklanır. Hesap ve sunucu yoktur. Başka bir cihazda açmak için yedek dosyası ya da paylaşım bağlantısı kullan.</p><div class="btns">'
-    +'<button class="btn" data-act="export-json">'+ic('download')+'Yedekle (.json)</button>'
-    +'<button class="btn" data-act="import-json">'+ic('upload')+'Yedekten yükle</button>'
-    +(framed?'':'<button class="btn" data-act="share-link">'+ic('link')+'Paylaşım bağlantısı kopyala</button>')
+    +'<section class="card"><h2>Görünüm</h2><p class="sub">Varsayılan görünüm koyu temadır. "Sistem" seçeneği cihazının tema ayarını izler.</p>'+seg('theme',[['dark','Koyu'],['light','Açık'],['auto','Sistem']],S.settings.theme)+'</section>';
+}
+function sVeri(){
+  const framed=inFrame();
+  return '<section class="card"><h2>Veri</h2><p class="sub">Veriler yalnızca bu tarayıcıda saklanır. Hesap ve sunucu yoktur. Hatlar, sınıflar ve diğer tanımlar da yedeğe dahildir. Başka bir cihazda açmak için yedek dosyası ya da paylaşım bağlantısı kullan.</p><div class="btns">'
+    +'<button type="button" class="btn" data-act="export-json">'+ic('download')+'Yedekle (.json)</button>'
+    +'<button type="button" class="btn" data-act="import-json">'+ic('upload')+'Yedekten yükle</button>'
+    +(framed?'':'<button type="button" class="btn" data-act="share-link">'+ic('link')+'Paylaşım bağlantısı kopyala</button>')
     +'<input type="file" id="impFile" accept=".json,application/json" hidden></div>'
-    +'<div class="btns" style="margin-top:8px"><button class="btn" data-act="load-demo">Örnek veriyi yükle</button><button class="btn" data-act="reset-all">Tüm verileri sil</button></div>'
-    +'<p class="note">'+(framed?'Paylaşım bağlantısı yalnızca yayınlanmış sitede kullanılabilir. ':'Paylaşım bağlantısı, tüm kayıtları adresin içine gömer. Bağlantıyı açan kişi veriyi kendi tarayıcısına yükleyebilir. Bağlantıyı yalnızca güvendiğin kişilerle paylaş. ')+'Ortak ve canlı bir veritabanı gerekiyorsa küçük bir ücretsiz sunucu katmanı (ör. Google E-Tablolar veya Supabase) eklenebilir.</p></section>'
-  +'</div>';
+    +'<div class="btns" style="margin-top:8px"><button type="button" class="btn" data-act="load-demo">Örnek veriyi yükle</button><button type="button" class="btn" data-act="reset-all">Tüm verileri sil</button></div>'
+    +'<p class="note">'+(framed?'Paylaşım bağlantısı yalnızca yayınlanmış sitede kullanılabilir. ':'Paylaşım bağlantısı, tüm kayıtları adresin içine gömer. Bağlantıyı açan kişi veriyi kendi tarayıcısına yükleyebilir. Bağlantıyı yalnızca güvendiğin kişilerle paylaş. ')+'Ortak ve canlı bir veritabanı gerekiyorsa küçük bir ücretsiz sunucu katmanı (ör. Google E-Tablolar veya Supabase) eklenebilir.</p></section>';
+}
+/* ---- Tanım düzenleme olayları ---- */
+const sortLines=()=>S.defs.lines.sort((a,b)=>b.imp-a.imp||a.name.localeCompare(b.name,'tr'));
+function defChange(t){
+  const k=t.dataset.def,i=+t.dataset.i,f=t.dataset.f,v=String(t.value).trim(),D=S.defs;
+  const rename=(list,getName,setName,cascade,label)=>{
+    const cur=getName(list[i]);
+    if(!v){t.value=cur;toast('Ad boş olamaz.');return;}
+    if(v===cur)return;
+    if(list.some((x,j)=>j!==i&&getName(x)===v)){t.value=cur;toast('Bu ad zaten var.');return;}
+    cascade(cur,v);setName(list,i,v);save();render();toast(label+' güncellendi');
+  };
+  if(k==='line'){
+    const l=D.lines[i];if(!l)return;
+    if(f==='imp'){l.imp=+t.value;sortLines();save();render();toast('Hat önemi kaydedildi');return;}
+    rename(D.lines,x=>x.name,(L,j,nv)=>{L[j].name=nv;sortLines();},(a,b)=>{S.machines.forEach(m=>{if(m.area===a)m.area=b;});if(UI.area===a)UI.area=b;},'Hat');
+  }else if(k==='cat'){
+    rename(D.cats,x=>x,(L,j,nv)=>{L[j]=nv;},(a,b)=>{S.tasks.forEach(tk=>{if(tk.cat===a)tk.cat=b;});},'Bakım türü');
+  }else if(k==='owner'){
+    rename(D.owners,x=>x,(L,j,nv)=>{L[j]=nv;},(a,b)=>{S.tasks.forEach(tk=>{if(tk.owner===a)tk.owner=b;});},'Sorumlu');
+  }else if(k==='machine-line'){
+    const m=mById(t.dataset.id);if(m){m.area=t.value;save();render();toast('Makine hatta bağlandı');}
+  }else if(k==='clsname'){
+    const c=t.dataset.k;if(v)D.clsName[c]=v;else t.value=D.clsName[c];save();toast('Sınıf adı kaydedildi');
+  }else if(k==='cut'){
+    const key=t.dataset.k,val=Math.round(+t.value),A=key==='A'?val:D.cut.A,B=key==='B'?val:D.cut.B;
+    if(!(A>B&&B>=5&&A<=20)){t.value=D.cut[key];toast('Eşikler tutarsız: A eşiği B eşiğinden büyük olmalı. B en az 5, A en çok 20 olabilir.');return;}
+    D.cut[key]=val;save();render();toast('Eşik kaydedildi');
+  }else if(k==='fac'){
+    const fa=D.factors[i];if(!fa)return;
+    if(f==='o'){const j=+t.dataset.j;if(v)fa.o[j]=v;else t.value=fa.o[j];}
+    else if(v)fa[f]=v;else t.value=fa[f];
+    save();toast('Faktör kaydedildi');
+  }
+}
+function defAdd(el){
+  const k=el.dataset.k,inp=$('#new_'+k),v=inp?inp.value.trim():'',D=S.defs;
+  if(!v){toast('Önce bir ad yaz.');if(inp)inp.focus();return;}
+  if(k==='line'){if(D.lines.some(l=>l.name===v)){toast('Bu hat zaten var.');return;}D.lines.push({name:v,imp:3});sortLines();}
+  else if(k==='cat'){if(D.cats.indexOf(v)>=0){toast('Bu tür zaten var.');return;}D.cats.push(v);}
+  else{if(D.owners.indexOf(v)>=0){toast('Bu kişi zaten var.');return;}D.owners.push(v);}
+  save();render();toast('Eklendi');
+  setTimeout(()=>{const n=$('#new_'+k);if(n)n.focus();},0);
+}
+async function defDel(el){
+  const k=el.dataset.k,i=+el.dataset.i,D=S.defs;
+  if(k==='line'){
+    const l=D.lines[i];if(!l)return;
+    const n=S.machines.filter(m=>m.area===l.name).length;
+    if(n&&!(await ask('Hat silinsin mi?',n+' makine "'+l.name+'" hattına bağlı. Hat silinirse bu makineler hat atanmamış olur.','Sil')))return;
+    S.machines.forEach(m=>{if(m.area===l.name)m.area='';});
+    if(UI.area===l.name)UI.area='all';
+    D.lines.splice(i,1);
+  }else if(k==='cat'){
+    const c=D.cats[i];if(c===undefined)return;
+    const n=S.tasks.filter(t=>t.cat===c).length;
+    if(n&&!(await ask('Bakım türü silinsin mi?',n+' plan "'+c+'" türünde. Tür silinirse bu planların türü boş kalır.','Sil')))return;
+    S.tasks.forEach(t=>{if(t.cat===c)t.cat='';});
+    D.cats.splice(i,1);
+  }else{
+    const o=D.owners[i];if(o===undefined)return;
+    const n=S.tasks.filter(t=>t.owner===o).length;
+    if(n&&!(await ask('Kişi listeden silinsin mi?',n+' planda "'+o+'" yazıyor. Listeden silinir, planlardaki ad olduğu gibi kalır.','Sil')))return;
+    D.owners.splice(i,1);
+  }
+  save();render();toast('Silindi');
 }
 
 /* =========================================================
@@ -1384,13 +1581,19 @@ function togglePop(){
 /* =========================================================
    Formlar
    ========================================================= */
+const lineOpts=cur=>{
+  const names=S.defs.lines.map(l=>l.name);
+  if(cur&&names.indexOf(cur)<0)names.push(cur);
+  return names.map(n=>'<option value="'+esc(n)+'"'+(n===cur?' selected':'')+'>'+esc(n)+'</option>').join('');
+};
+const ownerList=()=>'<datalist id="ownerSug">'+S.defs.owners.map(o=>'<option value="'+esc(o)+'">').join('')+'</datalist>';
 function machineForm(id){
   const m=id?mById(id):null;
   if(id&&!m)return;
   const d=m||{tag:'',name:'',area:'',safety:3,production:3,repair:3,backup:3,notes:''};
   const sels=FACTORS.map(f=>fld(f.t,'<select name="'+f.k+'">'+f.o.map((o,i)=>'<option value="'+(i+1)+'"'+((+d[f.k]||3)===i+1?' selected':'')+'>'+(i+1)+' · '+o+'</option>').join('')+'</select>',f.d)).join('');
   const body='<div class="row2">'+fld('Makine etiketi','<input type="text" name="tag" required maxlength="20" value="'+esc(d.tag)+'" placeholder="HPR-01">')+fld('Makine adı','<input type="text" name="name" required maxlength="60" value="'+esc(d.name)+'" placeholder="Hidrolik Pres 400 Ton">')+'</div>'
-    +fld('Bölüm veya konum','<input type="text" name="area" maxlength="60" value="'+esc(d.area||'')+'" placeholder="Pres Atölyesi">')
+    +fld('Hat / bölüm','<select name="area"><option value="">Hat atanmamış</option>'+lineOpts(d.area||'')+'</select>','Hatları Ayarlar sayfasındaki Hatlar sekmesinden tanımlarsın.')
     +'<div><h3>Önem analizi</h3><div class="row2">'+sels+'</div></div>'
     +'<div class="scoreprev"><b id="spScore"></b><span id="spTxt"></span></div>'
     +fld('Not','<textarea name="notes" maxlength="400" placeholder="Seri no, üretici, yedek parça tedarikçisi...">'+esc(d.notes||'')+'</textarea>');
@@ -1416,7 +1619,7 @@ function taskForm(id,presetM){
   const t=id?S.tasks.find(x=>x.id===id):null;
   if(id&&!t)return;
   const d=t||{machineId:presetM||ranked()[0].id,title:'',cat:'Kontrol ve muayene',every:1,unit:'ay',mode:'fixed',due:iso(addDays(today(),7)),lead:'',owner:'',hours:1,notes:''};
-  const cats=CATS.indexOf(d.cat)<0&&d.cat?CATS.concat([d.cat]):CATS;
+  const cats=S.defs.cats.indexOf(d.cat)<0&&d.cat?S.defs.cats.concat([d.cat]):S.defs.cats;
   const mo=ranked().map(m=>'<option value="'+m.id+'"'+(m.id===d.machineId?' selected':'')+'>#'+rankOf(m.id)+' · '+esc(m.tag)+' · '+esc(m.name)+'</option>').join('');
   const co=cats.map(c=>'<option'+(c===d.cat?' selected':'')+'>'+esc(c)+'</option>').join('');
   const uo=Object.keys(UNIT).map(u=>'<option value="'+u+'"'+(d.unit===u?' selected':'')+'>'+UNIT[u]+'</option>').join('');
@@ -1424,13 +1627,14 @@ function taskForm(id,presetM){
     +fld('Bakım işi','<input type="text" name="title" required maxlength="100" list="titleSug" value="'+esc(d.title)+'" placeholder="Yağ seviyesi ve sızıntı kontrolü"><datalist id="titleSug">'+TITLE_SUG.map(s=>'<option value="'+esc(s)+'">').join('')+'</datalist>','Ölçülebilir yaz: ne kontrol edilecek, hangi değer beklenir?')
     +'<div class="row2">'+fld('Kategori','<select name="cat">'+co+'</select>')+fld('Takvim türü','<select name="mode"><option value="fixed"'+(d.mode!=='after'?' selected':'')+'>Sabit takvim</option><option value="after"'+(d.mode==='after'?' selected':'')+'>Yapıldığı tarihten</option></select>')+'</div>'
     +'<div class="row3">'+fld('Her','<input type="number" name="every" min="1" max="999" required value="'+everyOf(d)+'">')+fld('Birim','<select name="unit">'+uo+'</select>')+fld('Sonraki bakım','<input type="date" name="due" required value="'+esc(d.due)+'">')+'</div>'
-    +'<div class="row3">'+fld('Uyarı (gün önce)','<input type="number" name="lead" min="0" max="365" value="'+(d.lead==null?'':esc(d.lead))+'" placeholder="Otomatik">','<span id="leadHint"></span>')+fld('Sorumlu','<input type="text" name="owner" maxlength="40" value="'+esc(d.owner||'')+'" placeholder="Ad Soyad">')+fld('Süre (saat)','<input type="number" name="hours" min="0" step="0.5" value="'+esc(d.hours==null?'':d.hours)+'">')+'</div>'
+    +'<div class="row3">'+fld('Uyarı (gün önce)','<input type="number" name="lead" min="0" max="365" value="'+(d.lead==null?'':esc(d.lead))+'" placeholder="Otomatik">','<span id="leadHint"></span>')+fld('Sorumlu','<input type="text" name="owner" maxlength="40" list="ownerSug" value="'+esc(d.owner||'')+'" placeholder="Ad Soyad">'+ownerList())+fld('Süre (saat)','<input type="number" name="hours" min="0" step="0.5" value="'+esc(d.hours==null?'':d.hours)+'">')+'</div>'
     +fld('Not','<textarea name="notes" maxlength="400" placeholder="Kullanılacak malzeme, güvenlik uyarısı, kontrol listesi...">'+esc(d.notes||'')+'</textarea>');
   const foot=(t?'<button type="button" class="btn sp" data-act="del-task" data-id="'+t.id+'">'+ic('trash')+'Sil</button>':'')+'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">Kaydet</button>';
   openDlg(dlgShell(t?'Planı düzenle':'Yeni bakım planı','Sıklık dolunca sonraki tarih otomatik hesaplanır.',body,foot),fd=>{
     const obj={machineId:fd.get('machineId'),title:String(fd.get('title')).trim(),cat:fd.get('cat'),every:Math.max(1,parseInt(fd.get('every'),10)||1),unit:fd.get('unit'),mode:fd.get('mode'),due:fd.get('due'),lead:fd.get('lead')===''?null:Math.max(0,parseInt(fd.get('lead'),10)||0),owner:String(fd.get('owner')).trim(),hours:parseFloat(String(fd.get('hours')).replace(',','.'))||0,notes:String(fd.get('notes')).trim()};
     if(!obj.title||!obj.due)return false;
     obj.day=parseD(obj.due).getDate();
+    ensureOwner(obj.owner);
     if(t)Object.assign(t,obj);else S.tasks.push(Object.assign({id:uid()},obj));
     save();render();toast(t?'Plan güncellendi':'Plan eklendi');
   },f=>{
@@ -1442,7 +1646,7 @@ function doneForm(id){
   const t=S.tasks.find(x=>x.id===id);
   if(!t)return;
   const m=mById(t.machineId);
-  const body='<div class="row2">'+fld('Yapıldığı tarih','<input type="date" name="done" required max="'+iso(today())+'" value="'+iso(today())+'">')+fld('Yapan kişi','<input type="text" name="by" maxlength="40" value="'+esc(t.owner||'')+'" placeholder="Ad Soyad">')+'</div>'
+  const body='<div class="row2">'+fld('Yapıldığı tarih','<input type="date" name="done" required max="'+iso(today())+'" value="'+iso(today())+'">')+fld('Yapan kişi','<input type="text" name="by" maxlength="40" list="ownerSug" value="'+esc(t.owner||'')+'" placeholder="Ad Soyad">'+ownerList())+'</div>'
     +fld('Bulgu ve not','<textarea name="note" maxlength="400" placeholder="Ne bulundu, ne değişti? Tekrarlayan bir sorun varsa yaz."></textarea>')
     +'<div class="scoreprev"><span id="dnext"></span></div>';
   openDlg(dlgShell('Bakımı tamamla',esc(m?m.tag+' · ':'')+esc(t.title),body,'<button type="button" class="btn" data-act="close">Vazgeç</button><button type="submit" class="btn primary">'+ic('check')+'Yapıldı olarak kaydet</button>'),fd=>{
@@ -1519,7 +1723,7 @@ function showText(name,text){
   openDlg('<div class="dlg"><div class="dlg-h"><div><h2>'+esc(name)+'</h2><p>Bu önizlemede dosya indirilemiyor. Metni kopyalayıp bir dosyaya yapıştırabilirsin.</p></div><button type="button" class="icon-btn" data-act="close" aria-label="Kapat">'+ic('x')+'</button></div><div class="dlg-b"><textarea class="code" id="txtOut" readonly></textarea></div><div class="dlg-f"><button type="button" class="btn" data-act="close">Kapat</button><button type="button" class="btn primary" data-act="copy-text">Kopyala</button></div></div>');
   $('#txtOut').value=text;
 }
-const exportObj=()=>({app:'rebul-planli-bakim',version:1,exported:iso(today()),machines:S.machines,tasks:S.tasks,history:S.history,settings:{lead:S.settings.lead}});
+const exportObj=()=>({app:'rebul-planli-bakim',version:1,exported:iso(today()),machines:S.machines,tasks:S.tasks,history:S.history,settings:{lead:S.settings.lead,target:S.settings.target},defs:S.defs});
 function sanitize(o){
   if(!o||!Array.isArray(o.machines)||!Array.isArray(o.tasks))throw new Error('format');
   const re=/^\d{4}-\d{2}-\d{2}$/;
@@ -1527,12 +1731,12 @@ function sanitize(o){
   const ids=new Set(machines.map(m=>m.id));
   const tasks=o.tasks.filter(t=>t&&t.id&&t.title&&ids.has(t.machineId)&&re.test(String(t.due))).map(t=>({id:String(t.id),machineId:t.machineId,title:String(t.title),cat:String(t.cat||''),every:Math.max(1,parseInt(t.every,10)||1),unit:UNIT[t.unit]?t.unit:'ay',mode:t.mode==='after'?'after':'fixed',due:String(t.due),day:Math.min(31,Math.max(0,parseInt(t.day,10)||0)),lead:(t.lead===null||t.lead===undefined||t.lead==='')?null:Math.max(0,+t.lead||0),owner:String(t.owner||''),hours:+t.hours||0,notes:String(t.notes||'')}));
   const history=(Array.isArray(o.history)?o.history:[]).filter(h=>h&&re.test(String(h.done))&&re.test(String(h.due))&&h.title).map(h=>({id:String(h.id||uid()),taskId:String(h.taskId||''),machineId:String(h.machineId||''),tag:String(h.tag||''),mname:String(h.mname||''),title:String(h.title),due:String(h.due),done:String(h.done),by:String(h.by||''),note:String(h.note||'')}));
-  return {machines,tasks,history,lead:o.settings&&o.settings.lead};
+  return {machines,tasks,history,lead:o.settings&&o.settings.lead,defs:o.defs};
 }
 function applyData(o){
   const c=sanitize(o);
   const keep=S.settings;
-  S=normalize({demo:false,machines:c.machines,tasks:c.tasks,history:c.history,settings:Object.assign({},keep,{lead:Object.assign({},keep.lead,c.lead||{})})});
+  S=normalize({demo:false,machines:c.machines,tasks:c.tasks,history:c.history,defs:c.defs,settings:Object.assign({},keep,{lead:Object.assign({},keep.lead,c.lead||{})})});
   save();render();
 }
 function readImport(file){
@@ -1660,10 +1864,15 @@ const H={
   'tl-proj':()=>{S.settings.showProj=!S.settings.showProj;save();render();},
   'flt-st':el=>{UI.st=el.dataset.v;render();},
   print:()=>window.print(),
+  'set-tab':el=>{UI.stab=el.dataset.v;render();},
+  'def-add':el=>defAdd(el),
+  'def-del':el=>defDel(el),
+  'def-reset-cut':async()=>{if(await ask('Eşikler sıfırlansın mı?','A sınıfı için 15, B sınıfı için 10 puan eşiği geri yüklenir.','Sıfırla')){S.defs.cut={A:15,B:10};save();render();toast('Eşikler varsayılana döndü');}},
+  'def-reset-fac':async()=>{if(await ask('Faktörler sıfırlansın mı?','Faktör adları, soruları ve puan açıklamaları varsayılana döner.','Sıfırla')){S.defs.factors=JSON.parse(JSON.stringify(FACTORS_DEFAULT));save();render();toast('Faktörler varsayılana döndü');}},
   theme:el=>{S.settings.theme=el.dataset.v;save();applyTheme();render();},
-  'clear-demo':async()=>{if(await ask('Örnek veri temizlensin mi?','Örnek makineler, planlar ve geçmiş silinir. Ayarların korunur.','Temizle')){S=normalize({demo:false,settings:S.settings});save();render();toast('Örnek veri temizlendi. Makine ekleyerek başlayabilirsin.');}},
+  'clear-demo':async()=>{if(await ask('Örnek veri temizlensin mi?','Örnek makineler, planlar ve geçmiş silinir. Ayarların korunur.','Temizle')){S=normalize({demo:false,settings:S.settings,defs:{cut:S.defs.cut,clsName:S.defs.clsName,factors:S.defs.factors,cats:S.defs.cats}});save();render();toast('Örnek veri temizlendi. Makine ekleyerek başlayabilirsin.');}},
   'load-demo':async()=>{if(await ask('Örnek veri yüklensin mi?','Mevcut tüm verinin yerine örnek veri gelir.','Yükle')){const d=demo();d.settings=S.settings;S=normalize(d);save();render();toast('Örnek veri yüklendi');}},
-  'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings});save();render();toast('Tüm veriler silindi');}},
+  'reset-all':async()=>{if(await ask('Tüm veriler silinsin mi?','Makineler, planlar ve geçmiş kalıcı olarak silinir. Önce yedek almanı öneririm.','Hepsini sil')){S=normalize({demo:false,settings:S.settings,defs:{cut:S.defs.cut,clsName:S.defs.clsName,factors:S.defs.factors,cats:S.defs.cats}});save();render();toast('Tüm veriler silindi');}},
   'export-json':()=>download('rebul-planli-bakim-yedek-'+iso(today())+'.json','application/json',JSON.stringify(exportObj(),null,2)),
   'import-json':()=>{const f=$('#impFile');if(f)f.click();else{nav('ayarlar');}},
   'export-ics':()=>download('rebul-planli-bakim.ics','text/calendar',buildICS()),
@@ -1684,6 +1893,11 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){const p=$('#pop');if(!p.hidden)p.hidden=true;}
+  if(e.key==='Enter'&&e.target.id&&e.target.id.indexOf('new_')===0){
+    e.preventDefault();
+    const b=e.target.parentElement.querySelector('[data-act="def-add"]');
+    if(b)b.click();
+  }
   if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-act][tabindex]')){e.preventDefault();e.target.click();}
 });
 document.addEventListener('input',e=>{
@@ -1698,6 +1912,7 @@ document.addEventListener('change',e=>{
     const v=Math.min(100,Math.max(50,parseInt(t.value,10)||90));
     S.settings.target=v;t.value=v;save();chrome();toast('Hedef kaydedildi');
   }
+  else if(t.dataset&&t.dataset.def){defChange(t);}
   else if(t.id==='fm'){UI.m=t.value;renderPlanList();}
   else if(t.id==='fs'){UI.sort=t.value;renderPlanList();}
   else if(t.dataset&&t.dataset.lead){

@@ -24,6 +24,18 @@ Genel Bakış sayfası yöneticiye tek bakışta şunları verir:
 - Makine önem sıralaması tablosu, aylık tamamlanan bakım grafiği, uyarılar ve otomatik içgörüler
 - Dönem, bölüm ve sınıf süzgeçleri. Rapor (PDF) düğmesi yatay A4 çıktı üretir.
 
+## Tanımlar (Ayarlar sayfası)
+
+Her tanım Ayarlar sayfasındaki sekmelerden yapılır:
+
+- **Hatlar:** üretim hatlarını ve bölümleri ekle, adlandır, önem düzeyi (1-5) ver. Aynı puanlı makineler hat önemine göre sıralanır.
+- **Makineler:** makine ekle, hatlara bağla, önem puanlarını düzenle.
+- **Önem sınıfları:** A ve B eşik puanlarını, sınıf adlarını ve uyarı sürelerini belirle. Dört önem faktörünün adını, sorusunu ve puan açıklamalarını kendi tesisine göre değiştir.
+- **Bakım türleri:** plan formundaki kategori listesi. Ad değişince planlar da güncellenir.
+- **Sorumlular:** plan ve tamamlama formlarındaki kişi ve ekip listesi.
+- **Bildirim ve görünüm:** PM uyum hedefi, tarayıcı bildirimi, takvim dosyası, tema.
+- **Veri:** yedek, geri yükleme, paylaşım bağlantısı. Tanımlar da yedeğe dahildir.
+
 ## Yayınlama (ücretsiz)
 
 GitHub Pages `main` dalından yayınlar. Dosyaları değiştirip gönderdiğinde site birkaç dakikada güncellenir:
