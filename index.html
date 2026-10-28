@@ -1435,7 +1435,7 @@ function sVeri(){
     +'<button type="button" class="btn" data-act="export-json">'+ic('download')+'Yedekle (.json)</button>'
     +'<button type="button" class="btn" data-act="import-json">'+ic('upload')+'Yedekten yükle</button>'
     +(framed?'':'<button type="button" class="btn" data-act="share-link">'+ic('link')+'Paylaşım bağlantısı kopyala</button>')
-    +'<button type="button" class="btn" data-act="sifre-ac">'+ic('upload')+'Rebul verisini parolayla yükle</button>'
+    +(framed?'':'<button type="button" class="btn" data-act="sifre-ac">'+ic('upload')+'Rebul verisini parolayla yükle</button>')
     +'<input type="file" id="impFile" accept=".json,application/json" hidden></div>'
     +'<div class="btns" style="margin-top:8px"><button type="button" class="btn" data-act="load-demo">Örnek veriyi yükle</button><button type="button" class="btn" data-act="reset-all">Tüm verileri sil</button></div>'
     +'<p class="note">'+(framed?'Paylaşım bağlantısı yalnızca yayınlanmış sitede kullanılabilir. ':'Paylaşım bağlantısı, tüm kayıtları adresin içine gömer. Bağlantıyı açan kişi veriyi kendi tarayıcısına yükleyebilir. Bağlantıyı yalnızca güvendiğin kişilerle paylaş. ')+'Ortak ve canlı bir veritabanı gerekiyorsa küçük bir ücretsiz sunucu katmanı (ör. Google E-Tablolar veya Supabase) eklenebilir.</p></section>';
