@@ -33,17 +33,18 @@ Ayarlar > Veri > Yedekten yükle ile yüklenebilir.
 Şifreleme: gzip, PBKDF2-SHA256 (600.000 tur) ile anahtar türetme ve AES-256-GCM. Parola büyük/küçük harfe,
 boşluğa ve tireye duyarsızdır. Parola kodda ya da depoda yoktur, tarayıcıya da kaydedilmez.
 
-Veriyi güncellemek ya da parolayı değiştirmek için (parola yoksa `--yeni` rastgele güçlü bir parola üretir ve yazdırır):
+Veriyi güncellemek ya da parolayı değiştirmek için parola `PAROLA` ortam değişkeniyle verilir
+(en az 8 karakter; `--yeni` yazılırsa rastgele güçlü bir parola üretilip yazdırılır):
 
 ```
-node scripts/sifrele.js rebul-veri.json rebul-veri.enc.json --yeni
+PAROLA='seçtiğin parola' node scripts/sifrele.js rebul-veri.json rebul-veri.enc.json
 git add rebul-veri.enc.json && git commit -m "Rebul verisini güncelle" && git push
 ```
 
-Dikkat: şifreli dosyanın eski sürümleri git geçmişinde kalır ve eski parolayla açılabilir. Parola bir kişiyle
-paylaşıldıysa ve o kişinin erişimi kapatılacaksa yalnızca parolayı değiştirmek, o kişinin elindeki eski veriyi geri almaz.
-Parola zayıf seçilirse (internet üzerinden herkes şifreli dosyayı indirip denemeler yapabileceği için) koruma azalır;
-`--yeni` ile üretilen 16 karakterlik parola 80 bit güvenlik sağlar.
+Dikkat: şifreli dosya herkese açık olduğundan herkes onu indirip parolayı çevrimdışı deneyebilir. Kolay tahmin edilen
+ya da kısa bir parola bu korumayı fiilen ortadan kaldırır; uzun, tahmin edilmesi zor bir parola seç.
+Şifreli dosyanın eski sürümleri git geçmişinde kalır ve eski parolayla açılabilir. Parolayı değiştirmek,
+eski parolayı bilen kişinin elindeki eski veriyi geri almaz.
 
 `araclar/excel-veri-olustur.js`, Rebul Excel dosyalarından `rebul-veri.json` üretir (yine git dışında):
 iki .xlsx dosyasını ayrı klasörlere açıp `node araclar/excel-veri-olustur.js <klasör> <çıktı.json>` çalıştırılır.

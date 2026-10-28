@@ -1888,7 +1888,7 @@ async function openSifreli(b,pw){
 function sifreDlg(b,first){
   if(!(window.crypto&&crypto.subtle&&'DecompressionStream' in window)){toast('Bu tarayıcı parolayla yüklemeyi desteklemiyor.');return;}
   openDlg(dlgShell('Rebul verisini aç','Makine listesi ve bakım planları parolayla korunur. Parolayı Rebul bakım yönetiminden al.',
-    fld('Parola','<input type="password" id="pwIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX" aria-describedby="pwErr">','Büyük küçük harf ve tire önemli değil.')
+    fld('Parola','<input type="password" id="pwIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Parola" aria-describedby="pwErr">','Büyük küçük harf ve tire önemli değil.')
       +'<label class="pw-show"><input type="checkbox" id="pwShow">Parolayı göster</label><p class="pw-err" id="pwErr" role="alert"></p>',
     (first?'<button type="button" class="btn" id="pwSkip">Örnek veriyle devam et</button>':'<button type="button" class="btn" data-act="close">Vazgeç</button>')
       +'<button type="submit" class="btn primary" id="pwGo">Aç ve yükle</button>','pwFrm'),null,f=>{
@@ -1898,7 +1898,7 @@ function sifreDlg(b,first){
     if(skip)skip.addEventListener('click',()=>{try{localStorage.setItem(SIFRE_ATLA,'1');}catch(e){}closeDlg();});
     f.addEventListener('submit',async e=>{
       e.preventDefault();
-      if(normPw(inp.value).length<12){err.textContent='Parola eksik görünüyor, 16 karakterlik olmalı.';return;}
+      if(!normPw(inp.value)){err.textContent='Parolayı yaz.';return;}
       go.disabled=true;go.textContent='Açılıyor…';err.textContent='';
       let o,c;
       try{o=await openSifreli(b,inp.value);c=sanitize(o);}

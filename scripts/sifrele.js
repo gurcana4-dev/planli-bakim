@@ -31,9 +31,12 @@ if (!girdi || !cikti) {
 let parola = process.env.PAROLA;
 const uretildi = process.argv.includes('--yeni');
 if (uretildi) parola = yeniParola();
-if (!parola || normPw(parola).length < 12) {
-  console.error('Parola yok ya da çok kısa. PAROLA ortam değişkenini (en az 12 karakter) ver ya da --yeni kullan.');
+if (!parola || normPw(parola).length < 8) {
+  console.error('Parola yok ya da çok kısa. PAROLA ortam değişkenini (en az 8 karakter) ver ya da --yeni kullan.');
   process.exit(1);
+}
+if (!uretildi && normPw(parola).length < 16) {
+  console.error('Uyarı: bu parola kısa. Şifreli dosya herkese açık olduğundan kısa parolalar çevrimdışı denenerek kırılabilir.');
 }
 
 const duz = fs.readFileSync(girdi);
